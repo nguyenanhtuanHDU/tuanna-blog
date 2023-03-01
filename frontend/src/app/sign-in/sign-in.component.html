@@ -1,0 +1,39 @@
+<div class="form d-flex align-items-center justify-content-center h-100">
+  <!-- <img class="form-bg" src="../../assets/images/bg-form4.avif"/> -->
+
+  <div class="container form-container">
+    <div class="row">
+      <div class="col-sm-6 col-12 form-inner">
+        <div class="form-inner-header d-flex align-items-center justify-content-between mb-4">
+          <h2 class="mb-0">Sign In</h2>
+          <div class="form-inner-header__social d-flex gap-3">
+            <i class="bi bi-facebook"></i>
+            <i class="bi bi-google"></i>
+          </div>
+        </div>
+        <div class="form-inner-body d-flex flex-column">
+          <mat-form-field appearance="fill" class="mb-3">
+            <mat-label>Enter your username or email</mat-label>
+            <input matInput placeholder="pat@example.com" [formControl]="email" required>
+            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="mb-3">
+            <mat-label>Enter your password</mat-label>
+            <input matInput [formControl]="email" required>
+            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <button mat-button color="primary" class="py-1 mb-3">Sign In</button>
+        </div>
+        <div class="form-inner-footer d-flex justify-content-between">
+          <mat-checkbox class="example-margin" color="primary">Remember me!</mat-checkbox>
+          <a routerLink="/sign-up">Forgot password ?</a>
+        </div>
+      </div>
+      <div class="col-sm-6 col-0 form-right d-flex align-items-center justify-content-center flex-column gap-3">
+        <h2>Welcome to Tuanna Blog</h2>
+        <p>Don't have account ?</p>
+        <a  mat-flat-button routerLink="/sign-up">Sign Up Now</a>
+      </div>
+    </div>
+  </div>
+</div>
