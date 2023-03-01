@@ -1,0 +1,18 @@
+.form {
+  &-container {
+    max-width: 1140px;
+  }
+  &-inner{
+    &-header{
+
+    }
+    &-body{
+      button{
+        background-color: var(--bs-primary);
+      }
+    }
+    &-footer{
+
+    }
+  }
+}
