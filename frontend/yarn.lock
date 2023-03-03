@@ -266,13 +266,6 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/material@^13.3.9":
-  version "13.3.9"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-13.3.9.tgz#efd8ab5800b654df01e36426391d31531e412425"
-  integrity sha512-FU8lcMgo+AL8ckd27B4V097ZPoIZNRHiCe3wpgkImT1qC0YwcyXZVn0MqQTTFSdC9a/aI8wPm3AbTClJEVw5Vw==
-  dependencies:
-    tslib "^2.3.0"
-
 "@angular/platform-browser-dynamic@^14.0.0":
   version "14.2.12"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-14.2.12.tgz#d4dac4a488c804ea07213a98450efa124a15d70a"
@@ -2384,6 +2377,11 @@ boolbase@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
+
+bootstrap-icons@^1.10.3:
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/bootstrap-icons/-/bootstrap-icons-1.10.3.tgz#c587b078ca6743bef4653fe90434b4aebfba53b2"
+  integrity sha512-7Qvj0j0idEm/DdX9Q0CpxAnJYqBCFCiUI6qzSPYfERMcokVuV9Mdm/AJiVZI8+Gawe4h/l6zFcOzvV7oXCZArw==
 
 bootstrap@^5.2.3:
   version "5.2.3"
@@ -5078,6 +5076,13 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+ngx-cookie-service@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-15.0.0.tgz#d5b1ec8745c93119c28fb6e630b6e5ea5d2f7899"
+  integrity sha512-KU1JCjfpDTvD6L0FhHN9W/oP3Sue8yMAAK6XY3h/MEhrPS7vx6t3+h0ulY8l8R/9d1cmlQVyTHn1Jd1Jdf5K+g==
+  dependencies:
+    tslib "^2.0.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"

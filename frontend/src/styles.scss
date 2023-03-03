@@ -12,7 +12,21 @@
 
 :root{
   --primary-color: #21e5d1;
+  --bs-primary: #21e5d1 !important;
 }
+
+$primary: #21e5d1;
+
+$theme-colors: (
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark
+);
 
 
 html,
