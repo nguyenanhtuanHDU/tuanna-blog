@@ -1,7 +1,8 @@
+const User = require("../models/user");
 const { getAllUsersService } = require("../services/user.services")
 
 module.exports = {
-    getUsers:async(req, res) => {
+    getUsers: async (req, res) => {
         try {
             const users = await getAllUsersService()
             res.status(200).json({
@@ -15,5 +16,15 @@ module.exports = {
                 data: null
             })
         }
+    }
+    ,
+    postCreateAUser: async (req, res) => {
+        try {
+            const data = req.body
+            const user = await User.create(data)
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 }

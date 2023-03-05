@@ -22,7 +22,7 @@ const cookies = require("cookie-parser");
 app.use(cookies());
 
 app.use('/v1/api', apiRoute)
-app.use('/', authRoute)
+app.use('/auth', authRoute)
 
 
 

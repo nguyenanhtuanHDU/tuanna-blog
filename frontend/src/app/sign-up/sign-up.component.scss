@@ -46,6 +46,9 @@
     }
 
     &-body {
+      &__error{
+        color: var(--bs-red);
+      }
       button {
         border-radius: 12px;
       }
@@ -53,4 +56,8 @@
 
     &-footer {}
   }
+}
+
+.form:focus{
+  border: 0 !important;
 }

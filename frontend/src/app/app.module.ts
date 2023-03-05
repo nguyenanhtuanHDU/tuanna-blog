@@ -9,15 +9,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { AlertsComponent } from './alerts/alerts.component';
 @NgModule({
-  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent],
+  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, AlertsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    AlertModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -14,13 +14,15 @@ module.exports = {
             const user = await createAUserService(data);
             res.status(200).json({
                 EC: 0,
-                data: user
+                data: user,
+                msg: 'Create accout success !'
             })
         } catch (error) {
             console.log(error);
-            res.status(404).json({
+            res.status(409).json({
                 EC: -1,
-                data: null
+                data: null,
+                msg: "Username or email is already exist !"
             })
         }
     },
