@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertComponent } from 'ngx-bootstrap/alert';
 import { Alert } from '../models/all.model';
 
@@ -8,25 +8,27 @@ import { Alert } from '../models/all.model';
   styleUrls: ['./alerts.component.scss'],
 })
 export class AlertsComponent {
-  @Input() typeAlert: string;
-  @Input() msgAlert: string;
+  @Output() methodCon = new EventEmitter<string>();
 
   alerts: any[] = [];
 
   // constructor() { }
 
-  add(alert: Alert): void {
+  addDefault(alert: Alert): void {
     this.alerts.push(alert);
   }
 
-  onClosed(dismissedAlert: AlertComponent): void {
-    console.log('run');
-
-    this.alerts = this.alerts.filter((alert) => alert !== dismissedAlert);
+  addAlert(type: string, msg: string, timeout: number) {
+    this.addDefault({ type, msg, timeout });
   }
 
-  ngOnInit() {
-    console.log('run alert', this.alerts);
-    this.add({ type: this.typeAlert, msg: this.msgAlert, timeout: 3000 });
+  addAlert2() {
+    // this.alerts.push({ type: 'danger', msg: 'hello i am tuan', timeout: 3000 });
+    console.log('run');
+
+  }
+
+  onClosed(dismissedAlert: AlertComponent): void {
+    this.alerts = this.alerts.filter((alert) => alert !== dismissedAlert);
   }
 }

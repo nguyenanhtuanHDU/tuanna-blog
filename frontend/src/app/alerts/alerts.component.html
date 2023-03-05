@@ -1,5 +1,4 @@
 <div *ngFor="let alert of alerts" class="alerts">
-  <alert class="alerts-alert" [type]="alert.type" [dismissible]="true"  (onClosed)="onClosed(alert)">
+  <alert class="alerts-alert" [type]="alert.type" [dismissOnTimeout]="alert.timeout">
     {{ alert.msg }}</alert>
 </div>
-

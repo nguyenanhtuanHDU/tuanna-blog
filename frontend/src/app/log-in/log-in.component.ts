@@ -16,16 +16,15 @@ export class LogInComponent {
 
   emailLogin: string;
   passwordLogin: string;
-  routerLink = '';
 
-  emailCheck = '';
+  emailFocus: false
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     const token = this.authService.getToken();
 
-    if (token['email'] !== '' || token['password'] !== '') {
+    if (token['email'] && token['password'] ) {
       console.log('co token');
       this.router.navigate(['/']);
     } else {

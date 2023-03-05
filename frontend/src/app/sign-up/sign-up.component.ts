@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
@@ -11,10 +11,13 @@ import { AlertsComponent } from '../alerts/alerts.component';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent {
-  @ViewChild(AlertsComponent) alert: AlertsComponent;
+  // @ViewChild(AlertsComponent) alert: AlertsComponent;
+  @ViewChild(AlertsComponent) item: AlertsComponent | undefined;
 
   typeAlert: string;
   msgAlert: string;
+
+  emailFocus: boolean = false;
 
   signInForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -38,9 +41,7 @@ export class SignUpComponent {
       (user: any) => {
         this.typeAlert = 'success';
         this.msgAlert = user.msg;
-        console.log('>>> user: ', user);
         // this.router.navigate(['/login']);
-        console.log('>>> ', this.typeAlert, this.msgAlert);
       },
       (err) => {
         console.log(err);
@@ -51,8 +52,8 @@ export class SignUpComponent {
   }
 
   validateUsername() {
-    const usernameError = this.signInForm.get('username');
-    if (usernameError?.hasError('required')) {
+    const username = this.signInForm.get('username');
+    if (username?.hasError('required')) {
       return 'Username is empty';
     } else {
       return '';
@@ -60,10 +61,11 @@ export class SignUpComponent {
   }
 
   validateEmail() {
-    const emailError = this.signInForm.get('email');
-    if (emailError?.hasError('required')) {
+    const email = this.signInForm.get('email');
+    if (email?.hasError('required')) {
+      this.emailFocus = true;
       return 'Email is empty';
-    } else if (emailError?.hasError('email')) {
+    } else if (email?.hasError('email')) {
       return 'Email is not valid';
     } else {
       return '';
@@ -71,13 +73,42 @@ export class SignUpComponent {
   }
 
   validatePassword() {
-    const passwordError = this.signInForm.get('password');
-    if (passwordError?.hasError('required')) {
+    const password = this.signInForm.get('password');
+    if (password?.hasError('required')) {
       return 'Password is empty';
-    } else if (passwordError?.hasError('minlength')) {
+    } else if (password?.hasError('minlength')) {
       return 'Password must be at least 6 characters';
     } else {
       return '';
     }
+  }
+
+  // ngOnInit(): void {
+  //   // console.log('>>> alertComponent: ',this.alertComponent);
+
+  // }
+
+  ngAfterViewInit() {
+    if(this.item){
+      console.log(true);
+    }
+    // console.log(this.item);
+    // this.alert.forEach((item) => console.log('??? item: ', item));
+  }
+
+  ngAfterContentInit() {
+    if(this.item){
+      console.log(true);
+    }
+    // console.log(this.item);
+    // this.item.forEach((item) => console.log('??? item: ', item));
+  }
+
+  ngAfterViewChecked() {
+    if(this.item){
+      console.log(true);
+    }
+    // console.log(this.item);
+    // this.alert.forEach((item) => console.log('??? item: ', item));
   }
 }

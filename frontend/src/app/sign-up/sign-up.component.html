@@ -1,7 +1,8 @@
-<app-alerts *ngIf="typeAlert && msgAlert" [typeAlert]="typeAlert" [msgAlert]="msgAlert"></app-alerts>
 <div class="form d-flex align-items-center justify-content-center">
+  <app-alerts #item *ngIf="typeAlert && msgAlert"></app-alerts>
   <!-- <img class="form-bg" src="../../assets/images/bg-form4.avif"/> -->
   <div class="form-container">
+
     <div class="form-inner">
       <div class="form-inner-header d-flex align-items-center justify-content-between mb-4">
         <h2 class="mb-0">Sign Up</h2>
@@ -15,13 +16,13 @@
         <div class="form-inner-body__username mt-3">
           <label for="username">Username</label>
           <input type="text" class="form-control my-2" id="username" autocomplete="off" formControlName="username"
-            (input)="validateUsername()">
+            autofocus (input)="validateUsername()">
           <span class="form-inner-body__error" *ngIf="signInForm.value.username">{{validateUsername()}}</span>
         </div>
         <div class="form-inner-body__email mt-3">
           <label for="email">Email</label>
           <input type="text" class="form-control my-2" type="email" formControlName="email" id="email"
-            autocomplete="off" (input)="validateEmail()">
+            [autofocus]="emailFocus" autocomplete="off" (input)="validateEmail()">
           <span class="form-inner-body__error" *ngIf="signInForm.value.email">{{validateEmail()}}</span>
         </div>
         <div class="form-inner-body__password mt-3">
