@@ -10,9 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { AlertModule } from 'ngx-bootstrap/alert';
-import { AlertsComponent } from './alerts/alerts.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+
 @NgModule({
-  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, AlertsComponent],
+  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,7 +22,8 @@ import { AlertsComponent } from './alerts/alerts.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    AlertModule.forRoot()
+    AlertModule.forRoot(),
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent],

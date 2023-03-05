@@ -10,7 +10,7 @@
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
 
-:root{
+:root {
   --primary-color: #21e5d1;
   --bs-primary: #21e5d1 !important;
 }
@@ -18,14 +18,14 @@
 $primary: #21e5d1;
 
 $theme-colors: (
-  "primary":    $primary,
-  "secondary":  $secondary,
-  "success":    $success,
-  "info":       $info,
-  "warning":    $warning,
-  "danger":     $danger,
-  "light":      $light,
-  "dark":       $dark
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark
 );
 
 
@@ -41,3 +41,10 @@ body {
 
 $test-color: #21e5d1;
 
+.alerts {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  &-alert {}
+}

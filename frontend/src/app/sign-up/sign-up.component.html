@@ -1,5 +1,7 @@
+<div class="alerts" *ngFor="let alert of alerts">
+  <alert class="alerts-alerts" [type]="alert.type" [dismissible]="dismissible" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
+</div>
 <div class="form d-flex align-items-center justify-content-center">
-  <app-alerts #item *ngIf="typeAlert && msgAlert"></app-alerts>
   <!-- <img class="form-bg" src="../../assets/images/bg-form4.avif"/> -->
   <div class="form-container">
 
