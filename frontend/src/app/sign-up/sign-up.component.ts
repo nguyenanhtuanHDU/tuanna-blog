@@ -1,42 +1,17 @@
-import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 import { Router } from '@angular/router';
-import { Alert } from '../models/all.model';
-import { AlertComponent } from 'ngx-bootstrap/alert';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent {
-  typeAlert: string;
-  msgAlert: string;
-
-  dismissible = true;
   emailFocus: boolean = false;
-  alerts: Alert[] = [
-    {
-      type: 'success',
-      msg: 'ádadddddddd',
-      timeout: 300000,
-    },
-    {
-      type: 'success',
-      msg: 'ádadddddddd',
-      timeout: 300000,
-    },    {
-      type: 'success',
-      msg: 'ádadddddddd',
-      timeout: 300000,
-    },
-  ];
-
-  onClosed(dismissedAlert: any): void {
-    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  }
 
   signInForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -47,13 +22,14 @@ export class SignUpComponent {
     ]),
   });
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  // onClosed(dismissedAlert: AlertComponent): void {
-  //   this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  // }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private spinner: NgxSpinnerService
+  ) {}
 
   test() {
+    this.spinner.show();
     this.validateEmail();
     this.validateUsername();
     this.validatePassword();
@@ -62,20 +38,17 @@ export class SignUpComponent {
 
     this.authService.createAUser(data).subscribe(
       (user: any) => {
-        // this.alerts.push({
-        //   type: 'success',
-        //   msg: user.msg,
-        // });
-        // this.typeAlert = 'success';
-        // this.msgAlert = user.msg;
-        // this.router.navigate(['/login']);
+        this.spinner.hide();
+        Swal.fire('Success', user.msg, 'success');
+
+        this.router.navigate(['/login']);
       },
       (err) => {
         console.log(err);
-        // this.alerts.push({
-        //   type: 'danger',
-        //   msg: err.error.msg,
-        // });
+
+        this.spinner.hide();
+        Swal.fire('Error', err.error.msg, 'error');
+        console.log(err);
       }
     );
   }

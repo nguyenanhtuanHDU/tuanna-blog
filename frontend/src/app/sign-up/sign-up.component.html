@@ -1,6 +1,3 @@
-<div class="alerts" *ngFor="let alert of alerts">
-  <alert class="alerts-alerts" [type]="alert.type" [dismissible]="dismissible" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
-</div>
 <div class="form d-flex align-items-center justify-content-center">
   <!-- <img class="form-bg" src="../../assets/images/bg-form4.avif"/> -->
   <div class="form-container">
@@ -46,3 +43,6 @@
     </div>
   </div>
 </div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="line-spin-fade" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>

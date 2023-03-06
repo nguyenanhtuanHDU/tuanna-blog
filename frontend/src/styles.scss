@@ -1,4 +1,12 @@
+$custom-colors: (
+  "brand":#17234E,
+  "orange-light": #FFEAB8
+);
+
 /* You can add global styles to this file, and also import other style files */
+// regular style toast
+@import 'ngx-toastr/toastr';
+
 @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
 @import '~@fortawesome/fontawesome-free/scss/solid.scss';
 @import '~@fortawesome/fontawesome-free/scss/regular.scss';
@@ -9,6 +17,7 @@
 @import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
+
 
 :root {
   --primary-color: #21e5d1;
@@ -41,10 +50,41 @@ body {
 
 $test-color: #21e5d1;
 
-.alerts {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+:host ::ng-deep .toast-container .ngx-toastr {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 6px;
+  padding: 5px 15px 5px 50px;
+  width: 300px;
+  background-position: 15px center;
+  background-repeat: no-repeat;
+  background-size: 24px;
+  box-shadow: 0 0 12px #999999;
+  color: #FFFFFF;
+  font-weight: bold;
+  border-radius: 8px !important;
+}
 
-  &-alert {}
+::ng-deep .toast-success {
+  background-color: #00a651;
+  color: #fff;
+}
+
+::ng-deep .toast-error {
+  background-color: #f04124;
+  color: #fff;
+}
+
+::ng-deep .toast-info {
+  background-color: #2e9fff;
+  color: #fff;
+}
+
+::ng-deep .toast-warning {
+  background-color: #ffd54f;
+  color: #000;
+}
+
+::ng-deep .toast-message {
+  font-size: 16px;
 }

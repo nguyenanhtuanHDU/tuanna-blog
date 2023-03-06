@@ -9,9 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
-import { AlertModule } from 'ngx-bootstrap/alert';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
   declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent],
@@ -22,8 +21,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    AlertModule.forRoot(),
-    NgbModule
+    CommonModule,
+    NgxSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

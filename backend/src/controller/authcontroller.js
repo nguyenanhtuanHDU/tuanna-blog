@@ -10,7 +10,15 @@ module.exports = {
             const salt = bcrypt.genSaltSync(10);
             const hashPassword = bcrypt.hashSync(data.password, salt);
             data.password = hashPassword
-
+            const userEmailFind = await User.findOne({ email: data.email })
+            const userUsernameFind = await User.findOne({ email: data.email })
+            if (userEmailFind || userUsernameFind) {
+                res.status(409).json({
+                    EC: 0,
+                    data: null,
+                    msg: 'Email or username already exists !'
+                })
+            }
             const user = await createAUserService(data);
             res.status(200).json({
                 EC: 0,
