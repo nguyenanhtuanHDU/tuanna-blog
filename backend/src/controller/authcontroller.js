@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
 const { login } = require("../middleware/auth.middleware");
 const User = require("../models/user");
 const { createAUserService } = require("../services/user.services");
@@ -27,21 +28,33 @@ module.exports = {
             })
         } catch (error) {
             console.log(error);
-            res.status(409).json({
+            res.status(404).json({
                 EC: -1,
                 data: null,
-                msg: "Username or email is already exist !"
+                msg: "Server error !"
             })
         }
     },
     signInController: async (req, res) => {
         try {
             const data = req.body
-            const loginVerify = await login(data)
-            if (loginVerify.checked) {
+            const emailFind = await User.findOne({ email: data.email })
+            console.log('>>> emailFind: ', emailFind);
+
+            if (!emailFind) {
+                res.status(401).json({
+                    EC: -1,
+                    msg: 'Email does not exist !'
+                })
+            }
+            if (emailFind) {
+                const { username, email, password, ...others } = emailFind
+                const accessToken = jwt.sign({ id: emailFind._id, admin: emailFind.admin }, process.env.TOKEN_KEY, { expiresIn: '30d' });
+                console.log('>>> accessToken: ', accessToken);
                 res.status(200).json({
                     EC: 0,
-                    msg: loginVerify
+                    msg: "Login success",
+                    token: accessToken
                 })
             } else {
                 res.status(401).json({
@@ -54,7 +67,7 @@ module.exports = {
             console.log(error);
             res.status(404).json({
                 EC: -1,
-                data: null
+                msg: "Server error !"
             })
         }
     }

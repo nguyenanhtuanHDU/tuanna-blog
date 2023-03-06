@@ -22,7 +22,6 @@ export class AuthService {
   }
 
   createAUser(data: any) {
-    console.log('>>> data: ', data);
     return this.httpClient.post(this.signupUrl, data);
   }
 
@@ -30,17 +29,16 @@ export class AuthService {
     return this.httpClient.post(this.loginUrl, data);
   }
 
-  setToken(token: any) {
-    this.cookieService.set('email', token.email);
-    this.cookieService.set('password', token.password);
+  setToken(data: any) {
+    this.cookieService.set('token', data);
   }
 
   getToken() {
     return this.cookieService.getAll();
   }
 
-  resetToken() {
-    this.cookieService.set('email', '');
-    this.cookieService.set('password', '');
+  logOut() {
+    this.cookieService.set('token', '');
   }
+
 }

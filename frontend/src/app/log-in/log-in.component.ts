@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from '../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-log-in',
@@ -17,48 +19,46 @@ export class LogInComponent {
   emailLogin: string;
   passwordLogin: string;
 
-  emailFocus: false
+  emailFocus: false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private spinner: NgxSpinnerService
+  ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     const token = this.authService.getToken();
-
-    if (token['email'] && token['password'] ) {
+    if (token['token']) {
       console.log('co token');
       this.router.navigate(['/']);
     } else {
       console.log('ko co token');
+      this.spinner.show();
       this.router.navigate(['/login']);
+      this.spinner.hide();
     }
   }
 
-  getInforLogin() {
-    const dataLogin = this.signInForm.value;
-    const email = dataLogin.email;
-    const password = dataLogin.password;
-    console.log('email: ', email);
+  activeLogin() {
+    this.spinner.show();
 
-    if (email && password) {
-      console.log('da nhap day du');
-      this.emailLogin = String(email);
-      this.passwordLogin = String(password);
-    } else {
-      console.log('chua nhap email password');
-    }
+    const dataLogin = this.signInForm.value;
+    console.log('>>> dataLogin: ', dataLogin);
 
     this.authService.verifyLogin(dataLogin).subscribe(
       (data: any) => {
-        console.log(data);
-
-        if (data.EC === 0) {
-          console.log('>>> email pw dung');
-          this.authService.setToken(dataLogin);
-          this.router.navigate(['/']);
-        }
+        this.spinner.hide();
+        Swal.fire('Success', data.msg, 'success');
+        this.authService.setToken(data.token);
+        this.router.navigate(['/']);
       },
       (error) => {
-        this.authService.resetToken();
+        this.spinner.hide();
+
+        Swal.fire('Error', error.error.msg, 'error');
+
+        this.authService.logOut();
         console.log(this.authService.getToken());
 
         const statusCode = error.status;

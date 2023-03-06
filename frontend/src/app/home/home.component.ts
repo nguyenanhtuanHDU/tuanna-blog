@@ -11,14 +11,13 @@ export class HomeComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-
     setTimeout(() => {
       const token = this.authService.getToken();
+      console.log('>>> token: ', token);
 
-      console.log('>>> home token: ', token['email'], token['password']);
-      if (!token['email'] && !token['password']) {
+      console.log('>>> home token: ', token['email']);
+      if (!token['token']) {
         console.log('ben trong 2');
-
         this.router.navigate(['/login']);
         return;
       }

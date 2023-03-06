@@ -11,12 +11,20 @@ import Swal from 'sweetalert2';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent {
-  emailFocus: boolean = false;
+  btnDisable: boolean = true;
 
   signInForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', [
+      Validators.required,
+      // Validators.email,
+      Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+    ]),
     password: new FormControl('', [
+      Validators.minLength(6),
+      Validators.required,
+    ]),
+    password2: new FormControl('', [
       Validators.minLength(6),
       Validators.required,
     ]),
@@ -28,19 +36,27 @@ export class SignUpComponent {
     private spinner: NgxSpinnerService
   ) {}
 
+  ngDoCheck(): void {
+    if (
+      !this.validateEmail() &&
+      !this.validatePassword() &&
+      !this.validateUsername() &&
+      !this.validatePassword2()
+    ) {
+      this.btnDisable = false;
+    } else {
+      this.btnDisable = true;
+    }
+  }
+
   test() {
     this.spinner.show();
-    this.validateEmail();
-    this.validateUsername();
-    this.validatePassword();
     const data = this.signInForm.value;
-    console.log('>>> data: ', data);
-
     this.authService.createAUser(data).subscribe(
       (user: any) => {
+        this.authService.setToken(data.email);
         this.spinner.hide();
         Swal.fire('Success', user.msg, 'success');
-
         this.router.navigate(['/login']);
       },
       (err) => {
@@ -65,9 +81,8 @@ export class SignUpComponent {
   validateEmail() {
     const email = this.signInForm.get('email');
     if (email?.hasError('required')) {
-      this.emailFocus = true;
       return 'Email is empty';
-    } else if (email?.hasError('email')) {
+    } else if (email?.hasError('pattern')) {
       return 'Email is not valid';
     } else {
       return '';
@@ -80,6 +95,16 @@ export class SignUpComponent {
       return 'Password is empty';
     } else if (password?.hasError('minlength')) {
       return 'Password must be at least 6 characters';
+    } else {
+      return '';
+    }
+  }
+
+  validatePassword2() {
+    const password = this.signInForm.get('password');
+    const password2 = this.signInForm.get('password2');
+    if (password?.value !== password2?.value) {
+      return 'Password is not consistent !';
     } else {
       return '';
     }

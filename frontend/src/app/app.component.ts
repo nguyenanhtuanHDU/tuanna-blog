@@ -16,7 +16,7 @@ export class AppComponent {
   ) {}
 
   reset() {
-    this.authService.resetToken();
+    this.authService.logOut();
     const token = this.authService.getToken();
     console.log('>>> token after reset: ', token);
   }

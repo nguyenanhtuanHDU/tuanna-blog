@@ -12,31 +12,33 @@
       </div>
       <form class="form-inner-body d-flex flex-column" [formGroup]="signInForm" (ngSubmit)="test()">
 
-        <div class="form-inner-body__username mt-3">
+        <div class="form-inner-body__item mt-3">
+          <label for="email">Email</label>
+          <input type="text" class="form-control my-2" type="email" formControlName="email" id="email"
+            autocomplete="off" (input)="validateEmail()">
+          <span class="form-inner-body__error" *ngIf="signInForm.value.email">{{validateEmail()}}</span>
+        </div>
+
+        <div class="form-inner-body__item mt-3">
           <label for="username">Username</label>
           <input type="text" class="form-control my-2" id="username" autocomplete="off" formControlName="username"
             autofocus (input)="validateUsername()">
           <span class="form-inner-body__error" *ngIf="signInForm.value.username">{{validateUsername()}}</span>
         </div>
-        <div class="form-inner-body__email mt-3">
-          <label for="email">Email</label>
-          <input type="text" class="form-control my-2" type="email" formControlName="email" id="email"
-            [autofocus]="emailFocus" autocomplete="off" (input)="validateEmail()">
-          <span class="form-inner-body__error" *ngIf="signInForm.value.email">{{validateEmail()}}</span>
-        </div>
-        <div class="form-inner-body__password mt-3">
+        <div class="form-inner-body__item mt-3">
           <label for="password">Password</label>
-          <input class="form-control my-2" type="password" formControlName="password" id="password" autocomplete="off"
+          <input class="form-control my-2" type="" formControlName="password" id="password" autocomplete="off"
             (input)="validatePassword()">
           <span class="form-inner-body__error" *ngIf="signInForm.value.password">{{validatePassword()}}</span>
         </div>
 
-        <div class="form-inner-body__password mt-3">
-          <label for="password2 my-2">Type password again</label>
-          <input class="form-control " type="password" formControlName="password" id="password2" autocomplete="off">
+        <div class="form-inner-body__item mt-3">
+          <label for="password2 ">Type password again</label>
+          <input class="form-control my-2" type="" formControlName="password2" id="password2" autocomplete="off">
+          <span class="form-inner-body__error" *ngIf="signInForm.value.password2">{{validatePassword2()}}</span>
         </div>
 
-        <button type="submit" class="btn btn-primary py-2 my-4">
+        <button type="submit" class="btn btn-primary py-3 my-4" [disabled]="btnDisable">
           Sign Up Now
         </button>
       </form>
@@ -44,5 +46,4 @@
   </div>
 </div>
 <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="line-spin-fade" [fullScreen]="true">
-  <p style="color: white"> Loading... </p>
 </ngx-spinner>
