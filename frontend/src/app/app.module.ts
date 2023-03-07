@@ -23,6 +23,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     HttpClientModule,
     CommonModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' })
+    // NgxSpinnerModule.forRoot({ type: 'ball-atom' })
   ],
   providers: [],
   bootstrap: [AppComponent],

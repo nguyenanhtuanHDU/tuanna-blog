@@ -12,8 +12,8 @@ import Swal from 'sweetalert2';
 })
 export class LogInComponent {
   signInForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.minLength(6)),
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.minLength(6)]),
   });
 
   emailLogin: string;
@@ -29,7 +29,11 @@ export class LogInComponent {
 
   ngAfterViewInit(): void {
     const token = this.authService.getToken();
-    if (token['token']) {
+    if (
+      token['token'] &&
+      !token['token'].includes('Object') &&
+      !token['token'].includes('object')
+    ) {
       console.log('co token');
       this.router.navigate(['/']);
     } else {
@@ -44,7 +48,17 @@ export class LogInComponent {
     this.spinner.show();
 
     const dataLogin = this.signInForm.value;
-    console.log('>>> dataLogin: ', dataLogin);
+
+    if (!dataLogin.email || !dataLogin.password) {
+      this.spinner.hide();
+
+      Swal.fire(
+        'Warning',
+        'Please enter your full email and password',
+        'warning'
+      );
+      return;
+    }
 
     this.authService.verifyLogin(dataLogin).subscribe(
       (data: any) => {
@@ -70,5 +84,14 @@ export class LogInComponent {
       }
     );
     this.authService.setToken(this.signInForm.value);
+  }
+
+  validatePassword() {
+    const password = this.signInForm.get('password');
+    if (password?.hasError('minlength')) {
+      return 'Password must be at least 6 characters';
+    } else {
+      return '';
+    }
   }
 }

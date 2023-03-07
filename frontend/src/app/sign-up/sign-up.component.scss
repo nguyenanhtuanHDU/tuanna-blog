@@ -1,6 +1,7 @@
 .form {
   position: relative;
   min-height: 100vh;
+  background: url('../../assets/images/bgform3.jpg') top center / cover no-repeat;
 
 
   &-container {
@@ -11,18 +12,8 @@
     overflow: hidden;
   }
 
-  &-bg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    top: 0;
-    left: 0;
-    position: absolute;
-    z-index: 0;
-  }
-
   &-inner {
-    padding: 48px;
+    padding: 20px 48px;
 
     &-header {
       h2 {
@@ -48,9 +39,7 @@
 
     &-body {
 
-      &__item {
-
-      }
+      &__item {}
 
       &__error {
         color: var(--bs-red);

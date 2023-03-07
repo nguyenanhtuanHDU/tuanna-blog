@@ -10,17 +10,20 @@ import { AuthService } from '../services/auth.service';
 export class HomeComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
+  checkToken() {
+    const token = this.authService.getToken();
+    if (
+      !token['token'] ||
+      token['token'].includes('Object') ||
+      token['token'].includes('object')
+    ) {
+      this.router.navigate(['/login']);
+      return;
+    }
+  }
+  ngAfterViewChecked() {
     setTimeout(() => {
-      const token = this.authService.getToken();
-      console.log('>>> token: ', token);
-
-      console.log('>>> home token: ', token['email']);
-      if (!token['token']) {
-        console.log('ben trong 2');
-        this.router.navigate(['/login']);
-        return;
-      }
+      this.checkToken();
     }, 1000);
   }
 }

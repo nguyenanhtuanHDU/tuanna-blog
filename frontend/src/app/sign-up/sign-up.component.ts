@@ -20,14 +20,12 @@ export class SignUpComponent {
       // Validators.email,
       Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
     ]),
+    admin: new FormControl(''),
     password: new FormControl('', [
       Validators.minLength(6),
       Validators.required,
     ]),
-    password2: new FormControl('', [
-      Validators.minLength(6),
-      Validators.required,
-    ]),
+    password2: new FormControl(''),
   });
 
   constructor(
@@ -49,12 +47,13 @@ export class SignUpComponent {
     }
   }
 
-  test() {
+  activeSignUp() {
     this.spinner.show();
     const data = this.signInForm.value;
+    console.log('>>> data: ', data);
+
     this.authService.createAUser(data).subscribe(
       (user: any) => {
-        this.authService.setToken(data.email);
         this.spinner.hide();
         Swal.fire('Success', user.msg, 'success');
         this.router.navigate(['/login']);

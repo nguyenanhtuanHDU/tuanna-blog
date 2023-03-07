@@ -1,6 +1,7 @@
 .form {
   position: relative;
   min-height: 100vh;
+  background-image: linear-gradient(to right top, #2979ff, #00ffcc);
 
   &-container {
     // box-shadow: 0 8px 16px #0000001a;
@@ -52,20 +53,49 @@
     }
 
     &-footer {
-      &__remember{
-        input{
+      &__remember {
+        input {
 
           height: 13px;
         }
       }
     }
   }
-  &-right{
-    // background-color: var(--primary-color);
-    // background-color: $test-color;
-    // color: var(--bs-white);
-    h2{
+
+  &-right {
+    position: relative;
+
+    &__bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    color: var(--bs-white);
+
+    h2 {
       font-size: 30px;
+      opacity: 1;
+      z-index: 1;
+    color: white;
+
+    }
+    p{
+      z-index: 1;
+    color: white;
+
+    }
+
+    a {
+      z-index: 1;
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 }

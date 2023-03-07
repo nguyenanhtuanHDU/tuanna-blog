@@ -26,13 +26,14 @@
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
+              "src/styles.scss",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
-              "node_modules/ngx-spinner/animations/ball-scale-pulse.css"
-
+              "node_modules/ngx-spinner/animations/ball-scale-pulse.css",
+              "node_modules/ngx-spinner/animations/ball-atom.css"
             ],
             "scripts": [
               "node_modules/chart.js/dist/chart.js",
@@ -99,7 +100,16 @@
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/sweetalert2/src/sweetalert2.scss",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+              "node_modules/ngx-spinner/animations/ball-scale-pulse.css",
+              "node_modules/ngx-spinner/animations/ball-atom.css"
+            ],
             "scripts": []
           }
         },

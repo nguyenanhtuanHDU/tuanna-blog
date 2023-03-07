@@ -1,38 +1,15 @@
-// ::ng-deep .toast-container .ngx-toastr {
-//   position: relative;
-//   overflow: hidden;
-//   margin: 0 0 6px;
-//   padding: 5px 15px 5px 50px;
-//   width: 300px;
-//   background-position: 15px center;
-//   background-repeat: no-repeat;
-//   background-size: 24px;
-//   box-shadow: 0 0 12px #999999;
-//   color: #FFFFFF;
-//   font-weight: bold;
-//   border-radius: 8px !important;
-// }
+button {
+  position: fixed;
+  top: 0;
+  z-index: 100;
 
-// ::ng-deep .toast-success {
-//   background-color: #00a651;
-//   color: #fff;
-// }
+  &:nth-child(2) {
 
-// ::ng-deep .toast-error {
-//   background-color: #f04124;
-//   color: #fff;
-// }
+    left: 150px;
+  }
 
-// ::ng-deep .toast-info {
-//   background-color: #2e9fff;
-//   color: #fff;
-// }
+  &:nth-child(3) {
 
-// ::ng-deep .toast-warning {
-//   background-color: #ffd54f;
-//   color: #000;
-// }
-
-// ::ng-deep .toast-message {
-//   font-size: 16px;
-// }
+    left: 300px;
+  }
+}
