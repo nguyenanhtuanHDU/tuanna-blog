@@ -11,16 +11,18 @@ import Swal from 'sweetalert2';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent {
-  btnDisable: boolean = true;
+  // btnDisable: boolean = true;
 
-  signInForm = new FormGroup({
-    username: new FormControl('', [Validators.required]),
+  signUpForm = new FormGroup({
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
     email: new FormControl('', [
       Validators.required,
-      // Validators.email,
       Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
     ]),
-    admin: new FormControl(''),
+    admin: new FormControl(false),
     password: new FormControl('', [
       Validators.minLength(6),
       Validators.required,
@@ -34,51 +36,58 @@ export class SignUpComponent {
     private spinner: NgxSpinnerService
   ) {}
 
-  ngDoCheck(): void {
-    if (
-      !this.validateEmail() &&
-      !this.validatePassword() &&
-      !this.validateUsername() &&
-      !this.validatePassword2()
-    ) {
-      this.btnDisable = false;
-    } else {
-      this.btnDisable = true;
-    }
-  }
-
   activeSignUp() {
-    this.spinner.show();
-    const data = this.signInForm.value;
-    console.log('>>> data: ', data);
 
-    this.authService.createAUser(data).subscribe(
-      (user: any) => {
-        this.spinner.hide();
-        Swal.fire('Success', user.msg, 'success');
-        this.router.navigate(['/login']);
-      },
-      (err) => {
-        console.log(err);
+    const signUpFormData = this.signUpForm.value;
+    if (
+      !signUpFormData.email ||
+      !signUpFormData.username ||
+      !signUpFormData.password ||
+      !signUpFormData.password2
+    ) {
+      Swal.fire(
+        'Warning',
+        'Please enter your full email and password',
+        'warning'
+      );
+      return;
+    }else{
+      this.spinner.show();
+      console.log('>>> data: ', signUpFormData);
 
-        this.spinner.hide();
-        Swal.fire('Error', err.error.msg, 'error');
-        console.log(err);
-      }
-    );
+      this.authService.createAUser(signUpFormData).subscribe(
+        (user: any) => {
+          this.spinner.hide();
+          Swal.fire('Success', user.msg, 'success');
+          this.router.navigate(['/login']);
+        },
+        (err) => {
+          console.log(err);
+
+          this.spinner.hide();
+          Swal.fire('Error', err.error.msg, 'error');
+          console.log(err);
+        }
+      );
+    }
+
   }
 
   validateUsername() {
-    const username = this.signInForm.get('username');
-    if (username?.hasError('required')) {
+    const username = this.signUpForm.get('username');
+    console.log(username?.value);
+
+    if (!username?.value) {
       return 'Username is empty';
+    } else if (username?.value.length < 6) {
+      return 'Username must be contains 6 characters';
     } else {
       return '';
     }
   }
 
   validateEmail() {
-    const email = this.signInForm.get('email');
+    const email = this.signUpForm.get('email');
     if (email?.hasError('required')) {
       return 'Email is empty';
     } else if (email?.hasError('pattern')) {
@@ -89,7 +98,7 @@ export class SignUpComponent {
   }
 
   validatePassword() {
-    const password = this.signInForm.get('password');
+    const password = this.signUpForm.get('password');
     if (password?.hasError('required')) {
       return 'Password is empty';
     } else if (password?.hasError('minlength')) {
@@ -100,8 +109,8 @@ export class SignUpComponent {
   }
 
   validatePassword2() {
-    const password = this.signInForm.get('password');
-    const password2 = this.signInForm.get('password2');
+    const password = this.signUpForm.get('password');
+    const password2 = this.signUpForm.get('password2');
     if (password?.value !== password2?.value) {
       return 'Password is not consistent !';
     } else {

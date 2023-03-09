@@ -1,4 +1,4 @@
-<div class="form d-flex align-items-center justify-content-center ">
+<div class="form d-flex align-items-center justify-content-center px-3 px-md-0">
   <!-- <img class="form-bg" src="../../assets/images/bg-form4.avif"/> -->
   <div class="form-container">
 
@@ -6,40 +6,40 @@
       <div class="form-inner-header d-flex align-items-center justify-content-center mb-4">
         <h2 class="mb-0">Sign Up</h2>
       </div>
-      <form class="form-inner-body d-flex flex-column" [formGroup]="signInForm" (ngSubmit)="activeSignUp()">
+      <form class="form-inner-body d-flex flex-column" [formGroup]="signUpForm" (ngSubmit)="activeSignUp()">
         <div class="form-inner-body__item mt-3">
           <label for="email">Email</label>
           <input type="text" class="form-control my-2" type="email" formControlName="email" id="email" autofocus
             autocomplete="off" (input)="validateEmail()">
-          <span class="form-inner-body__error" *ngIf="signInForm.value.email">{{validateEmail()}}</span>
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.email">{{validateEmail()}}</span>
         </div>
 
         <div class="form-inner-body__item mt-3">
           <label for="username">Username</label>
-          <input type="text" class="form-control my-2" id="username" autocomplete="off" formControlName="username"
-            (input)="validateUsername()">
-          <span class="form-inner-body__error" *ngIf="signInForm.value.username">{{validateUsername()}}</span>
+          <input type="text" class="form-control my-2" (input)="validateEmail()" id="username" formControlName="username">
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.username">{{validateUsername()}}</span>
         </div>
+
         <div class="form-inner-body__item mt-3 form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value="yes" checked
-            formControlName="admin">
-          <label class="form-check-label" for="mySwitch">Admin</label>
+          <input class="form-check-input" type="checkbox" id="admin" name="darkmode" value="yes" checked
+            [value]="false" formControlName="admin">
+          <label class="form-check-label" for="admin">Admin</label>
         </div>
         <div class="form-inner-body__item mt-3">
           <label for="password">Password</label>
           <input class="form-control my-2" type="password" formControlName="password" id="password" autocomplete="off"
             (input)="validatePassword()">
-          <span class="form-inner-body__error" *ngIf="signInForm.value.password">{{validatePassword()}}</span>
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.password">{{validatePassword()}}</span>
         </div>
 
         <div class="form-inner-body__item mt-3">
           <label for="password2 ">Type password again</label>
           <input class="form-control my-2" type="password" formControlName="password2" id="password2"
             autocomplete="off">
-          <span class="form-inner-body__error" *ngIf="signInForm.value.password2">{{validatePassword2()}}</span>
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.password2">{{validatePassword2()}}</span>
         </div>
 
-        <button type="submit" class="btn btn-primary py-3 my-4" [disabled]="btnDisable">
+        <button type="submit" class="btn btn-primary py-3 my-4">
           Sign Up Now
         </button>
       </form>

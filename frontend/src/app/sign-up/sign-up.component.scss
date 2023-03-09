@@ -57,3 +57,13 @@
 .form:focus {
   border: 0 !important;
 }
+
+@media screen and (max-width: 768px) {
+  .form {
+    &-inner {
+      padding: 20px 27px;
+    }
+  }
+
+
+}

@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { createAUserService } = require('../services/user.services');
 
 module.exports = {
   signUpController: async (req, res) => {
@@ -19,7 +18,7 @@ module.exports = {
           msg: 'Email or username already exists !',
         });
       }
-      const user = await createAUserService(data);
+      const user = await User.create(data);
       res.status(200).json({
         EC: 0,
         data: user,
@@ -39,9 +38,28 @@ module.exports = {
       const data = req.body;
       const emailFind = await User.findOne({ email: data.email });
       const usernameFind = await User.findOne({ username: data.email });
+      const emailOrUsername = emailFind || usernameFind;
+      const passwordCheck = await bcrypt.compareSync(data.password, emailOrUsername.password);
 
-      if (emailFind || usernameFind) {
-        const emailOrUsername = emailFind || usernameFind;
+      // console.log('>>> emailFind', emailFind);
+      // console.log('>>> usernameFind', usernameFind);
+
+      if (!emailFind && !usernameFind) {
+        console.log('>>> ko co email username');
+        res.status(401).json({
+          EC: -1,
+          msg: 'Email or username does not exist !',
+        });
+      }
+
+      if (!passwordCheck) {
+        res.status(401).json({
+          EC: -1,
+          msg: 'Wrong password !',
+        });
+      }
+
+      if (emailOrUsername && passwordCheck) {
         const accessToken = jwt.sign(
           { id: emailOrUsername._id, admin: emailOrUsername.admin },
           process.env.TOKEN_KEY,
@@ -52,18 +70,16 @@ module.exports = {
           msg: 'Login success',
           token: accessToken,
         });
-      } else {
-        res.status(401).json({
-          EC: -1,
-          msg: 'Email or username does not exist !',
-        });
       }
+
+      console.log('TRY', res.statusCode);
     } catch (error) {
-      console.log(error);
+      
       res.status(404).json({
         EC: -1,
-        msg: 'Server error !',
+        msg: 'Wrong email or username !',
       });
+      console.log('CATCH', res.statusCode);
     }
   },
 };

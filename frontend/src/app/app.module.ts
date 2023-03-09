@@ -11,9 +11,10 @@ import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
-  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent],
+  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, HeaderComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

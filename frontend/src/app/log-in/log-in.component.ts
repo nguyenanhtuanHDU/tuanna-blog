@@ -63,6 +63,8 @@ export class LogInComponent {
     this.authService.verifyLogin(dataLogin).subscribe(
       (data: any) => {
         this.spinner.hide();
+        console.log('>>> dat: ', data);
+
         Swal.fire('Success', data.msg, 'success');
         this.authService.setToken(data.token);
         this.router.navigate(['/']);
@@ -87,11 +89,11 @@ export class LogInComponent {
   }
 
   validatePassword() {
-    const password = this.signInForm.get('password');
-    if (password?.hasError('minlength')) {
-      return 'Password must be at least 6 characters';
-    } else {
-      return '';
-    }
+    // const password = this.signInForm.get('password');
+    // if (password?.hasError('minlength')) {
+    //   return 'Password must be at least 6 characters';
+    // } else {
+    //   return '';
+    // }
   }
 }

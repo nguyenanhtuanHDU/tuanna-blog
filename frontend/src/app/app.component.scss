@@ -1,15 +1,15 @@
 button {
   position: fixed;
-  top: 0;
+  top: 200px;
   z-index: 100;
+  left: 0;
 
   &:nth-child(2) {
-
-    left: 150px;
+    top: 300px;
   }
 
   &:nth-child(3) {
 
-    left: 300px;
+    top: 400px;
   }
 }
