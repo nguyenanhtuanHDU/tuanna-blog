@@ -1,9 +1,8 @@
 const express = require('express')
-const { getUsers, getUserByID } = require("../controller/user.controller")
+const { getUsers, getUserByToken } = require("../controller/user.controller")
 const router = express.Router()
 
 router.get('/user', getUsers)
-
-router.get('/user/:id', getUserByID)
+router.post('/user-info', getUserByToken)
 
 module.exports = router

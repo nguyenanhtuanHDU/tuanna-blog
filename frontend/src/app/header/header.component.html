@@ -1,31 +1,91 @@
-<nav class="navbar navbar-expand-lg header">
-  <div class="container-fluid header-inner">
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 header-inner-nav" >
-        <li class="header-inner__item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+<nav class="navbar navbar-expand-lg navbar-light header px-lg-3">
+  <div class="container-fluid header-container">
+    <a class="navbar-brand text-white header-container-home" href="#"
+      ><i class="bi bi-house-fill"></i
+    ></a>
+    <button
+      class="navbar-toggler px-0 header-container-bar text-white"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <fa-icon [icon]="faBars"></fa-icon>
+    </button>
+    <div
+      class="collapse navbar-collapse header-inner"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 header-inner-nav">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >About</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >Contact</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >Home</a
+          >
         </li>
       </ul>
-      <form class="d-flex header-inner-search" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-      </form>
-      <div class="dropdown header-inner-user">
-        <a href="#" role="button" data-bs-toggle="dropdown">
-          <img src="../../assets/images/logo.png" alt="">
-        </a>
-
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
+      <div class="header-inner-right d-flex gap-3">
+        <form class="d-flex header-inner-search">
+          <input
+            class="form-control me-3"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-light" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+        <!-- <div class="dropdown header-inner-user">
+          <a href="#" role="button" data-bs-toggle="dropdown">
+            <img src="../../assets/images/user-default.png" alt="" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <button
+                class="dropdown-item d-flex justify-content-between"
+                (click)="logOut()"
+              >
+                <span>Log out</span>
+                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+              </button>
+            </li>
+          </ul>
+        </div> -->
+        <div class="btn-group header-inner-user" dropdown [isAnimated]="true">
+          <button id="button-animated" dropdownToggle type="button" class="btn btn-primary"
+                  aria-controls="dropdown-animated">
+                  <img src="../../assets/images/user-default.png" alt="" />
+          </button>
+          <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-end"
+              role="menu" aria-labelledby="button-animated">
+            <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">Another action</a>
+            </li>
+            <li>
+              <button
+                class="dropdown-item d-flex justify-content-between"
+                (click)="logOut()"
+              >
+                <span>Log out</span>
+                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

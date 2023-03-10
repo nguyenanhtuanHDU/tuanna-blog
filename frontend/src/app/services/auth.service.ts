@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthService {
   userUrl = `${environment.apiBackend}v1/api/user`;
+  userInfoUrl = `${environment.apiBackend}v1/api/user-info`;
   // userUrl = `${environment.apiBackend}v1/api/users`;
   loginUrl = `${environment.apiBackend}/auth/login`;
   signupUrl = `${environment.apiBackend}/auth/signup`;
@@ -21,9 +22,10 @@ export class AuthService {
     return this.httpClient.get(this.userUrl);
   }
 
-  getUserByID(id: string) {
-    return this.httpClient.get(`${this.userUrl}${id}`);
+  getUserByToken(data: any) {
+    return this.httpClient.post(this.userInfoUrl, data);
   }
+
   createAUser(data: any) {
     return this.httpClient.post(this.signupUrl, data);
   }
@@ -42,6 +44,6 @@ export class AuthService {
 
   logOut() {
     // this.cookieService.set('token', '');
-    this.cookieService.deleteAll()
+    this.cookieService.deleteAll();
   }
 }

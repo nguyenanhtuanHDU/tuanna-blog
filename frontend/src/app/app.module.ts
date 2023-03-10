@@ -12,6 +12,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { HeaderComponent } from './header/header.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, HeaderComponent],
@@ -23,8 +25,9 @@ import { HeaderComponent } from './header/header.component';
     BrowserAnimationsModule,
     HttpClientModule,
     CommonModule,
-    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' })
-    // NgxSpinnerModule.forRoot({ type: 'ball-atom' })
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
+    FontAwesomeModule,
+    BsDropdownModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

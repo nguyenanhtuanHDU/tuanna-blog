@@ -37,7 +37,6 @@ export class SignUpComponent {
   ) {}
 
   activeSignUp() {
-
     const signUpFormData = this.signUpForm.value;
     if (
       !signUpFormData.email ||
@@ -51,7 +50,18 @@ export class SignUpComponent {
         'warning'
       );
       return;
-    }else{
+    } else if (
+      this.validateEmail() ||
+      this.validateUsername() ||
+      this.validatePassword() ||
+      this.validatePassword2()
+    ) {
+      Swal.fire(
+        'Warning',
+        'Please fill in the correct format',
+        'warning'
+      );
+    } else {
       this.spinner.show();
       console.log('>>> data: ', signUpFormData);
 
@@ -63,14 +73,12 @@ export class SignUpComponent {
         },
         (err) => {
           console.log(err);
-
           this.spinner.hide();
           Swal.fire('Error', err.error.msg, 'error');
           console.log(err);
         }
       );
     }
-
   }
 
   validateUsername() {
@@ -117,4 +125,5 @@ export class SignUpComponent {
       return '';
     }
   }
+
 }

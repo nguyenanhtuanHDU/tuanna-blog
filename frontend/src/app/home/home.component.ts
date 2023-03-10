@@ -8,6 +8,8 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
+  username: string = '';
+  email: string = '';
   constructor(private authService: AuthService, private router: Router) {}
 
   checkToken() {
@@ -21,9 +23,31 @@ export class HomeComponent {
       return;
     }
   }
-  ngAfterViewChecked() {
-    setTimeout(() => {
-      this.checkToken();
-    }, 1000);
+
+  ngAfterViewChecked(): void {
+    this.checkToken()
   }
+  // ngAfterViewInit(): void {
+  //   const token = this.authService.getToken();
+
+  //   this.authService.getUserByToken(token).subscribe(
+  //     (data) => {
+  //       console.log(data);
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //     }
+  //   );
+  // }
+  // ngOnInit() {
+  //   const token = this.authService.getToken()['token'];
+
+  //   const userInfo = this.authService.getUserByToken(token).subscribe(data => {
+  //     console.log(data);
+  //   });
+  // }
+
+  // ngAfterViewChecked(){
+
+  // }
 }

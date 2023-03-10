@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const User = require("../models/user");
 const { getAllUsersService } = require("../services/user.services")
 
@@ -17,25 +19,23 @@ module.exports = {
             })
         }
     },
-    getUserByID: async (req, res) => {
+    getUserByToken: async (req, res) => {
         try {
-            const user = await User.findOne({ id: req.params })
+            const token = req.body.token
+            console.log('>>> req.body: ', req.body);
+            const decoded = jwt.verify(token, process.env.TOKEN_KEY);
+            const user = await User.findOne({ id: decoded.id })
             const { username, email } = user
-            console.log('>>> username: ', username);
-            console.log('>>> email: ', email);
-            res.status(200).json({
-                EC: 0,
-                data: {
-                    username,
-                    email
-                },
-                msg: "success"
+
+            res.status(200).send({
+                username,
+                email
             })
         } catch (error) {
             console.log(error);
             res.status(404).json({
                 EC: -1,
-                msg: 'Server error !'
+                msg: 'User does not exist !'
             })
         }
     },

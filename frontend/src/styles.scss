@@ -1,19 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
 // regular style toast
-@import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/solid.scss';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/regular.scss';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/brands.scss';
-@import 'node_modules/bootstrap-icons/font/bootstrap-icons.css';
-@import "node_modules/bootstrap/scss/bootstrap";
 
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/bootstrap";
+
+$body-bg: #f2f3f6;
+$text-color: #2d4f62;
+$primary: #20E3B2;
+$success: #07c43c;
+$warning: #f1b016;
+$danger: #fa6e5b;
+$custom-colors: (
+  "brand": #17234e,
+  "orange-light": #ffeab8,
+  "aaa": red,
+);
+
+// Merge the maps
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+$theme-colors: map-merge($theme-colors, $custom-colors);
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/regular.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
+@import "node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
 :root {
-  --bs-primary: #15d0f1 !important;
-  --bs-secondary: #edf0f5 !important;
 }
 
 html,
@@ -30,13 +43,5 @@ button {
   border: 0 !important;
 }
 
-.btn-primary {
-  background-color: var(--bs-primary) !important;
-
-}
-
-.form-control:focus {
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 2px var(--bs-primary) !important;
-
-}
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
