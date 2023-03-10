@@ -1,4 +1,4 @@
-import { Injectable , Inject} from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from 'src/environments/environment';
@@ -21,6 +21,9 @@ export class AuthService {
     return this.httpClient.get(this.userUrl);
   }
 
+  getUserByID(id: string) {
+    return this.httpClient.get(`${this.userUrl}${id}`);
+  }
   createAUser(data: any) {
     return this.httpClient.post(this.signupUrl, data);
   }
@@ -38,7 +41,7 @@ export class AuthService {
   }
 
   logOut() {
-    this.cookieService.set('token', '');
+    // this.cookieService.set('token', '');
+    this.cookieService.deleteAll()
   }
-
 }
