@@ -22,8 +22,8 @@ export class AuthService {
     return this.httpClient.get(this.userUrl);
   }
 
-  getUserByToken(data: any) {
-    return this.httpClient.post(this.userInfoUrl, data);
+  getUserByToken() {
+    return this.httpClient.post(this.userInfoUrl, this.getToken());
   }
 
   createAUser(data: any) {

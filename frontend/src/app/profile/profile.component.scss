@@ -1,0 +1,23 @@
+.profile{
+  margin-top: var(--header-height);
+  padding-top: 60px;
+  &-container{
+  }
+  &-inner{
+    &-left{
+      &-card{
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+
+      }
+    }
+    &-right{
+      &-card{
+        border-radius: 12px;
+
+        box-shadow: var(--box-shadow);
+
+      }
+    }
+  }
+}

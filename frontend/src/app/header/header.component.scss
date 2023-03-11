@@ -1,5 +1,7 @@
 .header {
   background-color: var(--bs-primary);
+  height: var(--header-height);
+  z-index: 10;
 
   &-container {
     &-home {
@@ -19,14 +21,12 @@
     }
   }
 
-
-
   &-inner {
     &_nav {
       &__item {}
     }
 
-    &-right{
+    &-right {
       height: 40px;
     }
 
@@ -36,7 +36,6 @@
 
       // overflow: hidden;
       button {
-
         img {
           border-radius: 50px;
           width: 40px;

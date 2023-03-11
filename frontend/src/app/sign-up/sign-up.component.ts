@@ -11,22 +11,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent {
-  // btnDisable: boolean = true;
-
   signUpForm = new FormGroup({
-    username: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6),
-    ]),
+    username: new FormControl('', [Validators.minLength(6)]),
     email: new FormControl('', [
-      Validators.required,
       Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
     ]),
+    address: new FormControl(''),
     admin: new FormControl(false),
-    password: new FormControl('', [
-      Validators.minLength(6),
-      Validators.required,
-    ]),
+    password: new FormControl('', [Validators.minLength(6)]),
     password2: new FormControl(''),
   });
 
@@ -41,6 +33,7 @@ export class SignUpComponent {
     if (
       !signUpFormData.email ||
       !signUpFormData.username ||
+      !signUpFormData.address ||
       !signUpFormData.password ||
       !signUpFormData.password2
     ) {
@@ -56,15 +49,9 @@ export class SignUpComponent {
       this.validatePassword() ||
       this.validatePassword2()
     ) {
-      Swal.fire(
-        'Warning',
-        'Please fill in the correct format',
-        'warning'
-      );
+      Swal.fire('Warning', 'Please fill in the correct format', 'warning');
     } else {
       this.spinner.show();
-      console.log('>>> data: ', signUpFormData);
-
       this.authService.createAUser(signUpFormData).subscribe(
         (user: any) => {
           this.spinner.hide();
@@ -81,25 +68,19 @@ export class SignUpComponent {
     }
   }
 
-  validateUsername() {
-    const username = this.signUpForm.get('username');
-    console.log(username?.value);
-
-    if (!username?.value) {
-      return 'Username is empty';
-    } else if (username?.value.length < 6) {
-      return 'Username must be contains 6 characters';
+  validateEmail() {
+    const email = this.signUpForm.get('email');
+    if (email?.hasError('pattern')) {
+      return 'Email is not in the correct format';
     } else {
       return '';
     }
   }
 
-  validateEmail() {
-    const email = this.signUpForm.get('email');
-    if (email?.hasError('required')) {
-      return 'Email is empty';
-    } else if (email?.hasError('pattern')) {
-      return 'Email is not valid';
+  validateUsername() {
+    const username = this.signUpForm.get('username');
+    if (username?.hasError('minlength')) {
+      return 'Username must be contains 6 characters';
     } else {
       return '';
     }
@@ -125,5 +106,4 @@ export class SignUpComponent {
       return '';
     }
   }
-
 }

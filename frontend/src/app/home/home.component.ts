@@ -27,24 +27,9 @@ export class HomeComponent {
     }
   }
 
-  getUserInfo() {
-    const token = this.authService.getToken();
-    console.log('>>> token: ', token);
 
-    this.authService.getUserByToken(token).subscribe(
-      (data: any) => {
-        console.log(data);
-        this.username = data.username;
-        this.email = data.email;
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  }
   ngOnInit(): void {
     this.checkToken();
-    this.getUserInfo();
   }
 
   ngDoCheck(){

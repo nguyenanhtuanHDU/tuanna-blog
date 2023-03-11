@@ -7,39 +7,44 @@
         <h2 class="mb-0">Sign Up</h2>
       </div>
       <form class="form-inner-body d-flex flex-column" [formGroup]="signUpForm" (ngSubmit)="activeSignUp()">
-        <div class="form-inner-body__item mt-3">
+        <div class="form-inner-body__item mt-2">
           <label for="email">Email</label>
           <input type="text" class="form-control my-2" type="email" formControlName="email" id="email" autofocus
             autocomplete="off" (input)="validateEmail()">
           <span class="form-inner-body__error" *ngIf="signUpForm.value.email">{{validateEmail()}}</span>
         </div>
 
-        <div class="form-inner-body__item mt-3">
+        <div class="form-inner-body__item mt-2">
           <label for="username">Username</label>
-          <input type="text" class="form-control my-2" (input)="validateEmail()" id="username" formControlName="username">
-          <span class="form-inner-body__error" *ngIf="signUpForm.value.username">{{validateUsername()}}</span>
+          <input type="text" class="form-control my-2" (input)="validateUsername()" id="username" formControlName="username">
+          <span class="form-inner-body__error">{{validateUsername()}}</span>
         </div>
 
-        <div class="form-inner-body__item mt-3 form-check form-switch">
+        <div class="form-inner-body__item mt-2">
+          <label for="address">Address</label>
+          <input type="text" class="form-control my-2" id="address" formControlName="address">
+        </div>
+
+        <div class="form-inner-body__item mt-2 form-check form-switch">
           <input class="form-check-input" type="checkbox" id="admin" name="darkmode" value="yes" checked
             [value]="false" formControlName="admin">
           <label class="form-check-label" for="admin">Admin</label>
         </div>
-        <div class="form-inner-body__item mt-3">
+        <div class="form-inner-body__item mt-2">
           <label for="password">Password</label>
           <input class="form-control my-2" type="password" formControlName="password" id="password" autocomplete="off"
             (input)="validatePassword()">
           <span class="form-inner-body__error" *ngIf="signUpForm.value.password">{{validatePassword()}}</span>
         </div>
 
-        <div class="form-inner-body__item mt-3">
+        <div class="form-inner-body__item mt-2">
           <label for="password2 ">Type password again</label>
           <input class="form-control my-2" type="password" formControlName="password2" id="password2"
             autocomplete="off">
           <span class="form-inner-body__error" *ngIf="signUpForm.value.password2">{{validatePassword2()}}</span>
         </div>
 
-        <button type="submit" class="btn btn-primary py-3 my-4 text-white">
+        <button type="submit" class="btn btn-primary py-3 mt-3 text-white">
           Sign Up Now
         </button>
       </form>

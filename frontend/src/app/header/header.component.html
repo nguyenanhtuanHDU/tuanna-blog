@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light header px-lg-3">
+<nav class="navbar navbar-expand-lg navbar-light header px-lg-3 position-fixed top-0 start-0 end-0">
   <div class="container-fluid header-container">
     <a class="navbar-brand text-white header-container-home" href=""
       ><i class="bi bi-house-fill"></i
@@ -47,24 +47,6 @@
             <i class="bi bi-search"></i>
           </button>
         </form>
-        <!-- <div class="dropdown header-inner-user">
-          <a href="#" role="button" data-bs-toggle="dropdown">
-            <img src="../../assets/images/user-default.png" alt="" />
-          </a>
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li>
-              <button
-                class="dropdown-item d-flex justify-content-between"
-                (click)="logOut()"
-              >
-                <span>Log out</span>
-                <fa-icon [icon]="faRightFromBracket"></fa-icon>
-              </button>
-            </li>
-          </ul>
-        </div> -->
         <div class="btn-group header-inner-user" dropdown [isAnimated]="true">
           <button id="button-animated" dropdownToggle type="button" class="btn btn-primary p-0"
                   aria-controls="dropdown-animated">
@@ -72,8 +54,9 @@
           </button>
           <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-end"
               role="menu" aria-labelledby="button-animated">
-            <li role="menuitem"><a class="dropdown-item" href="#">{{usename}}</a></li>
+            <li role="menuitem"><a class="dropdown-item" href="#">{{username}}</a></li>
             <li role="menuitem"><a class="dropdown-item" href="#">{{email}}</a>
+              <li role="menuitem"><a class="dropdown-item" routerLink="profile">Your profile</a>
             </li>
             <li>
               <button

@@ -24,11 +24,12 @@ module.exports = {
             const token = req.body.token
             const decoded = jwt.verify(token, process.env.TOKEN_KEY);
             const user = await User.findOne({ _id: decoded.id })
-            const { username, email } = user
+            const { username, email, address } = user
 
             res.status(200).send({
                 username,
-                email
+                email,
+                address
             })
         } catch (error) {
             console.log(error);

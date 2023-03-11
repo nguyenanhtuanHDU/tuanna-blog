@@ -1,10 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 // regular style toast
 
-
 $body-bg: #f2f3f6;
 $text-color: #2d4f62;
-$primary: #20E3B2;
+$primary: #20e3b2;
 $secondary: #2979ff;
 $success: #07c43c;
 $warning: #f1b016;
@@ -28,6 +27,8 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 @import "node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
 :root {
+  --header-height: 62px;
+  --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 html,

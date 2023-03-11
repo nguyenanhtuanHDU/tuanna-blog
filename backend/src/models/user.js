@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
     admin: {
         type: Boolean,
         default: false
+    },
+    address: {
+        type: String,
     }
 }, {
     timestamps: true

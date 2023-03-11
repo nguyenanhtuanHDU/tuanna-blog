@@ -10,19 +10,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  @Input() usename: string;
-  @Input() email: string;
+  username: string;
+  email: string;
 
   faBars = faBars;
   faRightFromBracket = faRightFromBracket;
   constructor(private authService: AuthService) {}
 
-  // ngOnInit(): void {
-  //   // const user =  this.authService.getUserByID()
-  // }
-
   logOut() {
-
     Swal.fire({
       title: 'Are you sure to log out ?',
       text: "You won't be able to revert this!",
@@ -30,7 +25,7 @@ export class HeaderComponent {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes !'
+      confirmButtonText: 'Yes !',
     }).then((result) => {
       if (result.isConfirmed) {
         this.authService.logOut();
@@ -38,9 +33,28 @@ export class HeaderComponent {
           'Log out success !',
           'Your account just logged out !',
           'success'
-        )
+        );
       }
-    })
+    });
+  }
 
+  getUserInfo() {
+    const token = this.authService.getToken();
+    console.log('>>> token: ', token);
+
+    this.authService.getUserByToken().subscribe(
+      (data: any) => {
+        console.log(data);
+        this.username = data.username;
+        this.email = data.email;
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  ngOnInit(){
+    this.getUserInfo()
   }
 }

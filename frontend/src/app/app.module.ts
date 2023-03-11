@@ -14,9 +14,10 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { HeaderComponent } from './header/header.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
-  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, HeaderComponent],
+  declarations: [AppComponent, LogInComponent, HomeComponent, SignUpComponent, HeaderComponent, ProfileComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
