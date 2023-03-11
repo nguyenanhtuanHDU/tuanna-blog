@@ -7,8 +7,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  userUrl = `${environment.apiBackend}v1/api/user`;
-  userInfoUrl = `${environment.apiBackend}v1/api/user-info`;
+  userUrl = `${environment.apiBackend}/v1/api/user`;
+  userInfoUrl = `${environment.apiBackend}/v1/api/user-info`;
   // userUrl = `${environment.apiBackend}v1/api/users`;
   loginUrl = `${environment.apiBackend}/auth/login`;
   signupUrl = `${environment.apiBackend}/auth/signup`;

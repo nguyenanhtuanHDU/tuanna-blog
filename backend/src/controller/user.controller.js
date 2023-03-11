@@ -22,9 +22,8 @@ module.exports = {
     getUserByToken: async (req, res) => {
         try {
             const token = req.body.token
-            console.log('>>> req.body: ', req.body);
             const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-            const user = await User.findOne({ id: decoded.id })
+            const user = await User.findOne({ _id: decoded.id })
             const { username, email } = user
 
             res.status(200).send({

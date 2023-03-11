@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
@@ -20,34 +20,34 @@ export class HomeComponent {
       token['token'].includes('object')
     ) {
       this.router.navigate(['/login']);
+      console.log('>>> ko co token');
       return;
+    } else {
+      console.log('>>> co token');
     }
   }
 
-  ngAfterViewChecked(): void {
-    this.checkToken()
+  getUserInfo() {
+    const token = this.authService.getToken();
+    console.log('>>> token: ', token);
+
+    this.authService.getUserByToken(token).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.username = data.username;
+        this.email = data.email;
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
-  // ngAfterViewInit(): void {
-  //   const token = this.authService.getToken();
+  ngOnInit(): void {
+    this.checkToken();
+    this.getUserInfo();
+  }
 
-  //   this.authService.getUserByToken(token).subscribe(
-  //     (data) => {
-  //       console.log(data);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     }
-  //   );
-  // }
-  // ngOnInit() {
-  //   const token = this.authService.getToken()['token'];
-
-  //   const userInfo = this.authService.getUserByToken(token).subscribe(data => {
-  //     console.log(data);
-  //   });
-  // }
-
-  // ngAfterViewChecked(){
-
-  // }
+  ngDoCheck(){
+    this.checkToken();
+  }
 }
