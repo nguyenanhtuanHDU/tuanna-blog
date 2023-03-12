@@ -12,6 +12,7 @@ export class AuthService {
   // userUrl = `${environment.apiBackend}v1/api/users`;
   loginUrl = `${environment.apiBackend}/auth/login`;
   signupUrl = `${environment.apiBackend}/auth/signup`;
+  uploadUrl = `${environment.apiBackend}/upload/avatar`;
 
   constructor(
     private httpClient: HttpClient,
@@ -45,5 +46,11 @@ export class AuthService {
   logOut() {
     // this.cookieService.set('token', '');
     this.cookieService.deleteAll();
+  }
+
+  uploadAvatar(data: File, nameInputFile: string) {
+    const formData: FormData = new FormData();
+    formData.append(nameInputFile, data, data.name);
+    return this.httpClient.post(this.uploadUrl, formData);
   }
 }
