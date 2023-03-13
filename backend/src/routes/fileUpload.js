@@ -1,12 +1,7 @@
 const express = require('express');
+const { postUploadAvatar } = require('../controller/fileUpload.controller');
 const router = express.Router();
 
-const upload = require('../services/upload');
 module.exports = router;
 
-router.post('/avatar', upload.single('avatar'), (req, res) => {
-  return res.status(200).json({
-    msg: 'success',
-    data: req.file,
-  });
-});
+router.post('/avatar', postUploadAvatar);

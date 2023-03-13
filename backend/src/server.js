@@ -1,10 +1,12 @@
 require('dotenv').config();
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
 var cors = require('cors');
 mongoose.set('strictQuery', true);
+const fileUpload = require('express-fileupload');
+app.use(fileUpload({useTempFile: true}))
 const connection = require('./config/database');
-const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ credentials: true, origin: 'http://localhost:4200' }));

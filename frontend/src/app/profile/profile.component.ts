@@ -19,9 +19,12 @@ export class ProfileComponent {
 
   ngOnInit(): void {
     this.authService.getUserByToken().subscribe((data: any) => {
+      console.log('>>> data proifile: ', data);
+
       this.username = data.username;
       this.email = data.email;
       this.address = data.address;
+      this.avatarPath = `${environment.apiBackend}/images/avatars/${data.avatar}`
     });
   }
 
@@ -38,5 +41,9 @@ export class ProfileComponent {
         this.avatarFileName = data.data.originalname;
         this.avatarPath = `${environment.apiBackend}/images/${this.avatarFileName}`
       });
+  }
+
+  getAvatarDefault(){
+    this.authService.getUserByToken()
   }
 }

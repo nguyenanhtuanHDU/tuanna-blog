@@ -49,8 +49,11 @@ export class AuthService {
   }
 
   uploadAvatar(data: File, nameInputFile: string) {
+    const token = this.getToken()['token']
     const formData: FormData = new FormData();
-    formData.append(nameInputFile, data, data.name);
+    formData.append(nameInputFile, data);
+    formData.append('token', token);
+    console.log('>>> formData: ',formData.get('token'));
     return this.httpClient.post(this.uploadUrl, formData);
   }
 }

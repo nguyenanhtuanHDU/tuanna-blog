@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 export class HeaderComponent {
   username: string;
   email: string;
+  avatar: string
 
   faBars = faBars;
   faRightFromBracket = faRightFromBracket;
