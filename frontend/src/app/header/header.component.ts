@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,7 +13,7 @@ import Swal from 'sweetalert2';
 export class HeaderComponent {
   username: string;
   email: string;
-  avatar: string
+  avatar: string;
 
   faBars = faBars;
   faRightFromBracket = faRightFromBracket;
@@ -48,6 +49,7 @@ export class HeaderComponent {
         console.log(data);
         this.username = data.username;
         this.email = data.email;
+        this.avatar = `${environment.apiBackend}/images/avatars/${data.avatar}`;
       },
       (err) => {
         console.log(err);
@@ -55,7 +57,7 @@ export class HeaderComponent {
     );
   }
 
-  ngOnInit(){
-    this.getUserInfo()
+  ngOnInit() {
+    this.getUserInfo();
   }
 }

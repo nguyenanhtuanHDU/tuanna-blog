@@ -22,17 +22,16 @@ export class HomeComponent {
       this.router.navigate(['/login']);
       console.log('>>> ko co token');
       return;
-    } else {
+    } else if (token['token']) {
       console.log('>>> co token');
     }
   }
-
 
   ngOnInit(): void {
     this.checkToken();
   }
 
-  ngDoCheck(){
+  ngDoCheck() {
     this.checkToken();
   }
 }

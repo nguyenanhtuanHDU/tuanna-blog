@@ -31,6 +31,7 @@ module.exports = {
         email,
         address,
         avatar,
+        id: decoded.id,
       });
     } catch (error) {
       console.log(error);

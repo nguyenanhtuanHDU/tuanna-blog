@@ -1,4 +1,4 @@
-<app-header></app-header>
+<app-header #header></app-header>
 <div class="profile">
   <div class="container profile-container">
     <div class="row gutters-sm profile-inner">
@@ -8,9 +8,8 @@
             <div class="d-flex flex-column align-items-center text-center">
               <img [src]="avatarPath" alt="Admin" class="rounded-circle" width="150">
               <div class="mt-3">
-                <h4>John Doe</h4>
-                <p class="text-secondary mb-1">Full Stack Developer</p>
-                <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                <h4>{{user.username}}</h4>
+                <p class="text-secondary mb-1">Id: {{user.id}}</p>
                 <button class="btn btn-primary">Follow</button>
 
                 <form (ngSubmit)="uploadAvatar()" method="post">
@@ -30,7 +29,7 @@
                 <h6 class="mb-0">Username</h6>
               </div>
               <div class="col-sm-9 text-secondary">
-                {{username}}
+                {{user.username}}
               </div>
             </div>
             <hr>
@@ -39,7 +38,7 @@
                 <h6 class="mb-0">Email</h6>
               </div>
               <div class="col-sm-9 text-secondary">
-                {{email}}
+                {{user.email}}
               </div>
             </div>
             <hr>
@@ -48,7 +47,7 @@
                 <h6 class="mb-0">Address</h6>
               </div>
               <div class="col-sm-9 text-secondary">
-                {{address}}
+                {{user.address}}
               </div>
             </div>
             <hr>

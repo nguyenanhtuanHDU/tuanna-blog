@@ -49,11 +49,26 @@ export class AuthService {
   }
 
   uploadAvatar(data: File, nameInputFile: string) {
-    const token = this.getToken()['token']
+    const token = this.getToken()['token'];
     const formData: FormData = new FormData();
     formData.append(nameInputFile, data);
     formData.append('token', token);
-    console.log('>>> formData: ',formData.get('token'));
     return this.httpClient.post(this.uploadUrl, formData);
+  }
+
+  checkToken() {
+    const token = this.getToken()['token'];
+    console.log('>>> check token: ', token);
+
+    if (token) {
+      console.log('>>> co token');
+      return true;
+    } else if (!token || token.includes('Object') || token.includes('object')) {
+      console.log('>>> ko co token');
+      return false;
+    } else {
+      console.log('>>> ko co token');
+      return false;
+    }
   }
 }
