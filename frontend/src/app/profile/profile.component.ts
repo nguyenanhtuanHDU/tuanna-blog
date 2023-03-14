@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -13,16 +13,12 @@ import { HeaderComponent } from '../header/header.component';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent {
-  @ViewChild('HeaderComponent', { static: false })
-  header: HeaderComponent;
+export class ProfileComponent implements OnInit {
+  @ViewChild(HeaderComponent, { static: false })
+  header!: HeaderComponent;
   user: User;
   avatarData: any;
   avatarPath: string;
-
-  uploadAvatarForm = new FormGroup({
-    avatarForm: new FormControl(''),
-  });
 
   constructor(
     private authService: AuthService,
@@ -31,8 +27,8 @@ export class ProfileComponent {
   ) {}
 
   reloadUserInfo() {
+    this.spinner.show();
     this.authService.getUserByToken().subscribe((data: any) => {
-      console.log('>>> data pro: ', data);
       this.user = {
         id: data.id,
         username: data.username,
@@ -41,6 +37,7 @@ export class ProfileComponent {
       };
       this.avatarPath = `${environment.apiBackend}/images/avatars/${data.avatar}`;
     });
+    this.spinner.hide();
     console.log('>>> user: ', this.user);
   }
 
@@ -50,19 +47,32 @@ export class ProfileComponent {
   }
 
   uploadAvatar() {
-    this.spinner.show();
-    this.authService.uploadAvatar(this.avatarData, 'avatar').subscribe(
-      (data: any) => {
-        this.spinner.hide();
-        this.uploadAvatarForm.get('avatarForm')?.setValue('');
-        Swal.fire('Upload avatar success', data.msg, 'success');
-        this.reloadUserInfo();
-      },
-      (err) => {
-        console.log(err);
-        Swal.fire('Upload avatar success', err.msg, 'error');
+    Swal.fire({
+      title: 'Do you want to upload this image?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Upload',
+      denyButtonText: `No`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.spinner.show();
+        this.authService.uploadAvatar(this.avatarData, 'avatar').subscribe(
+          (data: any) => {
+            this.spinner.hide();
+            Swal.fire(data.msg, 'Success', 'success');
+            this.reloadUserInfo();
+            this.header.getUserInfo();
+          },
+          (error) => {
+            this.spinner.hide();
+            console.log(error);
+            Swal.fire(error.error.msg, 'Failed', 'error');
+          }
+        );
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
       }
-    );
+    });
   }
 
   ngOnInit(): void {
@@ -76,9 +86,5 @@ export class ProfileComponent {
     if (!this.authService.checkToken()) {
       this.router.navigate(['/login']);
     }
-  }
-
-  ngAfterViewInit(): void {
-    console.log('>>> header: ', HeaderComponent);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Injectable, Input, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,12 @@ import Swal from 'sweetalert2';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+
+@Injectable({
+  providedIn: 'root',
+})
+
+export class HeaderComponent implements OnInit{
   username: string;
   email: string;
   avatar: string;
@@ -19,7 +24,7 @@ export class HeaderComponent {
   faRightFromBracket = faRightFromBracket;
   constructor(private authService: AuthService) {}
 
-  logOut() {
+  public logOut() {
     Swal.fire({
       title: 'Are you sure to log out ?',
       text: "You won't be able to revert this!",
@@ -41,9 +46,6 @@ export class HeaderComponent {
   }
 
   getUserInfo() {
-    const token = this.authService.getToken();
-    console.log('>>> token: ', token);
-
     this.authService.getUserByToken().subscribe(
       (data: any) => {
         console.log(data);
@@ -57,7 +59,8 @@ export class HeaderComponent {
     );
   }
 
-  ngOnInit() {
+   // eslint-disable-next-line @angular-eslint/contextual-lifecycle
+   ngOnInit() {
     this.getUserInfo();
   }
 }

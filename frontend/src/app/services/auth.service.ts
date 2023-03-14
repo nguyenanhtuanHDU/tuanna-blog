@@ -58,16 +58,16 @@ export class AuthService {
 
   checkToken() {
     const token = this.getToken()['token'];
-    console.log('>>> check token: ', token);
+    // console.log('>>> check token: ', token);
 
     if (token) {
-      console.log('>>> co token');
+      // console.log('>>> co token');
       return true;
     } else if (!token || token.includes('Object') || token.includes('object')) {
-      console.log('>>> ko co token');
+      // console.log('>>> ko co token');
       return false;
     } else {
-      console.log('>>> ko co token');
+      // console.log('>>> ko co token');
       return false;
     }
   }

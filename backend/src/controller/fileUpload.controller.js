@@ -1,38 +1,38 @@
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const path = require('path');
 const User = require('../models/user');
+const isImage = require('is-image');
 
 module.exports = {
   postUploadAvatar: async (req, res) => {
     try {
-      console.log('>>> req.body: ', req.body);
-      const token = req.body.token;
-      var decoded = jwt.verify(token, process.env.TOKEN_KEY);
-
-      let avatar = req.files.avatar;
-      let uploadPath;
-
       if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
+        return res.status(400).json({ msg: 'No files were uploaded.' });
+      }
+      let avatar = req.files.avatar;
+      const checkPathAvatar = isImage(avatar.name);
+      if (!checkPathAvatar) {
+        return res.status(400).json({ msg: 'The file must be an image' });
       }
 
+      const token = req.body.token;
+      const decoded = jwt.verify(token, process.env.TOKEN_KEY);
       const avatarName = `${decoded.id}-${new Date().getTime()}${path.extname(
         avatar.name
       )}`;
-      uploadPath = './src/public/images/avatars/' + avatarName;
-
-      const user = await User.updateOne({ avatar: avatarName });
-      console.log('>>> user: ', user);
+      const uploadPath = './src/public/images/avatars/' + avatarName;
+      console.log('>>> avatarName: ', avatarName);
+      await User.updateOne({ _id: decoded.id }, { avatar: avatarName });
 
       await avatar.mv(uploadPath);
       return res.status(200).json({
-        msg: 'success',
+        msg: 'Upload avatar successfully',
         data: avatar,
       });
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'error',
+        msg: 'Sever error',
         data: null,
       });
     }
