@@ -1,0 +1,47 @@
+.header {
+  background-color: var(--bs-primary);
+  height: var(--header-height);
+  z-index: 10;
+
+  &-container {
+    &-home {
+      font-size: 24px;
+    }
+
+    &-bar {
+      font-size: 30px;
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      span {
+        // color: white !important;
+      }
+    }
+  }
+
+  &-inner {
+    &_nav {
+      &__item {}
+    }
+
+    &-right {
+      height: 40px;
+    }
+
+    &-search {}
+
+    &-user {
+      &__avatar {
+        img {
+          border-radius: 50px;
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+        }
+      }
+
+    }
+  }
+}

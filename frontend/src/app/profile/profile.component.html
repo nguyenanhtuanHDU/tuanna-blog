@@ -1,0 +1,330 @@
+<app-header #header></app-header>
+<div class="profile">
+  <img *ngIf="user.bgAvatar" [src]="srcBg" alt="" class="profile-bg" />
+  <ngx-skeleton-loader *ngIf="!user.bgAvatar" [theme]="{
+      height: '90vh',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      'z-index': -1
+    }"></ngx-skeleton-loader>
+  <div class="container profile-container">
+    <div class="row gutters-sm profile-inner">
+      <div class="profile-inner-head container-fluid d-flex align-items-center">
+        <div class="row profile-inner-head-container">
+          <div class="col-lg-7 col-md-10 profile-inner-head-inner p-0">
+            <h1 class="display-2 d-inline-block text-white">
+              Hello
+              <div class="d-inline-block" *ngIf="user">{{ user.fullName.firstName}} </div>
+              <div class="d-inline-block">{{ user.fullName.lastName }}</div>
+              <!-- <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader> -->
+            </h1>
+            <p class="text-white mt-0 mb-5">
+              This is your profile page. You can see the progress you've made
+              with your work and manage your projects or assigned tasks
+            </p>
+            <button class="btn btn-primary" (click)="lgModal.show()">
+              <i class="bi bi-camera me-2"></i>
+              Change background
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8 profile-inner-left pe-3 px-0">
+        <div class="profile-inner-left-card h-100 d-flex flex-column">
+          <div class="profile-inner-left-card-head d-flex justify-content-between p-4 bg-white">
+            <h6>My account</h6>
+            <button class="btn btn-primary" (click)="userInfolgModal.show()" (click)="getUserInfoToEdit()">
+              <i class="bi bi-pencil-square me-2"></i>
+              Edit your profile
+            </button>
+          </div>
+          <div class="profile-inner-left-card-body py-4 px-5 bg-secondary d-flex gap-2 flex-column">
+            <!-- <ngx-skeleton-loader *ngIf="user" count="5" [theme]="{background: 'red', 'margin-bottom': '0'}" ></ngx-skeleton-loader> -->
+            <div class="profile-inner-left-card-body-item">
+              <h6 class="text-uppercase text-muted">use information</h6>
+              <div class="row gy-4">
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">Username</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span *ngIf="user">{{ user.username }}</span>
+                    <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">Email</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span>
+                      <ngx-skeleton-loader *ngIf="!user.email"></ngx-skeleton-loader>
+                      <span *ngIf="user.email"> {{ user.email }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">First name</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span>
+                      <ngx-skeleton-loader *ngIf="!user" [animation]="'pulse'" [theme]="{
+                        'border-radius': '5px',
+                        height: '50px',
+                        'background-color': '#323232',
+                        border: '1px solid #323232',
+                        'animation-duration': '2s'
+                      }"></ngx-skeleton-loader>
+                      <span *ngIf="user"> {{ user.fullName.firstName }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">Last name</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span>
+                      <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                      <span *ngIf="user"> {{ user.fullName.lastName }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">Gender</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span>
+                      <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                      <span *ngIf="user"> {{ user.gender }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <h6 class="text-color">Birthday</h6>
+                  <div class="py-2 px-3 bg-white border-radius-10">
+                    <span>
+                      <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                      <span *ngIf="user"> {{ user.birthday }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="profile-inner-left-card-body-item">
+              <h6 class="text-uppercase text-muted">contact information</h6>
+              <h6 class="text-color">Address</h6>
+              <div class="py-2 px-3 bg-white border-radius-10">
+                <span *ngIf="user">{{ user.address }}</span>
+                <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 profile-inner-right ps-3 pe-0">
+        <div class="profile-inner-right-card p-3 h-100 bg-white">
+          <div class="profile-inner-right-card-body d-flex flex-column align-items-center text-center">
+            <div class="profile-inner-right-card-body__avatar position-relative">
+              <ngx-skeleton-loader *ngIf="!user.avatar" appearance="circle"
+                [theme]="{ width: '150px', height: '150px' }">
+              </ngx-skeleton-loader>
+              <a for="avatar" class="pointer-event" (click)="lgModal.show()"><i
+                  class="bi bi-camera me-2 profile-inner-right-card-body__avatar-icon border-radius-rounded bg-white position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center"></i></a>
+              <div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+                aria-labelledby="dialog-sizes-name1">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+                        Update avatar or background
+                      </h4>
+                      <span *ngIf="user" class="ms-5">
+                        (
+                        {{
+                        user.totalUploadFileSize / 1000000 | number : "1.0-2"
+                        }}
+                        / 100 MB )
+                      </span>
+                      <button type="button" class="btn-close close pull-right" (click)="lgModal.hide()"
+                        aria-label="Close">
+                        <span aria-hidden="true" class="visually-hidden">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <tabset>
+                        <tab heading="Your images" id="tab1">
+                          <div class="content" ngx-scrollbar>
+                            <h4>Avatars</h4>
+                            <div class="avatars d-grid pt-3" style="height: 135px; overflow: scroll">
+                              <div class="avatars-item" *ngFor="
+                                  let avatar of user.listAvatars;
+                                  index as i
+                                ">
+                                <div class="avatars-item-img ms-auto me-auto position-relative">
+                                  <img class="border-radius-14" [src]="srcImagesParent + '/' + avatar"
+                                    (click)="updateAvatar(avatar)" />
+                                  <i class="bi bi-trash position-absolute border-radius-rounded d-flex align-items-center justify-content-center bg-white d-none"
+                                    (click)="deleteAvatar(avatar)"></i>
+                                </div>
+
+                                <h4 class="avatars-name">avatar {{ i + 1 }}</h4>
+                              </div>
+                              <!-- <h4 class="avatars-selected">
+                                {{ avatarSelected }}
+                              </h4> -->
+                            </div>
+
+                            <h4>Backgrounds</h4>
+                            <div class="avatars d-grid pt-3" style="height: 135px; overflow: scroll">
+                              <div class="avatars-item" *ngFor="
+                                  let bg of user.listBgAvatars;
+                                  index as i
+                                ">
+                                <div class="avatars-item-img ms-auto me-auto position-relative">
+                                  <img class="border-radius-14" [src]="srcBgsParent  + bg" (click)="updateBg(bg)" />
+                                  <i class="bi bi-trash position-absolute border-radius-rounded d-flex align-items-center justify-content-center bg-white d-none"
+                                    (click)="deleteBg(bg)"></i>
+                                </div>
+
+                                <h4 class="avatars-name">
+                                  background {{ i + 1 }}
+                                </h4>
+                              </div>
+                              <!-- <h4 class="avatars-selected">
+                                {{ avatarSelected }}
+                              </h4> -->
+                            </div>
+                          </div>
+                        </tab>
+                        <tab heading="Tuanna avatars" (selectTab)="getListAvatarDefault('avatar')">
+                          <div class="content" ngx-scrollbar>
+                            <div class="avatars d-grid py-3">
+                              <div class="avatars-item" *ngFor="let avatar of listAvatarsDefault">
+                                <div class="avatars-item-img ms-auto me-auto position-relative">
+                                  <img class="border-radius-14" [src]="srcImagesParent +  avatar"
+                                    (click)="updateAvatar(avatar)" />
+                                </div>
+
+                                <h4 class="avatars-name">{{ avatar }}</h4>
+                              </div>
+                              <!-- <h4 class="avatars-selected">
+                                {{ avatarSelected }}
+                              </h4> -->
+                              <!-- </ng-scrollbar> -->
+                            </div>
+                          </div>
+                        </tab>
+                        <tab heading="Tuanna backgrounds" (selectTab)="getListAvatarDefault('bg')">
+                          <div class="content" ngx-scrollbar>
+                            <div class="avatars d-grid py-3">
+                              <div class="avatars-item" *ngFor="let avatar of listBgAvatarsDefault">
+                                <div class="avatars-item-img ms-auto me-auto position-relative">
+                                  <img class="border-radius-14" [src]="srcBgsParent + '/' + avatar"
+                                    (click)="updateBg(avatar)" />
+                                </div>
+
+                                <h4 class="avatars-name">{{ avatar }}</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </tab>
+                        <div class="d-flex justify-content-around w-100">
+                          <button class="btn btn-primary" (click)="uploadAvatar()">
+                            Upload avatars
+                          </button>
+                          <button class="btn btn-primary" (click)="uploadBg()">
+                            Upload background
+                          </button>
+                          <span>{{ avatarSelected }}</span>
+                          <label class="btn btn-primary" for="file">Choose File</label>
+                          <input type="file" id="file" (change)="chooseImage($any($event).target.files)" multiple />
+                        </div>
+                      </tabset>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="user.avatar" class="profile-inner-right-card-body__avatar-item">
+                <img [src]="srcImage" />
+              </div>
+            </div>
+            <div class="my-3">
+              <div>
+                <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                <h4 *ngIf="user">{{ user.username }}</h4>
+              </div>
+              <div>
+                <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                <span *ngIf="user && user.admin">Admin</span>
+              </div>
+              <div>
+                <ngx-skeleton-loader *ngIf="!user"></ngx-skeleton-loader>
+                <span *ngIf="user"> Id: {{ user._id }} </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="var(--bs-primary)" [fullScreen]="true"></ngx-spinner>
+
+<div bsModal #userInfolgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Update user information
+        </h4>
+        <button type="button" class="btn-close close pull-right" (click)="userInfolgModal.hide()" aria-label="Close">
+          <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="row" autocomplete="off" [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+          <!-- <div class="col-6 form-inner-body__item mt-3">
+            <label for="username" class="">Username</label>
+            <input class="form-control my-2" (input)="validateUsername()" formControlName="username" id="username"
+              #inputUsername spellcheck="false" />
+            <span *ngIf="editUserForm.value.username" class="text-danger">{{
+              validateUsername()
+              }}</span>
+          </div>
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="email" class="">Email</label>
+            <input class="form-control my-2" type="text" id="email" formControlName="email" spellcheck="false" />
+          </div> -->
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="firstName" class="">FirstName</label>
+            <input class="form-control my-2" type="text" id="firstName" formControlName="firstName"
+              spellcheck="false" />
+          </div>
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="lastName" class="">LastName</label>
+            <input class="form-control my-2" type="text" id="lastName" formControlName="lastName" spellcheck="false" />
+          </div>
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="address" class="">Birthday</label>
+            <!-- <input class="form-control my-2" type="text" id="address" formControlName="birthday" spellcheck="false" /> -->
+            <input id="birthday" type="text" formControlName="birthday" placeholder="Choose your date"
+              class="form-control" bsDatepicker [maxDate]="maxDate" [bsConfig]="{ isAnimated: true }"
+              [bsConfig]="{containerClass:'theme-blue', dateInputFormat: 'DD/MM/YYYY'}">
+          </div>
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="address" class="">Address</label>
+            <input class="form-control my-2" type="text" id="address" formControlName="address" spellcheck="false" />
+          </div>
+          <div class="col-6 form-inner-body__item mt-3">
+            <label for="gender" class="">Gender</label>
+            <!-- <input class="form-control my-2" type="text" id="gender" formControlName="gender" spellcheck="false" /> -->
+            <select id="gender" class="form-select" aria-label="Default select example" formControlName="gender">
+              <option value="male">male</option>
+              <option value="female">female</option>
+            </select>
+          </div>
+
+          <button type="submit" class="col-6 btn btn-primary py-3 my-4 text-white">
+            Update Your Info
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

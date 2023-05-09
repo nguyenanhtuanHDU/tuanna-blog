@@ -1,0 +1,81 @@
+/* You can add global styles to this file, and also import other style files */
+// regular style toast
+
+$text-color: #2d4f62;
+$primary: #11cdef;
+$secondary: #f7fafc;
+$success: #07c43c;
+$warning: #f1b016;
+$danger: #ff4444;
+$custom-colors: (
+  "brand": #17234e,
+  "orange-light": #ffeab8,
+);
+
+// Merge the maps
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+$theme-colors: map-merge($theme-colors, $custom-colors);
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/regular.scss";
+@import "node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
+@import "node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
+:root {
+  --header-height: 62px;
+  --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+html{
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  // font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Inter', sans-serif !important;
+  overflow-x: hidden;
+}
+
+button {
+  border: 0 !important;
+}
+
+.border-radius {
+  &-rounded {
+    border-radius: 50px;
+  }
+
+  @for $i from 8 through 20 {
+    &-#{$i} {
+      border-radius: #{$i}px !important;
+    }
+  }
+}
+
+.modal-open {
+  overflow-y: scroll !important;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
+
+.btn-primary {
+  color: white !important;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";
+
+/* Importing Datepicker SCSS file. */
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";

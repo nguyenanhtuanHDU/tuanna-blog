@@ -1,0 +1,97 @@
+<nav
+  class="navbar navbar-expand-lg navbar-light header px-lg-3 position-fixed top-0 start-0 end-0"
+>
+  <div class="container-fluid header-container">
+    <a class="navbar-brand text-white header-container-home" routerLink=""
+      ><i class="bi bi-house-fill"></i
+    ></a>
+    <button
+      class="navbar-toggler px-0 header-container-bar text-white"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <fa-icon [icon]="faBars"></fa-icon>
+    </button>
+    <div
+      class="collapse navbar-collapse header-inner"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 header-inner-nav">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >About</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >Contact</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="#"
+            >Home</a
+          >
+        </li>
+      </ul>
+      <div class="header-inner-right d-flex gap-3">
+        <form class="d-flex header-inner-search">
+          <input
+            class="form-control me-3"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-light" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+        <div class="btn-group header-inner-user" dropdown>
+          <button
+            id="button-animated"
+            dropdownToggle
+            type="button"
+            class="btn btn-primary p-0 header-inner-user__avatar"
+            aria-controls="dropdown-animated"
+          >
+            <ngx-skeleton-loader
+              appearance="circle"
+              [theme]="{ margin: 0}"
+              *ngIf="!user"
+            ></ngx-skeleton-loader>
+            <img *ngIf="user && user.avatar" [src]="avatarSrc + user.avatar" alt="" />
+          </button>
+          <ul
+            id="dropdown-animated"
+            *dropdownMenu
+            class="dropdown-menu dropdown-menu-end"
+            role="menu"
+            aria-labelledby="button-animated"
+          >
+            <li role="menuitem">
+              <a class="dropdown-item" href="#">{{ user.username }}</a>
+            </li>
+            <li role="menuitem">
+              <a class="dropdown-item" href="#">{{ user.email }}</a>
+            </li>
+            <li role="menuitem">
+              <a class="dropdown-item" routerLink="/profile">Your profile</a>
+            </li>
+            <li>
+              <button
+                class="dropdown-item d-flex justify-content-between"
+                (click)="logOut()"
+              >
+                <span>Log out</span>
+                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,15 @@
+button {
+  position: fixed;
+  top: 200px;
+  z-index: 100000000000000;
+  left: 0;
+
+  &:nth-child(2) {
+    top: 300px;
+  }
+
+  &:nth-child(3) {
+
+    top: 400px;
+  }
+}

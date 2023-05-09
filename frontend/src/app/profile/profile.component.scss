@@ -1,0 +1,141 @@
+.profile {
+  margin-top: var(--header-height);
+  padding-top: 100px;
+
+  &-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    right: 0;
+    width: 100%;
+    opacity: 0.6;
+    height: 90vh;
+    object-fit: cover;
+  }
+
+  &-container {
+  }
+
+  &-inner {
+    &-head {
+      margin-bottom: 100px;
+    }
+
+    &-left {
+      &-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+      }
+    }
+
+    &-right {
+      &-card {
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+
+        &-body {
+          &__avatar {
+            width: 150px;
+            height: 150px;
+
+            &-icon {
+              z-index: 2;
+              width: 40px;
+              height: 40px;
+              box-shadow: var(--box-shadow);
+            }
+
+            .modal {
+              &-body {
+                ::-webkit-scrollbar {
+                  width: 5px;
+                  height: 5px;
+                }
+
+                ::-webkit-scrollbar-thumb {
+                  background-color: var(--bs-primary);
+                  border-radius: 50px;
+                }
+                .avatars {
+                  grid-template-columns: repeat(4, 1fr);
+                  height: 383px;
+                  overflow-y: scroll;
+
+                  &-item {
+                    &-img {
+                      width: 146px;
+                      height: 85px;
+                      cursor: pointer;
+
+                      img {
+                        width: 146px;
+                        height: 85px;
+                        object-fit: cover;
+                        box-shadow: var(--box-shadow);
+                      }
+
+                      i {
+                        top: 10px;
+                        right: 10px;
+                        padding: 5px;
+                        width: 30px;
+                        height: 30px;
+                        cursor: pointer;
+                        box-shadow: var(--box-shadow);
+                        &:hover {
+                          opacity: 0.6;
+                        }
+                      }
+
+                      &:hover i {
+                        display: block !important;
+                      }
+                    }
+                  }
+
+                  &-name {
+                    font-size: 12px;
+                    line-height: 14px;
+                    margin: 12px auto;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    width: 120px;
+                  }
+                }
+              }
+            }
+
+            &-item {
+              width: 150px;
+              border-radius: 100px;
+              height: 150px;
+              overflow: hidden;
+
+              img {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+              }
+            }
+          }
+
+          &-infor {
+            &-item {
+              &__username {
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+[type="file"] {
+  height: 0;
+  overflow: hidden;
+  width: 0;
+}

@@ -1,0 +1,91 @@
+<div class="form d-flex align-items-center justify-content-center px-3 px-md-0">
+  <video autoplay muted loop class="form-video">
+    <source [src]="videoSrc" type="video/mp4">
+  </video>
+  <div class="form-container">
+
+    <div class="form-inner bg-light">
+      <div class="form-inner-header d-flex align-items-center justify-content-center mb-4">
+        <h2 class="mb-0">Sign Up</h2>
+      </div>
+      <form class="form-inner-body d-grid" [formGroup]="signUpForm" (ngSubmit)="activeSignUp()">
+        <div class="form-inner-body__item mt-2">
+          <label for="email">Email</label>
+          <input type="text" class="form-control my-2" type="email" formControlName="email" id="email" autofocus
+            (input)="validateEmail()">
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.email">{{validateEmail()}}</span>
+        </div>
+
+        <div class="form-inner-body__item mt-2">
+          <label for="username">Username</label>
+          <input type="text" class="form-control my-2" (input)="validateUsername()" id="username"
+            formControlName="username">
+          <span class="form-inner-body__error">{{validateUsername()}}</span>
+        </div>
+        <!--  -->
+        <div class="form-inner-body__item mt-2">
+          <label for="firstName">First name</label>
+          <input id="firstName" type="text" class="form-control my-2" formControlName="firstName">
+        </div>
+        <div class="form-inner-body__item mt-2">
+          <label for="lastName">Last name</label>
+          <input id="lastName" type="text" class="form-control my-2" formControlName="lastName">
+        </div>
+
+        <div class="form-inner-body__item mt-2">
+          <label for="gender">Gender</label>
+          <select id="gender" class="form-select" aria-label="Default select example" formControlName="gender">
+            <option value="male">male</option>
+            <option value="female">female</option>
+          </select>
+        </div>
+
+        <div class="form-inner-body__item mt-2">
+          <label for="birthday">Birthday</label>
+          <input id="birthday" type="text" formControlName="birthday" placeholder="Choose your date"
+            class="form-control" bsDatepicker [maxDate]="maxDate" [bsConfig]="{ isAnimated: true }"
+            [bsConfig]="{containerClass:'theme-blue', dateInputFormat: 'DD/MM/YYYY'}">
+        </div>
+        <!--  -->
+
+        <div class="form-inner-body__item mt-2">
+          <label for="address">Address</label>
+          <input type="text" class="form-control my-2" id="address" formControlName="address">
+        </div>
+
+        <!-- <div class="form-inner-body__item mt-2 form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="admin" name="darkmode" value="yes" checked
+            [value]="false" formControlName="admin">
+          <label class="form-check-label" for="admin">Admin</label>
+        </div> -->
+        <div class="form-inner-body__item mt-2">
+          <label for="password">Password</label>
+          <div class="my-2">
+            <input #password class="form-control " type="password" formControlName="password" id="password"
+              autocomplete="off" (input)="validatePassword()">
+            <i class="bi bi-eye-fill" (click)="password.type=password.type=='password'?'text':'password'"></i>
+          </div>
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.password">{{validatePassword()}}</span>
+
+        </div>
+
+        <div class="form-inner-body__item mt-2">
+          <label for="password2">Confirm password</label>
+          <div class="my-2">
+            <input #password2 class="form-control" type="password" formControlName="password2" id="password2"
+              autocomplete="off">
+            <i class="bi bi-eye-fill" (click)="password2.type=password2.type=='password'?'text':'password'"></i>
+          </div>
+          <span class="form-inner-body__error" *ngIf="signUpForm.value.password2">{{validatePassword2()}}</span>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary py-3 mt-3 text-white">
+          Sign Up Now
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="var(--bs-primary)" [fullScreen]="true">
+</ngx-spinner>

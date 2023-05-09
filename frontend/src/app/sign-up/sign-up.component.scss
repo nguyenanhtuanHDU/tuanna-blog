@@ -1,0 +1,94 @@
+.form {
+  position: relative;
+  min-height: 100vh;
+
+  &-container {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 800px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  &-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: -1;
+    opacity: 0.7;
+  }
+
+  &-inner {
+    padding: 20px 48px;
+
+    &-header {
+      h2 {
+        font-size: 1.75rem;
+        line-height: 1.5;
+      }
+
+      &__social {
+        i {
+          font-size: 32px;
+        }
+
+        .bi-facebook {
+          color: #0f90f3;
+        }
+
+        .bi-google {
+          color: #de4032;
+        }
+      }
+    }
+
+    &-body {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+
+      &__item {
+
+        label {}
+
+        div {
+          position: relative;
+
+          input {}
+
+          i {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            cursor: pointer;
+            transform: translateY(-50%);
+          }
+        }
+
+      }
+
+      &__error {
+        color: var(--bs-red);
+      }
+
+      button {
+        border-radius: 12px;
+      }
+    }
+
+    &-footer {}
+  }
+}
+
+.form:focus {
+  border: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+  .form {
+    &-inner {
+      padding: 20px 27px;
+    }
+  }
+}

@@ -1,0 +1,102 @@
+.form {
+  position: relative;
+  min-height: 100vh;
+
+  &-container {
+    // box-shadow: 0 8px 16px #0000001a;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 1140px;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  &-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 0;
+    opacity: 0.7;
+  }
+
+  &-inner {
+    padding: 48px;
+
+    &-header {
+      h2 {
+        font-size: 1.75rem;
+        line-height: 1.5;
+      }
+
+      &__social {
+        i {
+          font-size: 32px;
+        }
+
+        .bi-facebook {
+          color: #0f90f3;
+        }
+
+        .bi-google {
+          color: #de4032;
+        }
+      }
+    }
+
+    &-body {
+      button {
+        border-radius: 12px;
+      }
+    }
+
+    &-footer {
+      &__remember {
+        input {
+          height: 13px;
+        }
+      }
+    }
+  }
+
+  &-right {
+    padding: 48px;
+
+    position: relative;
+
+    &__bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 1;
+    }
+
+    h2 {
+      font-size: 30px;
+      opacity: 1;
+      z-index: 1;
+      border-radius: 50px;
+    }
+
+    p {
+      z-index: 1;
+    }
+
+    a {
+      z-index: 1;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+#video {
+}

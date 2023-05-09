@@ -1,0 +1,40 @@
+<div class="form d-flex align-items-center justify-content-center px-md-0 px-3">
+  <video autoplay muted loop class="form-video" #videoRef>
+    <source [src]="videoSrc" type="video/mp4">
+  </video>
+  <div class=" form-container">
+    <div class="row">
+      <div class="col-md-6 col-12 form-inner bg-white">
+        <div class="form-inner-header d-flex align-items-center justify-content-center mb-4">
+          <h2 class="mb-0">Log In</h2>
+        </div>
+        <form class="form-inner-body d-flex flex-column" [formGroup]="signInForm" (ngSubmit)="activeLogin()">
+          <div class="form-inner-body__item mt-3">
+            <label for="email" class="">Email or username</label>
+            <input type="text" autofocus class="form-control my-2" type="email" formControlName="email" id="email"
+              required>
+          </div>
+          <div class="form-inner-body__item mt-3">
+            <label for="password" class="">Password</label>
+            <input type="text" class="form-control my-2" type="password" formControlName="password" id="password">
+            <span class="text-danger">{{validatePassword()}}</span>
+          </div>
+          <button type="submit" class="btn btn-primary py-3 my-4 text-white">
+            Sign In Now
+          </button>
+        </form>
+        <div class=" form-inner-footer d-flex justify-content-between">
+        </div>
+      </div>
+      <div
+        class="col-md-6 text-black col-0 form-right d-none d-md-flex align-items-center justify-content-center flex-column gap-3">
+        <img class="form-right__bg" src="../../assets/images/bgform3.jpg" alt="">
+        <h2 class="bg-primary text-white py-2 px-4">Welcome to Tuanna Blog</h2>
+        <p>Don't have account ?</p>
+        <a class="text-primary" routerLink="/sign-up">Sign Up Now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="var(--bs-primary)" [fullScreen]="true"></ngx-spinner>
