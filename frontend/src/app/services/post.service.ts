@@ -15,7 +15,19 @@ export class PostService {
     private authService: AuthService) { }
 
   getAllPosts() {
-    return this.httpClient.get<Post[]>(this.postUrl, { headers: this.authService.getHeaders() });
+    return this.httpClient.get(this.postUrl, { headers: this.authService.getHeaders() });
+  }
+
+  getPostByID(id: string) {
+    return this.httpClient.get(this.postUrl + '/' + id, { headers: this.authService.getHeaders() });
+  }
+
+  getTopViewer(top: number) {
+    return this.httpClient.get(this.postUrl + '/top-viewer/' + top, { headers: this.authService.getHeaders() });
+  }
+
+  getTopLikes(top: number) {
+    return this.httpClient.get(this.postUrl + '/top-likes/' + top, { headers: this.authService.getHeaders() });
   }
 
   createPost(data: any, postImages: FileList) {
@@ -27,8 +39,21 @@ export class PostService {
     return this.httpClient.post(this.postUrl, formData, { headers: this.authService.getHeaders() });
   }
 
-  updatePost(data: any) {
-    return this.httpClient.put(this.postUrl + '/likers', data, { headers: this.authService.getHeaders() });
+  updatePost(data: any, id: string, postImages: FileList) {
+    const formData: FormData = new FormData();
+    if (postImages?.length > 0) {
+      for (let i = 0; i < postImages?.length; i++) {
+        formData.append('postImages', postImages[i]);
+      }
+    }
+
+    formData.append('data', JSON.stringify(data))
+
+    return this.httpClient.put(this.postUrl + '/' + id, formData, { headers: this.authService.getHeaders() });
+  }
+
+  updatePostViews(id: string) {
+    return this.httpClient.put(this.postUrl + '/' + id + '/viewer', null, { headers: this.authService.getHeaders() });
   }
 
   deletePost(data: any) {

@@ -1,41 +1,80 @@
 .post {
+
+  &-wrapper {
+    padding: 100px;
+  }
+
+  &-imgs {
+    &-img {
+      position: relative;
+
+      img {
+        width: 100%;
+        height: 156px;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+
+      i {
+        position: absolute;
+        top: 10px;
+        right: 24px;
+        color: white;
+        font-size: 23px;
+        cursor: pointer;
+      }
+    }
+  }
+
   &-tabs {
     &-tab {
-      &-content {}
-
       &-imgs {
         &-img {
           position: relative;
+          height: 115px;
+          overflow: hidden;
 
           img {
             width: 100%;
-            height: 156px;
+            height: 100%;
             object-fit: cover;
-            border-radius: 12px;
           }
 
-          i {
+          button {
+            width: 22px;
+            height: 22px;
+            border-radius: 50px;
             position: absolute;
-            top: 10px;
-            right: 24px;
-            color: white;
-            font-size: 23px;
-            cursor: pointer;
+            top: 5px;
+            right: 20px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+            &:hover {
+              opacity: 0.6;
+            }
+
+            i {}
           }
+
         }
       }
     }
-
   }
 }
 
 .posts {
   &-wrapper {
-    padding: 0 200px;
+    padding: 200px;
   }
 
   &-inner {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+    &-btns {
+      button {
+        font-size: 14px;
+      }
+    }
   }
 
   &-post {
@@ -65,8 +104,6 @@
           opacity: 0.8;
         }
       }
-
-      &-tags {}
     }
 
     &-body {
@@ -87,6 +124,12 @@
       }
 
       &-images {
+        position: relative;
+
+        .slick-dots li button:before {
+          font-size: 14px;
+        }
+
         &-image {
           height: 360px !important;
           overflow: hidden;
@@ -95,13 +138,16 @@
 
           &:hover {
             cursor: pointer;
-            transform: scale(1.2, 1.2);
           }
         }
       }
     }
 
     &-footer {
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      padding: 10px 10px;
+      border-radius: 9px;
+
       &-count {
         opacity: 0.8;
         font-size: 15px;
@@ -151,7 +197,7 @@
         }
 
         &:active {
-          opacity: 0.8;
+          opacity: 0.5;
         }
 
         i {
@@ -161,7 +207,17 @@
 
       &-likes {}
 
-      &-views {}
+      &-views {
+        span {}
+
+        div {
+          background-color: #32d9cb;
+
+          i {
+            color: white !important;
+          }
+        }
+      }
     }
   }
 }

@@ -23,6 +23,9 @@ import { NgOptimizedImage } from '@angular/common';
 import { tokenInterceptor } from './token.injectable';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { NgxSlickJsModule } from "ngx-slickjs";
+import { PostComponent } from './post/post.component';
+import { TagViewComponent } from './tag-view/tag-view.component';
+import { PostTopComponent } from './post-top/post-top.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,9 @@ import { NgxSlickJsModule } from "ngx-slickjs";
     SignUpComponent,
     HeaderComponent,
     ProfileComponent,
+    PostComponent,
+    TagViewComponent,
+    PostTopComponent,
   ],
   imports: [
     BrowserModule,

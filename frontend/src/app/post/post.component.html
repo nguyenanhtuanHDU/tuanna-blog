@@ -1,0 +1,64 @@
+<app-header></app-header>
+<router-outlet></router-outlet>
+<div class="post-wrapper">
+  <div class="row">
+    <div class="post col-12 col-lg-8">
+      <div class="posts-inner p-3 border-radius-12">
+        <div class="posts-post-head d-flex justify-content-between">
+          <div class="d-flex">
+            <div class="posts-post-head-avatar me-3 border-radius-rounded">
+              <img *ngIf="post && post.userAvatar" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
+            </div>
+            <div class="posts-post-head-info d-flex flex-column my-auto">
+              <strong>{{post.userUsername}}</strong>
+              <span>{{formatTimeAgo(post.createdAt)}}</span>
+              <!-- <div>{{post.createdAt | date}}</div> -->
+            </div>
+          </div>
+          <div class="posts-post-head-tags">
+            <!-- <strong class="text-white">#{{post.tag}}</strong> -->
+            <app-tag-view [content]="post.tag" [type]="post.tag"></app-tag-view>
+          </div>
+        </div>
+        <div class="posts-post-body my-4">
+          <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
+
+          <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
+          <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="config">
+            <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
+              [src]="imagePath + 'posts/'+ image" alt="">
+          </div>
+          <p class="posts-post-body-content">{{post.content}}</p>
+          <!-- <button (click)="slickController.pause()">Pause</button> -->
+        </div>
+        <div class="posts-post-footer d-flex justify-content-between">
+          <div class="posts-post-footer-likes d-flex">
+            <label [for]="post._id"
+              [ngClass]="{'posts-post-footer-icon': !userSession.likes.includes(post._id), 'second': true, 'third': false}"
+              class="me-2" [class.active]="userSession.likes.includes(post._id)">
+              <i class="bi bi-suit-heart-fill text-white"></i>
+            </label>
+            <input style="overflow: hidden; width: 0; height: 0;" type="checkbox" [id]="post._id" value="like"
+              [checked]="userSession.likes.includes(post._id)" (change)="updateStatusLike($event, post._id)">
+            <!-- <span class="posts-post-footer-count">{{post.likers.length}}</span> -->
+            <span class="posts-post-footer-count">
+              {{post.likers.includes(userSession._id) && (post.likers.length === 1) ? 'You' :
+              post.likers.includes(userSession._id) && (post.likers.length > 1) ? "You and " +(post.likers.length - 1)
+              +'
+              others' :
+              (post.likers.length)}}
+            </span>
+          </div>
+          <div class="posts-post-footer-views d-flex">
+            <span class="me-2 posts-post-footer-count">{{post.views}}</span>
+            <div class="posts-post-footer-icon"><i class="bi bi-eye-fill text-white"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+      <app-post-top heading="top viewers" [postsTop]="postsViewers" type="views" icon="bi bi-eye-fill"></app-post-top>
+      <app-post-top heading="top likes" [postsTop]="postsLikers" type="likers" icon="bi bi-suit-heart-fill"></app-post-top>
+    </div>
+  </div>
+</div>

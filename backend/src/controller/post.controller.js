@@ -2,16 +2,63 @@ const Post = require("../models/post");
 const User = require("../models/user");
 var jwt = require('jsonwebtoken');
 const path = require('path');
+var fs = require('fs');
 
 module.exports = {
     getAllPosts: async (req, res) => {
         try {
-            const posts = await Post.find()
+            const posts = await Post.find().sort({ createdAt: -1 })
             res.status(200).json({
                 EC: 0,
                 data: posts
             })
         } catch (error) {
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
+    getPostByID: async (req, res) => {
+        try {
+            const data = await Post.findById(req.params.id)
+            // data.views = data.views + 1
+            // data.save()
+            res.status(200).json({
+                EC: 0,
+                data
+            })
+        } catch (error) {
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
+    getTopPostViewers: async (req, res) => {
+        try {
+            const data = await Post.find().sort({ views: -1, title: 1 }).limit(req.params.count)
+            res.status(200).json({
+                data
+            })
+        } catch (error) {
+            console.log("🚀 ~ error:", error)
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
+    getTopPostLikes: async (req, res) => {
+        try {
+            // const posts = await Post.find().sort({ likers.length: -1}).limit(req.params.count)
+            const posts = await Post.find()
+            const data = posts.sort((a, b) => b.likers.length - a.likers.length).slice(0, 5)
+            res.status(200).json({
+                data
+            })
+        } catch (error) {
+            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -31,14 +78,15 @@ module.exports = {
             const images = []
             if (!postImages || Object.keys(postImages).length === 0) {
                 return res.status(400).send('No files were uploaded.');
+            } else {
+                postImages.map(async (img, index) => {
+                    const postImageName = `${userDecoded.id}-${new Date().getTime() + index
+                        }${path.extname(img.name)}`;
+                    const uploadPath = './src/public/images/posts/' + postImageName;
+                    images.push(postImageName)
+                    await img.mv(uploadPath);
+                })
             }
-            postImages.map(async (img, index) => {
-                const postImageName = `${userDecoded.id}-${new Date().getTime() + index
-                    }${path.extname(img.name)}`;
-                const uploadPath = './src/public/images/posts/' + postImageName;
-                images.push(postImageName)
-                await img.mv(uploadPath);
-            })
             const user = await User.findById(userDecoded.id)
             data.images = images
             data.userID = userDecoded.id
@@ -58,6 +106,68 @@ module.exports = {
             })
         }
     },
+    putUpdatePost: async (req, res) => {
+        try {
+            const token = req.headers.token;
+            const accessToken = token.split(' ')[1];
+            const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
+            const data = JSON.parse(req.body.data)
+            const oldPost = await Post.findById(req.params.id)
+            const images = []
+
+            for (let img of oldPost.images) {
+                if (!data.images.includes(img)) {
+                    fs.unlinkSync('./src/public/images/posts/' + img);
+                    console.log("🚀 ~ Xóa ảnh thành công:", img)
+                }
+            }
+            console.log('>>> req.files.postImages: ', req.files);
+            if (req.files && req.files.postImages) {
+                let { postImages } = req.files
+                if (!Array.isArray(postImages)) {
+                    postImages = [postImages]
+                }
+                postImages.map(async (img, index) => {
+                    const postImageName = `${userDecoded.id}-${new Date().getTime() + index
+                        }${path.extname(img.name)}`;
+                    const uploadPath = './src/public/images/posts/' + postImageName;
+                    console.log("🚀 ~ postImageName:", postImageName)
+                    images.push(postImageName)
+                    await img.mv(uploadPath);
+                })
+                data.images = [...data.images, ...images]
+            }
+            const post = await Post.findByIdAndUpdate(req.params.id, data)
+            console.log("🚀 ~ post:", post)
+            res.status(200).json({
+                EC: 0,
+                msg: "Update post success"
+            })
+        } catch (error) {
+            console.log("🚀 ~ error:", error)
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
+    putUpdatePostViews: async (req, res) => {
+        try {
+            const data = await Post.findById(req.params.id)
+            data.views = data.views + 1
+            data.save()
+            res.status(200).json({
+                EC: 0,
+                msg: "Success"
+            })
+        } catch (error) {
+            console.log("🚀 ~ error:", error)
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
     deletePost: async (req, res) => {
         try {
             await Post.findByIdAndDelete(req.params.id)
@@ -66,6 +176,7 @@ module.exports = {
                 msg: "Delete post successfully"
             })
         } catch (error) {
+            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'

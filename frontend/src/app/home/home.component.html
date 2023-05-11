@@ -1,13 +1,13 @@
 <app-header></app-header>
 
-<button class="btn btn-primary mt-5 position-fixed" (click)="createPostModal.show()">Create post</button>
+<button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post</button>
 
 <div bsModal #createPostModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
   aria-labelledby="dialog-sizes-name1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">{{isCreate ? 'Create post' : 'Edit post'}} </h4>
         <button type="button" class="btn-close close pull-right" (click)="createPostModal.hide()" aria-label="Close">
           <span aria-hidden="true" class="visually-hidden">&times;</span>
         </button>
@@ -40,27 +40,46 @@
           <tab heading="Images" class="post-tabs-tab">
             <form class="post-tabs-tab-imgs" [formGroup]="formCreatePost">
               <div class="form-group">
-                <label for="image">Example file input</label>
+                <label for="image"></label>
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
                   multiple class="form-control-file" id="image">
               </div>
               <div class="row">
-                <div class="col-6 post-tabs-tab-imgs-img mb-4" *ngFor="let img of imagesSelected; index as i">
-                  <img [src]="img" alt="" [@fadeOut]>
-                  <i class="bi bi-x-circle-fill" (click)="deleteImagePost(i)"></i>
+                <span>Image old</span>
+                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                  *ngFor="let img of imagesSelected; index as i">
+                  <img class="border-radius-8" src="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
+                  <button class="d-flex align-items-center justify-content-center"><i class="bi bi-x"
+                      (click)="deleteImagePost(i)"></i></button>
+                </div>
+
+              </div>
+              <div class="row">
+                <span>image new</span>
+                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                  *ngFor="let img of newImagesSelected; index as i">
+                  <img class="border-radius-8" [src]="img" alt="">
+                  <button class="d-flex align-items-center justify-content-center"><i class="bi bi-x"
+                      (click)="deleteImagePost(i)"></i></button>
                 </div>
               </div>
+              <div *ngIf="isEdit" class="form-group">
+                <label for="image2">Add Image</label>
+                <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
+                  multiple class="form-control-file" id="image2">
+              </div>
+              <button (click)="imagesSelected = []; newImagesSelected = []">Clear Images</button>
             </form>
           </tab>
         </tabset>
-        <button (click)="createPost(createPostModal)">Create</button>
+        <button *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
+        <button *ngIf="isEdit" (click)="editPost()">Edit</button>
       </div>
     </div>
   </div>
 </div>
-
 <div class="row posts-wrapper">
-  <div class="col-12 col-lg-6 posts-post mb-4" *ngFor="let post of posts; index as i">
+  <div class="col-12 col-lg-6 posts-post mb-4" *ngFor="let post of posts; index as i; trackBy: trackByFn">
     <div class="posts-inner p-3 border-radius-12">
       <div class="posts-post-head d-flex justify-content-between">
         <div class="d-flex">
@@ -74,14 +93,22 @@
           </div>
         </div>
         <div class="posts-post-head-tags">
-          <strong>#{{post.tag}}</strong>
+          <!-- <strong class="text-white">#{{post.tag}}</strong> -->
+          <app-tag-view [content]="post.tag" [type]="post.tag"></app-tag-view>
         </div>
       </div>
       <div class="posts-post-body my-4">
         <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
         <p class="posts-post-body-content">{{post.content}}</p>
         <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
-        <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="config">
+        <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="{infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: false,
+        mouseWheelMove: false,
+        dots: post.images.length > 1,
+        arrows: false
+        }">
           <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
             [src]="imagePath + 'posts/'+ image" alt="">
         </div>
@@ -97,7 +124,13 @@
           </label>
           <input style="overflow: hidden; width: 0; height: 0;" type="checkbox" [id]="post._id" value="like"
             [checked]="userSession.likes.includes(post._id)" (change)="updateStatusLike($event, post._id)">
-          <span class="posts-post-footer-count">{{post.likers.length}}</span>
+          <!-- <span class="posts-post-footer-count">{{post.likers.length}}</span> -->
+          <span class="posts-post-footer-count">
+            {{post.likers.includes(userSession._id) && (post.likers.length === 1) ? 'You' :
+            post.likers.includes(userSession._id) && (post.likers.length > 1) ? "You and " +(post.likers.length - 1) +'
+            others' :
+            (post.likers.length)}}
+          </span>
         </div>
         <div class="posts-post-footer-views d-flex">
           <span class="me-2 posts-post-footer-count">{{post.views}}</span>
@@ -105,21 +138,41 @@
         </div>
       </div>
 
-
-
-
-      <!-- <button class="btn">
-      <i class="bi bi-suit-heart"></i>
-    </button> -->
-
-      {{post.likers.includes(userSession._id) ? 'You and ' + (post.likers.length - 1) +' others' : (post.likers.length)}}
-      <div *ngFor="let liker of post.likers">
-        <!-- {{liker === userSession._id ? 'You': liker}} -->
-
+      <div class="posts-inner-btns mt-3 d-flex gap-2 justify-content-end">
+        <button (click)="updatePostViews(post._id)" routerLink="/post/{{post._id}}" class="btn btn-dark">Details <i
+            class="bi bi-chevron-double-right"></i></button>
+        <button *ngIf="userSession._id === post.userID" class="btn btn-primary"
+          (click)="openModalEditPost(post._id)">Edit <i class="bi bi-pencil-square"></i></button>
+        <button *ngIf="userSession._id === post.userID" class="btn btn-danger text-white"
+          (click)="deletePost(post._id)">Delete <i class="bi bi-trash"></i></button>
       </div>
-      <button *ngIf="userSession._id === post.userID" class="btn btn-primary">Edit</button>
-      <button *ngIf="userSession._id === post.userID" class="btn btn-primary"
-        (click)="deletePost(post._id)">Delete</button>
     </div>
   </div>
 </div>
+
+<!-- MODAL editPost -->
+<!-- <div bsModal #editPost="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Edit post</h4>
+        <button type="button" class="btn-close close pull-right" (click)="editPost.hide()" aria-label="Close">
+          <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" [formGroup]="formCreatePost">
+          <input type="text" formControlName="title">
+          <input type="text" formControlName="content">
+          <input type="text" formControlName="tag">
+          <h1 *ngIf="postEdit && postEdit.images.length > 0">tuan</h1>
+          <ng-container *ngIf="postEdit && postEdit.images.length > 0">
+            <div *ngFor="let image of postEdit.images">
+              <img width="200" [src]="imagePath + 'posts/'+ image" alt="">
+            </div>
+          </ng-container>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->

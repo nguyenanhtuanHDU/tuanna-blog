@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup } from "@angular/forms";
@@ -14,6 +14,7 @@ import { SweetAlertService } from "../services/sweet-alert.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { Slick } from "ngx-slickjs";
 import { Title } from "@angular/platform-browser";
+import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 
 @Component({
   selector: 'app-home',
@@ -29,37 +30,65 @@ import { Title } from "@angular/platform-browser";
 })
 export class HomeComponent {
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
+  @ViewChild('createPostModal') createPostModal: ModalDirective;
+
+  // @ViewChild('editPost', { static: false }) editPost?: ModalDirective;
+  // modalEditPost: BsModalRef
+
   formCreatePost = new FormGroup({
     title: new FormControl(),
     content: new FormControl(),
     tag: new FormControl(),
     images: new FormControl(),
   });
+  // formEditPost = new FormGroup({
+  //   title: new FormControl(),
+  //   content: new FormControl(),
+  //   tag: new FormControl(),
+  //   images: new FormControl(),
+  // });
   imagesSelected: string[] = []
+  newImagesSelected: string[] = []
   selectedFiles: any
   posts: Post[]
+  postEdit: Post
   imagePath = environment.apiBackend + '/images/'
   userSession: User
+  postEditID: string
+  isCreate: boolean = false
+  isEdit: boolean = false
 
-  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title) {
+  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService) {
     title.setTitle("Tuanna Blog")
   }
 
-  config: Slick.Config = {
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    mouseWheelMove: false
-    // accessibility: true
-  };
+  // config: Slick.Config = {
+
+  // };
+
+  trackByFn(index: number, item: any) {
+    return item.id; // hoặc bất kỳ giá trị unique nào khác của phần tử
+  }
 
   getAllPosts() {
     this.postService.getAllPosts().subscribe((data: any) => {
       this.posts = data.data
-      this.cdr.detectChanges();
-      console.log("🚀 ~ cap nhat post:", data.data)
+      // this.cdr.detectChanges();
+    })
+  }
+
+  getPostToEditByID(id: string) {
+    this.postEditID = id
+    this.postService.getPostByID(id).subscribe((data: any) => {
+      this.postEdit = data.data
+      this.formCreatePost.get('title')?.setValue(this.postEdit.title);
+      this.formCreatePost.get('content')?.setValue(this.postEdit.content);
+      this.formCreatePost.get('tag')?.setValue(this.postEdit.tag);
+      this.createPostModal?.show()
+      this.isEdit = true
+      this.isCreate = false
+      this.imagesSelected = data.data.images
+      console.log("🚀 ~ this.imagesSelected:", this.imagesSelected)
     })
   }
 
@@ -85,13 +114,43 @@ export class HomeComponent {
     })
   }
 
+  updatePostViews(id: string) {
+    this.postService.updatePostViews(id).subscribe((data) => {
+      this.getAllPosts()
+    })
+  }
+
+  editPost() {
+    const data = this.formCreatePost.value
+    data.images = this.imagesSelected
+    console.log("🚀 ~ data:", data)
+    this.postService.updatePost(data, this.postEditID, this.selectedFiles).subscribe((data: any) => {
+      Swal.fire(
+        data.msg,
+        '',
+        'success'
+      );
+      this.getAllPosts()
+      this.createPostModal.hide()
+      this.formCreatePost.reset()
+      this.imagesSelected = []
+      this.newImagesSelected = []
+    })
+  }
+
   selectImagesPost(event: any) {
+    this.newImagesSelected = []
     this.selectedFiles = event.target.files;
+    console.log("🚀 ~ this.selectedFiles:", this.selectedFiles)
     const numberOfFiles = this.selectedFiles.length;
     for (let i = 0; i < numberOfFiles; i++) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.imagesSelected.push(e.target.result);
+        if (this.isCreate) {
+          this.imagesSelected.push(e.target.result);
+        } else if (this.isEdit) {
+          this.newImagesSelected.push(e.target.result);
+        }
       };
       reader.readAsDataURL(this.selectedFiles[i]);
     }
@@ -110,7 +169,6 @@ export class HomeComponent {
       like: event.target.checked,
       idPost
     }).subscribe((data: any) => {
-      console.log("🚀 ~ data:", data)
       this.getAllPosts()
       this.getUserSessionInfo()
     })
@@ -138,6 +196,22 @@ export class HomeComponent {
     this.userService.getUserInfo().subscribe((data: any) => {
       this.userSession = data.data
     })
+  }
+
+  openModalCreatePost() {
+    this.formCreatePost.reset()
+    this.isCreate = true
+    this.isEdit = false
+    this.imagesSelected = []
+    this.newImagesSelected = []
+    this.createPostModal?.show()
+  }
+
+  openModalEditPost(id: string) {
+    this.getPostToEditByID(id)
+    this.isEdit = true
+    this.isCreate = false
+    this.createPostModal?.show()
   }
 
   ngOnInit(): void {

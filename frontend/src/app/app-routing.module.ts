@@ -4,13 +4,15 @@ import { LogInComponent } from './log-in/log-in.component';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from "./profile/profile.component";
+import { PostComponent } from "./post/post.component";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, data: { preserveScrollPosition: true } },
+  { path: '', component: HomeComponent },
 
-  { path: 'login', component: LogInComponent, data: { preserveScrollPosition: true } },
-  { path: 'sign-up', component: SignUpComponent, data: { preserveScrollPosition: true } },
-  { path: 'profile', component: ProfileComponent, data: { preserveScrollPosition: true } },
+  { path: 'login', component: LogInComponent },
+  { path: 'sign-up', component: SignUpComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'post/:id', component: PostComponent },
 ];
 
 @NgModule({

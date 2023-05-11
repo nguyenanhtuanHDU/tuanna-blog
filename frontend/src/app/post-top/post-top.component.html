@@ -1,0 +1,29 @@
+<div class="post-popular border-radius-12 p-3">
+  <h2 class="post-popular-heading text-success">{{heading}}</h2>
+  <div class="post-popular-posts  d-flex flex-column gap-3">
+    <div class="post-popular-posts-post border-radius-8 p-2 d-flex gap-3 align-items-center"
+      *ngFor="let post of postsTop; trackBy: trackByFn" routerLink="/post/{{post._id}}"
+      (click)="updatePostViewers(post._id)">
+      <div class="post-popular-posts-post-image border-radius-rounded"><img
+          [src]="imagePath + 'avatars/' + post.userAvatar" alt=""></div>
+      <div class="post-popular-posts-post-content">
+        <div class="post-popular-posts-post-content-title fw-6">{{post.title}}</div>
+        <div class="post-popular-posts-post-content-footer d-flex flex-column fw-6">
+          <span class="d-flex">
+            <div class="me-1 posts-post-footer-icon bg-dark">
+              <i class="{{icon}} text-white" style="color: white !important"></i>
+            </div>
+            <div *ngIf="type === 'views'" style="width: 22px;">{{post.views}}</div>
+            <div *ngIf="type === 'likers'" style="width: 22px;">{{post.likers.length}}</div>
+          </span>
+          <div class="d-flex">
+            <span class="" style="width: 80px;">by {{post.userUsername}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-popular-posts-tag">
+        <app-tag-view [content]="post.tag" [type]="post.tag"></app-tag-view>
+      </div>
+    </div>
+  </div>
+</div>

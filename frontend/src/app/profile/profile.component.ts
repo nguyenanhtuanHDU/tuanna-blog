@@ -56,6 +56,10 @@ export class ProfileComponent implements OnInit {
     this.maxDate = new Date();
   }
 
+  trackByFn(index: number, item: any) {
+    return item.id; // hoặc bất kỳ giá trị unique nào khác của phần tử
+  }
+
   getListAvatarDefault(typeImage: string) {
     this.spinner.show();
     if (typeImage === 'avatar') {
@@ -111,7 +115,6 @@ export class ProfileComponent implements OnInit {
     this.editUserForm.get('birthday')?.setValue(this.user.birthday);
     this.editUserForm.get('address')?.setValue(this.user.address);
     this.editUserForm.get('gender')?.setValue(this.user.gender);
-
     setTimeout(() => {
       this.inputUsername.nativeElement.focus();
     }, 500);
@@ -163,9 +166,7 @@ export class ProfileComponent implements OnInit {
     this.spinner.show();
     this.header?.getUserInfo();
     this.userService.getUserInfo().subscribe((data: any) => {
-      console.log('🚀 ~ data:', data);
       this.user = data.data;
-      console.log("👉👉👉 ~ data.data:", data.data)
       this.srcImage = `${this.srcImagesParent}${data.data.avatar}`;
       this.srcBg = `${this.srcBgsParent}${data.data.bgAvatar}`;
       this.spinner.hide();
