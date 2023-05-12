@@ -10,5 +10,5 @@ export interface Post {
   likers: string[]
   tag: string
   images: string[]
-  // comments:string[] -> chưa phát triển
+  comments: any[]
 }

@@ -56,9 +56,14 @@
         </div>
       </div>
     </div>
+    <!-- <div>
+      <pre>{{post.comments | json}}</pre>
+    </div> -->
     <div class="col-12 col-lg-4 d-flex flex-column gap-3">
       <app-post-top heading="top viewers" [postsTop]="postsViewers" type="views" icon="bi bi-eye-fill"></app-post-top>
-      <app-post-top heading="top likes" [postsTop]="postsLikers" type="likers" icon="bi bi-suit-heart-fill"></app-post-top>
+      <app-post-top heading="top likes" [postsTop]="postsLikers" type="likers"
+        icon="bi bi-suit-heart-fill"></app-post-top>
     </div>
+
   </div>
 </div>

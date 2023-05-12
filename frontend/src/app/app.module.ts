@@ -26,6 +26,7 @@ import { NgxSlickJsModule } from "ngx-slickjs";
 import { PostComponent } from './post/post.component';
 import { TagViewComponent } from './tag-view/tag-view.component';
 import { PostTopComponent } from './post-top/post-top.component';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,9 @@ import { PostTopComponent } from './post-top/post-top.component';
     }),
     TabsModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    NgxSlickJsModule.forRoot()
+    NgxSlickJsModule.forRoot(),
+    PaginationModule.forRoot(),
+    PaginationModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true },

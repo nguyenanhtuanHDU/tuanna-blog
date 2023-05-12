@@ -1,7 +1,5 @@
 <app-header></app-header>
-
 <button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post</button>
-
 <div bsModal #createPostModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
   aria-labelledby="dialog-sizes-name1">
   <div class="modal-dialog modal-lg">
@@ -49,8 +47,7 @@
                 <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                   *ngFor="let img of imagesSelected; index as i">
                   <img class="border-radius-8" src="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
-                  <button class="d-flex align-items-center justify-content-center"><i class="bi bi-x"
-                      (click)="deleteImagePost(i)"></i></button>
+                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
                 </div>
 
               </div>
@@ -59,8 +56,7 @@
                 <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                   *ngFor="let img of newImagesSelected; index as i">
                   <img class="border-radius-8" [src]="img" alt="">
-                  <button class="d-flex align-items-center justify-content-center"><i class="bi bi-x"
-                      (click)="deleteImagePost(i)"></i></button>
+                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
                 </div>
               </div>
               <div *ngIf="isEdit" class="form-group">
@@ -101,7 +97,7 @@
         <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
         <p class="posts-post-body-content">{{post.content}}</p>
         <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
-        <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="{infinite: true,
+        <!-- <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="{infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: false,
@@ -111,8 +107,10 @@
         }">
           <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
             [src]="imagePath + 'posts/'+ image" alt="">
+        </div> -->
+        <div class="posts-post-body-images">
+          <img class="posts-post-body-images-image" [src]="imagePath + 'posts/'+ post.images[0]" alt="">
         </div>
-        <!-- <button (click)="slickController.pause()">Pause</button> -->
       </div>
 
       <div class="posts-post-footer d-flex justify-content-between">
@@ -137,42 +135,53 @@
           <div class="posts-post-footer-icon"><i class="bi bi-eye-fill text-white"></i></div>
         </div>
       </div>
+      <div class="posts-inner-comment d-flex" *ngFor="let comment of post.comments">
+        <!-- <pre>{{comment |json}}</pre> -->
+        <div class="posts-inner-comment-image">
+          <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
+        </div>
+        <div class="posts-inner-comment-content">
+          <div class="d-flex">
+            <div>{{comment.author.username}}</div>
+            <div>{{comment.createdAt | date}}</div>
+          </div>
+          <div>{{comment.content}}</div>
+          <button *ngIf="userSession._id === comment.author.id">Edit</button>
+          <button *ngIf="userSession._id === comment.author.id">Delete</button>
+        </div>
+      </div>
 
-      <div class="posts-inner-btns mt-3 d-flex gap-2 justify-content-end">
-        <button (click)="updatePostViews(post._id)" routerLink="/post/{{post._id}}" class="btn btn-dark">Details <i
-            class="bi bi-chevron-double-right"></i></button>
-        <button *ngIf="userSession._id === post.userID" class="btn btn-primary"
-          (click)="openModalEditPost(post._id)">Edit <i class="bi bi-pencil-square"></i></button>
-        <button *ngIf="userSession._id === post.userID" class="btn btn-danger text-white"
-          (click)="deletePost(post._id)">Delete <i class="bi bi-trash"></i></button>
+      <div class="d-flex my-3 gap-2 align-items-center">
+        <form class="d-block w-100" action="" [formGroup]="formCreateComment" (submit)="createComment(post._id)">
+          <textarea formControlName="content" style="resize: none;" placeholder="Type your comment" class="form-control"
+            type="text"></textarea>
+          <button type="submit">send</button>
+        </form>
+        <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
+          <button id="button-dropup" dropdownToggle type="button"
+            class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <ul id="dropdown-dropup" *dropdownMenu class="p-2 dropdown-menu" role="menu" aria-labelledby="button-dropup">
+            <li role="menuitem" class="p-2" (click)="updatePostViews(post._id)" routerLink="/post/{{post._id}}">
+              <i class="flex-center me-1 bi bi-chevron-double-right"></i> Details
+            </li>
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID"
+              (click)="openModalEditPost(post._id)">
+              <i class="flex-center me-1 bi bi-pencil-square"></i> Edit
+            </li>
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID" (click)="deletePost(post._id)">
+              <i class="flex-center me-1 bi bi-trash"></i>
+              Delete
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </div>
+<pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true"
+  [totalItems]=" ((postsCount / limitPost)) * 11" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+  lastText="&raquo;">
 
-<!-- MODAL editPost -->
-<!-- <div bsModal #editPost="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Edit post</h4>
-        <button type="button" class="btn-close close pull-right" (click)="editPost.hide()" aria-label="Close">
-          <span aria-hidden="true" class="visually-hidden">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="" [formGroup]="formCreatePost">
-          <input type="text" formControlName="title">
-          <input type="text" formControlName="content">
-          <input type="text" formControlName="tag">
-          <h1 *ngIf="postEdit && postEdit.images.length > 0">tuan</h1>
-          <ng-container *ngIf="postEdit && postEdit.images.length > 0">
-            <div *ngFor="let image of postEdit.images">
-              <img width="200" [src]="imagePath + 'posts/'+ image" alt="">
-            </div>
-          </ng-container>
-        </form>
-      </div>
-    </div>
-  </div>
-</div> -->
+</pagination>

@@ -1,3 +1,5 @@
+$line-height-content: 22px;
+
 .post {
 
   &-wrapper {
@@ -62,6 +64,7 @@
   }
 }
 
+
 .posts {
   &-wrapper {
     padding: 200px;
@@ -70,9 +73,42 @@
   &-inner {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+    .dropdown-toggle::after {
+      content: initial
+    }
+
     &-btns {
-      button {
-        font-size: 14px;
+      ul {
+        li {
+          cursor: pointer;
+          font-size: 14px;
+          border-radius: 12px;
+
+          &:hover {
+            // opacity: 0.6;
+            background-color: var(--bs-primary);
+            color: white;
+            i{
+              color: black;
+            }
+          }
+
+          i {
+            display: inline-flex !important;
+            width: 30px;
+            height: 30px;
+            border-radius: 50px;
+            background-color: #f7f7f7;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .dropdown-toggle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       }
     }
   }
@@ -115,22 +151,20 @@
       &-content {
         color: #545454;
         font-size: 15px;
-
+        line-height: $line-height-content;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        height: $line-height-content * 3;
       }
 
       &-images {
         position: relative;
 
-        .slick-dots li button:before {
-          font-size: 14px;
-        }
-
         &-image {
+          width: 100%;
           height: 360px !important;
           overflow: hidden;
           object-fit: cover;

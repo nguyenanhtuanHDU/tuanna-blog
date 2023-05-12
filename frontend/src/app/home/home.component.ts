@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, HostListener, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup } from "@angular/forms";
 import { PostService } from "../services/post.service";
@@ -15,6 +15,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Slick } from "ngx-slickjs";
 import { Title } from "@angular/platform-browser";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
+import { CommentService } from "../services/comment.service";
+import { PageChangedEvent } from "ngx-bootstrap/pagination";
 
 @Component({
   selector: 'app-home',
@@ -41,6 +43,10 @@ export class HomeComponent {
     tag: new FormControl(),
     images: new FormControl(),
   });
+  formCreateComment = new FormGroup({
+    content: new FormControl(),
+  });
+
   // formEditPost = new FormGroup({
   //   title: new FormControl(),
   //   content: new FormControl(),
@@ -57,8 +63,11 @@ export class HomeComponent {
   postEditID: string
   isCreate: boolean = false
   isEdit: boolean = false
+  postsCount: number
+  limitPost: number = 4
+  page: number = 1;
 
-  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService) {
+  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute,) {
     title.setTitle("Tuanna Blog")
   }
 
@@ -71,9 +80,9 @@ export class HomeComponent {
   }
 
   getAllPosts() {
-    this.postService.getAllPosts().subscribe((data: any) => {
+    this.postService.getAllPosts(this.page, this.limitPost).subscribe((data: any) => {
       this.posts = data.data
-      // this.cdr.detectChanges();
+      this.postsCount = Number(data.postsCount)
     })
   }
 
@@ -214,6 +223,30 @@ export class HomeComponent {
     this.createPostModal?.show()
   }
 
+  createComment(postID: string) {
+    this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content: this.formCreateComment.get('content')?.value }).subscribe((data) => {
+      console.log("🚀 ~ data:", data)
+      this.getAllPosts()
+    })
+  }
+
+
+
+  pageChanged(event: PageChangedEvent): void {
+    this.page = event.page;
+    // this.router.navigate(['?page=' + this.page + '&limit=' + this.limitPost])
+    this.router.navigate([''], { queryParams: { page: this.page, limit: this.limitPost } });
+    // this.postService.getAllPosts(this.page, this.limitPost).subscribe((data: any) => {
+    //   this.posts = data.data
+    // })
+    // this.route.queryParams.subscribe((params: Params) => {
+    //   this.page = Number(params['page'])
+    //   this.limitPost = params['limit'];
+    //   this.getAllPosts()
+    // });
+
+  }
+
   ngOnInit(): void {
     this.getUserSessionInfo()
     const token = this.authService.checkToken();
@@ -223,6 +256,14 @@ export class HomeComponent {
       this.router.navigate(['/login']);
       return;
     }
+    this.route.queryParams.subscribe((params: Params) => {
+      console.log(params['page']);
+      if (params['page'] && params['limit']) {
+        this.page = Number(params['page'])
+        this.limitPost = params['limit'];
+        this.getAllPosts()
+      }
+    });
     this.getAllPosts()
   }
 }

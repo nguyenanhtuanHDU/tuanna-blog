@@ -7,10 +7,14 @@ var fs = require('fs');
 module.exports = {
     getAllPosts: async (req, res) => {
         try {
-            const posts = await Post.find().sort({ createdAt: -1 })
+            const { page, limit } = req.query
+            const skip = (page - 1) * limit
+            const postsCount = await Post.count({}).exec()
+            const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate('comments').exec()
             res.status(200).json({
                 EC: 0,
-                data: posts
+                data: posts,
+                postsCount
             })
         } catch (error) {
             res.status(404).json({
@@ -21,7 +25,7 @@ module.exports = {
     },
     getPostByID: async (req, res) => {
         try {
-            const data = await Post.findById(req.params.id)
+            const data = await Post.findById(req.params.id).populate('comments').exec()
             // data.views = data.views + 1
             // data.save()
             res.status(200).json({
@@ -42,7 +46,6 @@ module.exports = {
                 data
             })
         } catch (error) {
-            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -51,14 +54,14 @@ module.exports = {
     },
     getTopPostLikes: async (req, res) => {
         try {
+            console.log(req.params);
             // const posts = await Post.find().sort({ likers.length: -1}).limit(req.params.count)
             const posts = await Post.find()
-            const data = posts.sort((a, b) => b.likers.length - a.likers.length).slice(0, 5)
+            const data = posts.sort((a, b) => b.likers.length - a.likers.length).slice(0, Number(req.params.count))
             res.status(200).json({
                 data
             })
         } catch (error) {
-            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -118,10 +121,8 @@ module.exports = {
             for (let img of oldPost.images) {
                 if (!data.images.includes(img)) {
                     fs.unlinkSync('./src/public/images/posts/' + img);
-                    console.log("🚀 ~ Xóa ảnh thành công:", img)
                 }
             }
-            console.log('>>> req.files.postImages: ', req.files);
             if (req.files && req.files.postImages) {
                 let { postImages } = req.files
                 if (!Array.isArray(postImages)) {
@@ -131,20 +132,17 @@ module.exports = {
                     const postImageName = `${userDecoded.id}-${new Date().getTime() + index
                         }${path.extname(img.name)}`;
                     const uploadPath = './src/public/images/posts/' + postImageName;
-                    console.log("🚀 ~ postImageName:", postImageName)
                     images.push(postImageName)
                     await img.mv(uploadPath);
                 })
                 data.images = [...data.images, ...images]
             }
             const post = await Post.findByIdAndUpdate(req.params.id, data)
-            console.log("🚀 ~ post:", post)
             res.status(200).json({
                 EC: 0,
                 msg: "Update post success"
             })
         } catch (error) {
-            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -161,7 +159,6 @@ module.exports = {
                 msg: "Success"
             })
         } catch (error) {
-            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -176,7 +173,6 @@ module.exports = {
                 msg: "Delete post successfully"
             })
         } catch (error) {
-            console.log("🚀 ~ error:", error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'

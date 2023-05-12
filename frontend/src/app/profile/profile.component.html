@@ -124,7 +124,7 @@
                 [theme]="{ width: '150px', height: '150px' }">
               </ngx-skeleton-loader>
               <a for="avatar" class="pointer-event" (click)="lgModal.show()"><i
-                  class="bi bi-camera me-2 profile-inner-right-card-body__avatar-icon border-radius-rounded bg-white position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center"></i></a>
+                  class="bi bi-camera me-2 profile-inner-right-card-body__avatar-icon border-radius-rounded bg-white position-absolute bottom-0 end-0 flex-center"></i></a>
               <div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
                 aria-labelledby="dialog-sizes-name1">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -158,7 +158,7 @@
                                 <div class="avatars-item-img ms-auto me-auto position-relative">
                                   <img class="border-radius-14" [src]="srcImagesParent + '/' + avatar"
                                     (click)="updateAvatar(avatar)" />
-                                  <i class="bi bi-trash position-absolute border-radius-rounded d-flex align-items-center justify-content-center bg-white d-none"
+                                  <i class="bi bi-trash position-absolute border-radius-rounded flex-center bg-white d-none"
                                     (click)="deleteAvatar(avatar)"></i>
                                 </div>
 
@@ -177,7 +177,7 @@
                                 ">
                                 <div class="avatars-item-img ms-auto me-auto position-relative">
                                   <img class="border-radius-14" [src]="srcBgsParent  + bg" (click)="updateBg(bg)" />
-                                  <i class="bi bi-trash position-absolute border-radius-rounded d-flex align-items-center justify-content-center bg-white d-none"
+                                  <i class="bi bi-trash position-absolute border-radius-rounded flex-center bg-white d-none"
                                     (click)="deleteBg(bg)"></i>
                                 </div>
 

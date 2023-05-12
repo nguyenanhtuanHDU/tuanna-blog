@@ -1,11 +1,11 @@
-<div class="form d-flex align-items-center justify-content-center px-md-0 px-3">
+<div class="form flex-center px-md-0 px-3">
   <video autoplay muted loop class="form-video" #videoRef>
     <source [src]="videoSrc" type="video/mp4">
   </video>
   <div class=" form-container">
     <div class="row">
       <div class="col-md-6 col-12 form-inner bg-white">
-        <div class="form-inner-header d-flex align-items-center justify-content-center mb-4">
+        <div class="form-inner-header flex-center mb-4">
           <h2 class="mb-0">Log In</h2>
         </div>
         <form class="form-inner-body d-flex flex-column" [formGroup]="signInForm" (ngSubmit)="activeLogin()">

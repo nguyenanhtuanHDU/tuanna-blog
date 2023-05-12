@@ -14,6 +14,7 @@ const {
 } = require('../controller/user.controller');
 const middleware = require('../middleware/middleware.controller');
 const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost } = require("../controller/post.controller");
+const { postCreateComment } = require("../controller/comment.controller");
 const router = express.Router();
 
 // USER
@@ -46,5 +47,8 @@ router.post('/post', middleware.verifyToken, postCreatePost)
 router.put('/post/:id/viewer', middleware.verifyToken, putUpdatePostViews)
 router.put('/post/:id', middleware.verifyToken, putUpdatePost)
 router.delete('/post/:id', middleware.verifyToken, deletePost)
+
+// COMMENT
+router.post('/comment', middleware.verifyToken, postCreateComment)
 
 module.exports = router;

@@ -14,8 +14,8 @@ export class PostService {
   constructor(private httpClient: HttpClient,
     private authService: AuthService) { }
 
-  getAllPosts() {
-    return this.httpClient.get(this.postUrl, { headers: this.authService.getHeaders() });
+  getAllPosts(page: number = 1, limit: number = 4) {
+    return this.httpClient.get(this.postUrl + '?page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 
   getPostByID(id: string) {

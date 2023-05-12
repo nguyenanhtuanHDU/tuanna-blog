@@ -66,6 +66,9 @@ button {
   }
 }
 
+.slick-dots {
+  bottom: 0;
+}
 
 .modal-open {
   overflow-y: scroll !important;
@@ -76,6 +79,12 @@ button {
 
 .btn-primary {
   color: white !important;
+}
+
+.flex-center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 /* Importing Bootstrap SCSS file. */
@@ -89,3 +98,6 @@ button {
 
 /* Importing Datepicker SCSS file. */
 @import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+
+/* Importing Bootstrap SCSS file. */
+@import "./node_modules/bootstrap/scss/bootstrap";

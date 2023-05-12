@@ -212,6 +212,7 @@ module.exports = {
         });
       }
     } catch (error) {
+      console.log("🚀 ~ error:", error)
       res.status(404).json({
         msg: 'Server error ! ',
       });
