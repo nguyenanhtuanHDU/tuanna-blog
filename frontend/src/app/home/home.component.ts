@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup } from "@angular/forms";
@@ -17,6 +17,7 @@ import { Title } from "@angular/platform-browser";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 import { CommentService } from "../services/comment.service";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
+import { NgScrollbar } from "ngx-scrollbar";
 
 @Component({
   selector: 'app-home',
@@ -33,6 +34,7 @@ import { PageChangedEvent } from "ngx-bootstrap/pagination";
 export class HomeComponent {
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
   @ViewChild('createPostModal') createPostModal: ModalDirective;
+  @ViewChildren('commentScrollbar') commentScrollbar: QueryList<NgScrollbar>;
 
   // @ViewChild('editPost', { static: false }) editPost?: ModalDirective;
   // modalEditPost: BsModalRef
@@ -43,16 +45,15 @@ export class HomeComponent {
     tag: new FormControl(),
     images: new FormControl(),
   });
+
   formCreateComment = new FormGroup({
     content: new FormControl(),
   });
 
-  // formEditPost = new FormGroup({
-  //   title: new FormControl(),
-  //   content: new FormControl(),
-  //   tag: new FormControl(),
-  //   images: new FormControl(),
-  // });
+  formEditComment = new FormGroup({
+    content: new FormControl(),
+  });
+
   imagesSelected: string[] = []
   newImagesSelected: string[] = []
   selectedFiles: any
@@ -66,14 +67,12 @@ export class HomeComponent {
   postsCount: number
   limitPost: number = 4
   page: number = 1;
+  modalCreateCommentRef?: BsModalRef;
+  indexPost: number
 
   constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute,) {
     title.setTitle("Tuanna Blog")
   }
-
-  // config: Slick.Config = {
-
-  // };
 
   trackByFn(index: number, item: any) {
     return item.id; // hoặc bất kỳ giá trị unique nào khác của phần tử
@@ -97,7 +96,6 @@ export class HomeComponent {
       this.isEdit = true
       this.isCreate = false
       this.imagesSelected = data.data.images
-      console.log("🚀 ~ this.imagesSelected:", this.imagesSelected)
     })
   }
 
@@ -223,31 +221,84 @@ export class HomeComponent {
     this.createPostModal?.show()
   }
 
-  createComment(postID: string) {
-    this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content: this.formCreateComment.get('content')?.value }).subscribe((data) => {
-      console.log("🚀 ~ data:", data)
+  createComment(postID: string, index: number) {
+    const content = this.formCreateComment.get('content')?.value
+    this.indexPost = index % this.limitPost
+    if (content) {
+      this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
+        this.getAllPosts()
+        this.formCreateComment.reset()
+
+        if (this.commentScrollbar) {
+          setTimeout(() => {
+            this.commentScrollbar.toArray()[this.indexPost].scrollTo({ bottom: 0, end: 0, duration: 500 })
+          }, 500)
+        }
+      })
+    } else {
+      Swal.fire(
+        'Please type your comment',
+        '',
+        'warning'
+      );
+    }
+
+  }
+
+  editComment(id: string) {
+    const data = this.formEditComment.value
+    this.commentService.updateComment(data, id).subscribe((data: any) => {
+      Swal.fire(
+        data.msg,
+        '',
+        'success'
+      );
       this.getAllPosts()
+      this.formEditComment.reset()
+      this.modalCreateCommentRef?.hide()
+    }, (err: any) => {
+      Swal.fire(
+        err.msg,
+        '',
+        'error'
+      );
     })
   }
 
-
+  deleteCommentByID(id: string) {
+    this.sweetAlert.yesNo('Are you sure to delete this comment ?', (() => {
+      this.commentService.deleteComment(id).subscribe((data: any) => {
+        this.getAllPosts()
+        Swal.fire(
+          data.msg,
+          '',
+          'success'
+        );
+      }, (err) => {
+        Swal.fire(
+          err.msg,
+          '',
+          'error'
+        );
+      })
+    }))
+  }
 
   pageChanged(event: PageChangedEvent): void {
     this.page = event.page;
-    // this.router.navigate(['?page=' + this.page + '&limit=' + this.limitPost])
     this.router.navigate([''], { queryParams: { page: this.page, limit: this.limitPost } });
-    // this.postService.getAllPosts(this.page, this.limitPost).subscribe((data: any) => {
-    //   this.posts = data.data
-    // })
-    // this.route.queryParams.subscribe((params: Params) => {
-    //   this.page = Number(params['page'])
-    //   this.limitPost = params['limit'];
-    //   this.getAllPosts()
-    // });
-
   }
 
+  openFormEditComment(template: TemplateRef<any>, id: string, content: string) {
+    this.formEditComment.get('content')?.setValue(content)
+    this.modalCreateCommentRef = this.bsModalService.show(template);
+  }
+
+
+
   ngOnInit(): void {
+    console.log(this.commentScrollbar);
+
     this.getUserSessionInfo()
     const token = this.authService.checkToken();
     if (

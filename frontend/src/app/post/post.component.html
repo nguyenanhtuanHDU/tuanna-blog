@@ -24,7 +24,7 @@
           <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
 
           <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
-          <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="config">
+          <div class="posts-post-body-images my-4" slickContainer #slickController="slick" [slickConfig]="config">
             <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
               [src]="imagePath + 'posts/'+ image" alt="">
           </div>
@@ -53,6 +53,81 @@
             <span class="me-2 posts-post-footer-count">{{post.views}}</span>
             <div class="posts-post-footer-icon"><i class="bi bi-eye-fill text-white"></i></div>
           </div>
+          <!-- <div>
+            <pre>{{post.comments | json}}</pre>
+          </div> -->
+
+        </div>
+      </div>
+      <ng-scrollbar style="height: 180px" #commentScrollbar appearance="standard">
+        <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
+          *ngFor="let comment of post.comments; trackBy: trackByFn">
+          <!-- <pre>{{comment |json}}</pre> -->
+          <div class="posts-inner-comment-image">
+            <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
+          </div>
+          <div class="posts-inner-comment-content">
+            <div class="d-flex justify-content-between">
+              <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
+              <div class="posts-inner-comment-content__time">
+                <span>{{formatTimeAgo(comment.createdAt)}}</span>
+              </div>
+            </div>
+            <p class="mb-0 p-2">{{comment.content}}</p>
+            <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
+              style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
+              style="right: 5px;" (click)="deleteCommentByID(comment._id)">
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <ng-template #editCommentModal>
+              <div class="modal-header">
+                <h4 class="modal-title pull-left">Edit your comment</h4>
+                <button type="button" class="btn-close close pull-right" aria-label="Close"
+                  (click)="modalCreateCommentRef?.hide()">
+                  <span aria-hidden="true" class="visually-hidden">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
+                  <input class="form-control" type="text" formControlName="content" />
+                  <button class="btn btn-primary d-flex gap-1" type="submit">
+                    <span>Update</span>
+                    <i class="bi bi-check-circle-fill"></i>
+                  </button>
+                </form>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </ng-scrollbar>
+
+      <div class="d-flex my-3 gap-2 align-items-center">
+        <form class="d-block w-100 posts-inner-form" action="" [formGroup]="formCreateComment"
+          (ngSubmit)="createComment(post._id)">
+          <input formControlName="content" placeholder="Type your comment" class="form-control" type="text" />
+          <button type="submit" class="btn">
+            <i class="bi bi-send"></i>
+          </button>
+        </form>
+        <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
+          <button id="button-dropup" dropdownToggle type="button"
+            class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <ul id="dropdown-dropup" *dropdownMenu class="p-2 dropdown-menu" role="menu" aria-labelledby="button-dropup">
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID"
+              (click)="openModalEditPost(post._id)">
+              <i class="flex-center me-1 bi bi-pencil-square"></i> Edit
+            </li>
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID" (click)="deletePost(post._id)">
+              <i class="flex-center me-1 bi bi-trash"></i>
+              Delete
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -65,5 +140,78 @@
         icon="bi bi-suit-heart-fill"></app-post-top>
     </div>
 
+  </div>
+</div>
+
+<div bsModal #createPostModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Edit post </h4>
+        <button type="button" class="btn-close close pull-right" (click)="createPostModal.hide()" aria-label="Close">
+          <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body post">
+        <tabset type="pills" class="post-tabs">
+          <tab heading="Content" class="post-tabs-tab">
+            <form class="post-tabs-tab-content" [formGroup]="formEditPost">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input class="form-control" id="title" formControlName="title">
+              </div>
+              <div class="form-group">
+                <label for="content">Content</label>
+                <textarea class="form-control" id="content" formControlName="content"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="tag">Tags</label>
+                <select id="tag" class="form-select" aria-label="Default select example" formControlName="tag">
+                  <option value="Asia">Asia</option>
+                  <option value="Europe">Europe</option>
+                  <option value="Africa">Africa</option>
+                  <option value="America">America</option>
+                  <option value="Oceania">Oceania</option>
+                  <option value="Antarctica">Antarctica</option>
+                </select>
+              </div>
+            </form>
+          </tab>
+          <tab heading="Images" class="post-tabs-tab">
+            <form class="post-tabs-tab-imgs" [formGroup]="formEditPost">
+              <div class="form-group">
+                <label for="image"></label>
+                <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
+                  multiple class="form-control-file" id="image">
+              </div>
+              <div class="row">
+                <span>Image old</span>
+                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                  *ngFor="let img of imagesSelected; index as i">
+                  <img class="border-radius-8" [src]="imagePath + '/posts/' + img" alt="">
+                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
+                </div>
+
+              </div>
+              <div class="row">
+                <span>image new</span>
+                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                  *ngFor="let img of newImagesSelected; index as i">
+                  <img class="border-radius-8" [src]="img" alt="">
+                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="image2">Add Image</label>
+                <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
+                  multiple class="form-control-file" id="image2">
+              </div>
+            </form>
+          </tab>
+        </tabset>
+        <button (click)="editPost()">Edit</button>
+      </div>
+    </div>
   </div>
 </div>

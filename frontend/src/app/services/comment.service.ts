@@ -15,4 +15,12 @@ export class CommentService {
   createPost(data: any) {
     return this.httpClient.post(this.commentUrl, data, { headers: this.authService.getHeaders() });
   }
+
+  updateComment(data: any, id: string) {
+    return this.httpClient.put(this.commentUrl + '/' + id, data, { headers: this.authService.getHeaders() });
+  }
+
+  deleteComment(id: string) {
+    return this.httpClient.delete(this.commentUrl + '/' + id, { headers: this.authService.getHeaders() });
+  }
 }

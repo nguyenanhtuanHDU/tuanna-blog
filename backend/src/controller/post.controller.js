@@ -41,7 +41,7 @@ module.exports = {
     },
     getTopPostViewers: async (req, res) => {
         try {
-            const data = await Post.find().sort({ views: -1, title: 1 }).limit(req.params.count)
+            const data = await Post.find().sort({ views: -1, title: -1 }).limit(req.params.count)
             res.status(200).json({
                 data
             })
@@ -57,7 +57,7 @@ module.exports = {
             console.log(req.params);
             // const posts = await Post.find().sort({ likers.length: -1}).limit(req.params.count)
             const posts = await Post.find()
-            const data = posts.sort((a, b) => b.likers.length - a.likers.length).slice(0, Number(req.params.count))
+            const data = posts.sort((a, b) => b.likers.length === a.likers.length ? a.title.localeCompare(b.title) : b.likers.length - a.likers.length).slice(0, Number(req.params.count))
             res.status(200).json({
                 data
             })

@@ -33,6 +33,8 @@
                   <option value="Antarctica">Antarctica</option>
                 </select>
               </div>
+              <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
+              <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
             </form>
           </tab>
           <tab heading="Images" class="post-tabs-tab">
@@ -64,12 +66,13 @@
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
                   multiple class="form-control-file" id="image2">
               </div>
-              <button (click)="imagesSelected = []; newImagesSelected = []">Clear Images</button>
+              <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
+              <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
             </form>
           </tab>
         </tabset>
-        <button *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
-        <button *ngIf="isEdit" (click)="editPost()">Edit</button>
+        <!-- <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
+        <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button> -->
       </div>
     </div>
   </div>
@@ -96,20 +99,10 @@
       <div class="posts-post-body my-4">
         <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
         <p class="posts-post-body-content">{{post.content}}</p>
-        <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
-        <!-- <div class="posts-post-body-images" slickContainer #slickController="slick" [slickConfig]="{infinite: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: false,
-        mouseWheelMove: false,
-        dots: post.images.length > 1,
-        arrows: false
-        }">
-          <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
-            [src]="imagePath + 'posts/'+ image" alt="">
-        </div> -->
         <div class="posts-post-body-images">
           <img class="posts-post-body-images-image" [src]="imagePath + 'posts/'+ post.images[0]" alt="">
+          <strong routerLink="/post/{{post._id}}" class="p-2 bg-white" *ngIf="post.images.length > 1">+
+            {{post.images.length - 1}}</strong>
         </div>
       </div>
 
@@ -135,27 +128,59 @@
           <div class="posts-post-footer-icon"><i class="bi bi-eye-fill text-white"></i></div>
         </div>
       </div>
-      <div class="posts-inner-comment d-flex" *ngFor="let comment of post.comments">
-        <!-- <pre>{{comment |json}}</pre> -->
-        <div class="posts-inner-comment-image">
-          <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
-        </div>
-        <div class="posts-inner-comment-content">
-          <div class="d-flex">
-            <div>{{comment.author.username}}</div>
-            <div>{{comment.createdAt | date}}</div>
+      <ng-scrollbar style="height: 180px" #commentScrollbar appearance="standard">
+        <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
+          *ngFor="let comment of post.comments; trackBy: trackByFn">
+          <!-- <pre>{{comment |json}}</pre> -->
+          <div class="posts-inner-comment-image">
+            <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
           </div>
-          <div>{{comment.content}}</div>
-          <button *ngIf="userSession._id === comment.author.id">Edit</button>
-          <button *ngIf="userSession._id === comment.author.id">Delete</button>
+          <div class="posts-inner-comment-content">
+            <div class="d-flex justify-content-between">
+              <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
+              <div class="posts-inner-comment-content__time">
+                <span>{{formatTimeAgo(comment.createdAt)}}</span>
+              </div>
+            </div>
+            <p class="mb-0 p-2">{{comment.content}}</p>
+            <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
+              style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
+              style="right: 5px;" (click)="deleteCommentByID(comment._id)">
+              <i class="bi bi-trash"></i>
+            </button>
+
+            <ng-template #editCommentModal>
+              <div class="modal-header">
+                <h4 class="modal-title pull-left">Edit your comment</h4>
+                <button type="button" class="btn-close close pull-right" aria-label="Close"
+                  (click)="modalCreateCommentRef?.hide()">
+                  <span aria-hidden="true" class="visually-hidden">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
+                  <input class="form-control" type="text" formControlName="content" />
+                  <button class="btn btn-primary d-flex gap-1" type="submit">
+                    <span>Update</span>
+                    <i class="bi bi-check-circle-fill"></i>
+                  </button>
+                </form>
+              </div>
+            </ng-template>
+          </div>
         </div>
-      </div>
+      </ng-scrollbar>
 
       <div class="d-flex my-3 gap-2 align-items-center">
-        <form class="d-block w-100" action="" [formGroup]="formCreateComment" (submit)="createComment(post._id)">
-          <textarea formControlName="content" style="resize: none;" placeholder="Type your comment" class="form-control"
-            type="text"></textarea>
-          <button type="submit">send</button>
+        <form class="d-block w-100 posts-inner-form" action="" [formGroup]="formCreateComment"
+          (ngSubmit)="createComment(post._id, i)">
+          <input formControlName="content" placeholder="Type your comment" class="form-control" type="text" />
+          <button type="submit" class="btn">
+            <i class="bi bi-send"></i>
+          </button>
         </form>
         <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
           <button id="button-dropup" dropdownToggle type="button"
@@ -180,8 +205,6 @@
     </div>
   </div>
 </div>
-<pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true"
-  [totalItems]=" ((postsCount / limitPost)) * 11" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
-  lastText="&raquo;">
-
+<pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true" [totalItems]=" ((postsCount / limitPost)) * 11"
+  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
 </pagination>
