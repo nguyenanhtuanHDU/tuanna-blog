@@ -76,7 +76,7 @@ export class HomeComponent {
   modalViewLikers?: BsModalRef;
   postTopComments: Post[]
   postTopCommentsCount: number = 3
-  currenrPostHeader: Post
+  currentPostHeader: Post
 
   constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socketService: SocketService) {
     title.setTitle("Tuanna Blog")
@@ -167,7 +167,7 @@ export class HomeComponent {
 
   setPostHeader(id: string) {
     this.postService.getPostByID(id).subscribe((data: any) => {
-      this.currenrPostHeader = data.data
+      this.currentPostHeader = data.data
     })
   }
 
@@ -320,9 +320,11 @@ export class HomeComponent {
   countLikes(postLikers: any) {
     let checkUser = false
     let res = ''
-    postLikers.map((post: any) => {
-      checkUser = post.userLikeID === this.userSession._id ? true : false
-    })
+    if (this.userSession && this.userSession._id) {
+      postLikers.map((post: any) => {
+        checkUser = post.userLikeID === this.userSession._id ? true : false
+      })
+    }
     if (checkUser && postLikers.length === 1) res = 'You'
     else if (checkUser && postLikers.length > 1) res = 'You and ' + (postLikers.length - 1) + ' others'
     else res = postLikers.length
@@ -348,7 +350,7 @@ export class HomeComponent {
   ngOnInit(): void {
     this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
       this.postTopComments = data.data
-      this.currenrPostHeader = this.postTopComments[0]
+      this.currentPostHeader = this.postTopComments[0]
     })
     this.getUserSessionInfo()
     const token = this.authService.checkToken();

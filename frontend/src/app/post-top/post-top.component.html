@@ -13,8 +13,10 @@
             <div class="me-1 posts-post-footer-icon bg-dark">
               <i class="{{icon}} text-white" style="color: white !important"></i>
             </div>
-            <div *ngIf="type === 'views'" style="width: 22px;">{{post.views}}</div>
-            <div *ngIf="type === 'likers'" style="width: 22px;">{{post.likers.length}}</div>
+            <div *ngIf="type" [ngSwitch]="type">
+              <div *ngSwitchCase="'views'" style="width: 22px;">{{post.views}}</div>
+              <div *ngSwitchCase="'likers'" style="width: 22px;">{{post.likers.length}}</div>
+            </div>
           </span>
           <div class="d-flex">
             <span class="" style="width: 80px;">by {{post.userUsername}}</span>

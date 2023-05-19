@@ -10,42 +10,43 @@
               <img *ngIf="post && post.userAvatar" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
             </div>
             <div class="posts-post-head-info d-flex flex-column my-auto">
-              <strong>{{post.userUsername}}</strong>
-              <span>{{formatTimeAgo(post.createdAt)}}</span>
+              <strong *ngIf="post && post.userUsername">{{post.userUsername}}</strong>
+              <span *ngIf="post && post.createdAt">{{formatTimeAgo(post.createdAt)}}</span>
               <!-- <div>{{post.createdAt | date}}</div> -->
             </div>
           </div>
           <div class="posts-post-head-tags">
             <!-- <strong class="text-white">#{{post.tag}}</strong> -->
-            <app-tag-view [type]="post.tag"></app-tag-view>
+            <app-tag-view *ngIf="post && post.tag" [type]="post.tag"></app-tag-view>
           </div>
         </div>
         <div class="posts-post-body my-4">
-          <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
-
-          <!-- <img *ngFor="let image of post.images" width="300" [src]="imagePath + 'posts/'+ image" alt=""> -->
+          <strong *ngIf="post && post.title" class="posts-post-body-title mb-2">{{post.title}}</strong>
           <div class="posts-post-body-images my-4" slickContainer #slickController="slick" [slickConfig]="config">
-            <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
-              [src]="imagePath + 'posts/'+ image" alt="">
+            <ng-container *ngIf="post && post.images">
+              <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
+                [src]="imagePath + 'posts/'+ image" alt="">
+            </ng-container>
           </div>
-          <p class="posts-post-body-content">{{post.content}}</p>
+          <p *ngIf="post && post.content" class="posts-post-body-content">{{post.content}}</p>
           <!-- <button (click)="slickController.pause()">Pause</button> -->
         </div>
         <div class="posts-post-footer d-flex justify-content-between">
           <div class="posts-post-footer-likes d-flex">
-            <label [for]="post._id"
-              [ngClass]="{'posts-post-footer-icon': !userSession.likes.includes(post._id), 'second': true, 'third': false}"
+            <label *ngIf="userSession && userSession.likes.length > 0" [for]=" post._id"
+              [ngClass]="{'posts-post-footer-icon': userSession.likes.length > 0 && !userSession.likes.includes(post._id), 'second': true, 'third': false}"
               class="me-2" [class.active]="userSession.likes.includes(post._id)">
               <i class="bi bi-suit-heart-fill text-white"></i>
             </label>
-            <input style="overflow: hidden; width: 0; height: 0;" type="checkbox" [id]="post._id" value="like"
-              [checked]="userSession.likes.includes(post._id)" (change)="updateStatusLike($event, post._id)">
-            <a class="posts-post-footer-count text-decoration-none" [title]="post.likers">
+            <input *ngIf="userSession && userSession.likes.length > 0" style="overflow: hidden; width: 0; height: 0;"
+              type="checkbox" [id]="post._id" value="like" [checked]="userSession.likes.includes(post._id)"
+              (change)="updateStatusLike($event, post._id)">
+            <a *ngIf="post && post.likers" class="posts-post-footer-count text-decoration-none" [title]="post.likers">
               {{countLikes(post.likers)}}
             </a>
           </div>
           <div class="posts-post-footer-views d-flex">
-            <span class="me-2 posts-post-footer-count">{{post.views}}</span>
+            <span *ngIf="post && post.views" class="me-2 posts-post-footer-count">{{post.views}}</span>
             <div class="posts-post-footer-icon"><i class="bi bi-eye-fill text-white"></i></div>
           </div>
           <!-- <div>
@@ -55,55 +56,59 @@
         </div>
       </div>
       <ng-scrollbar style="height: 180px" #commentScrollbar appearance="standard">
-        <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
-          *ngFor="let comment of post.comments; trackBy: trackByFn">
-          <!-- <pre>{{comment |json}}</pre> -->
-          <div class="posts-inner-comment-image">
-            <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
-          </div>
-          <div class="posts-inner-comment-content">
-            <div class="d-flex justify-content-between">
-              <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
-              <div class="posts-inner-comment-content__time">
-                <span>{{formatTimeAgo(comment.createdAt)}}</span>
-              </div>
+        <ng-container *ngIf="post && post.comments">
+          <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
+            *ngFor="let comment of post.comments; trackBy: trackByFn">
+            <!-- <pre>{{comment |json}}</pre> -->
+            <div class="posts-inner-comment-image">
+              <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
             </div>
-            <p class="mb-0 p-2">{{comment.content}}</p>
-            <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
-              style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
-              style="right: 5px;" (click)="deleteCommentByID(comment._id)">
-              <i class="bi bi-trash"></i>
-            </button>
-
-            <ng-template #editCommentModal>
-              <div class="modal-header">
-                <h4 class="modal-title pull-left">Edit your comment</h4>
-                <button type="button" class="btn-close close pull-right" aria-label="Close"
-                  (click)="modalCreateCommentRef?.hide()">
-                  <span aria-hidden="true" class="visually-hidden">&times;</span>
+            <div class="posts-inner-comment-content">
+              <div class="d-flex justify-content-between">
+                <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
+                <div class="posts-inner-comment-content__time">
+                  <span>{{formatTimeAgo(comment.createdAt)}}</span>
+                </div>
+              </div>
+              <p class="mb-0 p-2">{{comment.content}}</p>
+              <ng-container *ngIf="userSession && userSession._id">
+                <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
+                  style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
+                  <i class="bi bi-pencil-square"></i>
                 </button>
-              </div>
-              <div class="modal-body">
-                <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
-                  <input class="form-control" type="text" formControlName="content" />
-                  <button class="btn btn-primary d-flex gap-1" type="submit">
-                    <span>Update</span>
-                    <i class="bi bi-check-circle-fill"></i>
+                <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
+                  style="right: 5px;" (click)="deleteCommentByID(comment._id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </ng-container>
+              <ng-template #editCommentModal>
+                <div class="modal-header">
+                  <h4 class="modal-title pull-left">Edit your comment</h4>
+                  <button type="button" class="btn-close close pull-right" aria-label="Close"
+                    (click)="modalCreateCommentRef?.hide()">
+                    <span aria-hidden="true" class="visually-hidden">&times;</span>
                   </button>
-                </form>
-              </div>
-            </ng-template>
+                </div>
+                <div class="modal-body">
+                  <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
+                    <input class="form-control" type="text" formControlName="content" />
+                    <button class="btn btn-primary d-flex gap-1" type="submit">
+                      <span>Update</span>
+                      <i class="bi bi-check-circle-fill"></i>
+                    </button>
+                  </form>
+                </div>
+              </ng-template>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </ng-scrollbar>
 
       <div class="d-flex my-3 gap-2 align-items-center">
         <form class="d-block w-100 posts-inner-form" action="" [formGroup]="formCreateComment"
           (ngSubmit)="createComment(post._id)">
-          <input #inputComment formControlName="content" placeholder="Type your comment" class="form-control" type="text" />
+          <input #inputComment formControlName="content" placeholder="Type your comment" class="form-control"
+            type="text" />
           <button type="submit" class="btn">
             <i class="bi bi-send"></i>
           </button>

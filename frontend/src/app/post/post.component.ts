@@ -231,9 +231,11 @@ export class PostComponent {
   countLikes(postLikers: any) {
     let checkUser = false
     let res = ''
-    postLikers.map((post: any) => {
-      checkUser = post.userLikeID === this.userSession._id ? true : false
-    })
+    if (this.userSession && this.userSession._id) {
+      postLikers.map((post: any) => {
+        checkUser = post.userLikeID === this.userSession._id ? true : false
+      })
+    }
     if (checkUser && postLikers.length === 1) res = 'You'
     else if (checkUser && postLikers.length > 1) res = 'You and ' + (postLikers.length - 1) + ' others'
     else res = postLikers.length
