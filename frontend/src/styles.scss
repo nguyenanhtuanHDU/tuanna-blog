@@ -87,6 +87,16 @@ button {
   align-items: center !important;
 }
 
+.flex-center-x {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.flex-center-y {
+  display: flex !important;
+  align-items: center !important;
+}
+
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 

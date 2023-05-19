@@ -18,6 +18,10 @@ import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal"
 import { CommentService } from "../services/comment.service";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { NgScrollbar } from "ngx-scrollbar";
+import { NotificationService } from "../services/notification.service";
+import { SocketService } from "../services/socket.service";
+// import io from 'socket.io-client'
+// let socket = io('http://localhost:8000')
 
 @Component({
   selector: 'app-home',
@@ -69,9 +73,18 @@ export class HomeComponent {
   page: number = 1;
   modalCreateCommentRef?: BsModalRef;
   indexPost: number
+  modalViewLikers?: BsModalRef;
+  postTopComments: Post[]
+  postTopCommentsCount: number = 3
+  currenrPostHeader: Post
 
-  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute,) {
+  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socketService: SocketService) {
     title.setTitle("Tuanna Blog")
+    // socket = io('ws://localhost:8000')
+  }
+
+  openModalViewLikers(template: any) {
+    template.show()
   }
 
   trackByFn(index: number, item: any) {
@@ -100,6 +113,14 @@ export class HomeComponent {
   }
 
   createPost(modal: any) {
+    if (!this.formCreatePost.get('title')?.value || !this.formCreatePost.get('content')?.value || !this.formCreatePost.get('tag')?.value) {
+      Swal.fire(
+        'Please enter full field',
+        '',
+        'warning'
+      );
+      return
+    }
     if (this.selectedFiles == undefined) {
       Swal.fire(
         'You have not selected any photos yet',
@@ -130,7 +151,6 @@ export class HomeComponent {
   editPost() {
     const data = this.formCreatePost.value
     data.images = this.imagesSelected
-    console.log("🚀 ~ data:", data)
     this.postService.updatePost(data, this.postEditID, this.selectedFiles).subscribe((data: any) => {
       Swal.fire(
         data.msg,
@@ -145,10 +165,15 @@ export class HomeComponent {
     })
   }
 
+  setPostHeader(id: string) {
+    this.postService.getPostByID(id).subscribe((data: any) => {
+      this.currenrPostHeader = data.data
+    })
+  }
+
   selectImagesPost(event: any) {
     this.newImagesSelected = []
     this.selectedFiles = event.target.files;
-    console.log("🚀 ~ this.selectedFiles:", this.selectedFiles)
     const numberOfFiles = this.selectedFiles.length;
     for (let i = 0; i < numberOfFiles; i++) {
       const reader = new FileReader();
@@ -171,7 +196,14 @@ export class HomeComponent {
     return formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
   }
 
+  roundUpNumber(): number {
+    const pageCount = (this.postsCount / this.limitPost) * 10
+    return Math.floor(pageCount) !== Math.ceil(pageCount) ? pageCount + 1 : pageCount
+  }
+
   updateStatusLike(event: any, idPost: string) {
+    // this.notificationService.like()
+    this.socketService.getNotice('kkk')
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
@@ -225,6 +257,7 @@ export class HomeComponent {
     const content = this.formCreateComment.get('content')?.value
     this.indexPost = index % this.limitPost
     if (content) {
+      this.notificationService.comment()
       this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
         this.getAllPosts()
         this.formCreateComment.reset()
@@ -284,6 +317,24 @@ export class HomeComponent {
     }))
   }
 
+  countLikes(postLikers: any) {
+    let checkUser = false
+    let res = ''
+    postLikers.map((post: any) => {
+      checkUser = post.userLikeID === this.userSession._id ? true : false
+    })
+    if (checkUser && postLikers.length === 1) res = 'You'
+    else if (checkUser && postLikers.length > 1) res = 'You and ' + (postLikers.length - 1) + ' others'
+    else res = postLikers.length
+    return res
+  }
+
+  getLikers(postLikers: any) {
+    let res = ''
+    postLikers.map((liker: any) => res += liker.username + "\n")
+    return res
+  }
+
   pageChanged(event: PageChangedEvent): void {
     this.page = event.page;
     this.router.navigate([''], { queryParams: { page: this.page, limit: this.limitPost } });
@@ -294,11 +345,11 @@ export class HomeComponent {
     this.modalCreateCommentRef = this.bsModalService.show(template);
   }
 
-
-
   ngOnInit(): void {
-    console.log(this.commentScrollbar);
-
+    this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
+      this.postTopComments = data.data
+      this.currenrPostHeader = this.postTopComments[0]
+    })
     this.getUserSessionInfo()
     const token = this.authService.checkToken();
     if (

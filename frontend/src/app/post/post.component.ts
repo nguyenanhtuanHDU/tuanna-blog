@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { formatDistanceToNow } from "date-fns";
 import { Slick } from "ngx-slickjs";
 import { environment } from "src/environments/environment";
@@ -15,6 +15,7 @@ import { CommentService } from "../services/comment.service";
 import Swal from 'sweetalert2';
 import { NgScrollbar } from "ngx-scrollbar";
 import { NgxSpinnerService } from "ngx-spinner";
+import { NotificationService } from "../services/notification.service";
 
 @Component({
   selector: 'app-post',
@@ -24,6 +25,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 export class PostComponent {
   @ViewChild('commentScrollbar') commentScrollbar: NgScrollbar;
   @ViewChild('createPostModal') createPostModal: ModalDirective;
+  @ViewChild('inputComment') inputComment: ElementRef;
+
   formEditComment = new FormGroup({
     content: new FormControl(),
   });
@@ -50,8 +53,9 @@ export class PostComponent {
   newImagesSelected: string[] = []
   selectedFiles: any
   postEditID: string
+  topPost: number = 3
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private postService: PostService, private router: Router, private bsModalService: BsModalService, private sweetAlert: SweetAlertService, private commentService: CommentService, private spinner: NgxSpinnerService) {
+  constructor(private userService: UserService, private route: ActivatedRoute, private postService: PostService, private router: Router, private bsModalService: BsModalService, private sweetAlert: SweetAlertService, private commentService: CommentService, private spinner: NgxSpinnerService, private notification: NotificationService) {
 
   }
 
@@ -98,17 +102,19 @@ export class PostComponent {
   }
 
   updateStatusLike(event: any, idPost: string) {
+    this.notification.like()
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
     }).subscribe((data: any) => {
-      this.getTopPostsLikes(5)
+      this.getTopPostsLikes(3)
       this.getUserSessionInfo()
       this.getPostByID()
     })
   }
 
   createComment(postID: string) {
+    this.notification.comment()
     const content = this.formCreateComment.get('content')?.value
     if (content) {
       this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
@@ -222,6 +228,18 @@ export class PostComponent {
     })
   }
 
+  countLikes(postLikers: any) {
+    let checkUser = false
+    let res = ''
+    postLikers.map((post: any) => {
+      checkUser = post.userLikeID === this.userSession._id ? true : false
+    })
+    if (checkUser && postLikers.length === 1) res = 'You'
+    else if (checkUser && postLikers.length > 1) res = 'You and ' + (postLikers.length - 1) + ' others'
+    else res = postLikers.length
+    return res
+  }
+
   openFormEditComment(template: TemplateRef<any>, id: string, content: string) {
     this.formEditComment.get('content')?.setValue(content)
     this.modalCreateCommentRef = this.bsModalService.show(template);
@@ -242,10 +260,13 @@ export class PostComponent {
   }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.inputComment.nativeElement.focus()
+    }, 500)
     this.getPostByID()
     this.getUserSessionInfo()
-    this.getTopPostsViewers(5)
-    this.getTopPostsLikes(5)
+    this.getTopPostsViewers(this.topPost)
+    this.getTopPostsLikes(this.topPost)
     this.route.paramMap.subscribe(params => {
       this.router.navigate(['/', params.get('id')])
       this.getPostByID()

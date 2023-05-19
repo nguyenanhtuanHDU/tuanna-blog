@@ -7,7 +7,13 @@ export interface Post {
   content: string
   createdAt: string
   views: number
-  likers: string[]
+  // likers: string[]
+  likers: [{
+    userLikeID: string
+    avatar: string
+    username: string,
+    createdAt: string
+  }],
   tag: string
   images: string[]
   comments: any[]

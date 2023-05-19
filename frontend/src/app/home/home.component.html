@@ -1,5 +1,26 @@
 <app-header></app-header>
 <button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post</button>
+<div class="header">
+  <img class="header-wrapper-bg" src="../../assets/images/bgform2.jpg" alt="">
+  <div class="row">
+    <div class="header-wrapper flex-center-x flex-column gap-4 col-8 text-white">
+      <app-tag-view [type]="currenrPostHeader.tag"></app-tag-view>
+      <div class="header-wrapper__title">{{currenrPostHeader.title}}</div>
+      <div class="header-wrapper__content">{{currenrPostHeader.content}}</div>
+      <button routerLink="/post/{{currenrPostHeader._id}}" class="header-wrapper__btn d-inline-block px-3 py-2">Read
+        more</button>
+    </div>
+    <div class="header-list text-white col-4 flex-center-x flex-column gap-5">
+      <div *ngFor="let post of postTopComments" class="header-list-item p-3 d-flex flex-column gap-1"
+        (click)="setPostHeader(post._id)">
+        <app-tag-view [type]="post.tag"></app-tag-view>
+        <h4 class="">{{post.title}}</h4>
+        <span>{{post.comments.length}} comments</span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <button class="btn btn-dark" style="position: absolute;top: 200px" (click)="testSocket()">Test socket</button> -->
 <div bsModal #createPostModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
   aria-labelledby="dialog-sizes-name1">
   <div class="modal-dialog modal-lg">
@@ -12,7 +33,7 @@
       </div>
       <div class="modal-body post">
         <tabset type="pills" class="post-tabs">
-          <tab heading="Content" class="post-tabs-tab">
+          <tab heading="Content" class="post-tabs-tab p-3 my-3">
             <form class="post-tabs-tab-content" [formGroup]="formCreatePost">
               <div class="form-group">
                 <label for="title">Title</label>
@@ -33,28 +54,28 @@
                   <option value="Antarctica">Antarctica</option>
                 </select>
               </div>
-              <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
               <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
             </form>
           </tab>
-          <tab heading="Images" class="post-tabs-tab">
+          <tab heading="Images" class="post-tabs-tab p-3 my-3">
             <form class="post-tabs-tab-imgs" [formGroup]="formCreatePost">
               <div class="form-group">
-                <label for="image"></label>
+                <label for="image">Choose Images</label>
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
-                  multiple class="form-control-file" id="image">
+                  multiple class="form-control-file d-none" id="image">
               </div>
-              <div class="row">
-                <span>Image old</span>
-                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
-                  *ngFor="let img of imagesSelected; index as i">
-                  <img class="border-radius-8" src="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
-                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
+              <ng-scrollbar style="height: 265px;">
+                <div class="row">
+                  <span *ngIf="isEdit">Image old</span>
+                  <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                    *ngFor="let img of imagesSelected; index as i">
+                    <img class="border-radius-8" src="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
+                    <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
+                  </div>
                 </div>
-
-              </div>
+              </ng-scrollbar>
               <div class="row">
-                <span>image new</span>
+                <span *ngIf="isEdit">image new</span>
                 <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                   *ngFor="let img of newImagesSelected; index as i">
                   <img class="border-radius-8" [src]="img" alt="">
@@ -66,13 +87,17 @@
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
                   multiple class="form-control-file" id="image2">
               </div>
-              <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
-              <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
             </form>
           </tab>
         </tabset>
-        <!-- <button type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">Create</button>
-        <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button> -->
+        <button class="btn btn-primary" type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">
+          <span>Create</span>
+          <i class="bi bi-plus-circle-fill"></i>
+        </button>
+        <button class="btn btn-primary" type="submit" *ngIf="isEdit" (click)="editPost()">
+          <span>Edit</span>
+          <i class="bi bi-pencil-square"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -93,7 +118,7 @@
         </div>
         <div class="posts-post-head-tags">
           <!-- <strong class="text-white">#{{post.tag}}</strong> -->
-          <app-tag-view [content]="post.tag" [type]="post.tag"></app-tag-view>
+          <app-tag-view [type]="post.tag"></app-tag-view>
         </div>
       </div>
       <div class="posts-post-body my-4">
@@ -114,14 +139,39 @@
             <i class="bi bi-suit-heart-fill text-white"></i>
           </label>
           <input style="overflow: hidden; width: 0; height: 0;" type="checkbox" [id]="post._id" value="like"
-            [checked]="userSession.likes.includes(post._id)" (change)="updateStatusLike($event, post._id)">
-          <!-- <span class="posts-post-footer-count">{{post.likers.length}}</span> -->
-          <span class="posts-post-footer-count">
-            {{post.likers.includes(userSession._id) && (post.likers.length === 1) ? 'You' :
-            post.likers.includes(userSession._id) && (post.likers.length > 1) ? "You and " +(post.likers.length - 1) +'
-            others' :
-            (post.likers.length)}}
-          </span>
+            [checked]="userSession.likes.includes(post._id)"
+            (change)="notificationService.like(); updateStatusLike($event, post._id)">
+          <a class="posts-post-footer-count text-decoration-none" [title]="getLikers(post.likers)"
+            (click)="openModalViewLikers(modalViewLikers)">
+            {{countLikes(post.likers)}}
+          </a>
+          <div bsModal #modalViewLikers="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="dialog-sizes-name1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 id="dialog-sizes-name1" class="modal-title pull-left">List users likes</h4>
+                  <button type="button" class="btn-close close pull-right" (click)="modalViewLikers.hide()"
+                    aria-label="Close">
+                    <span aria-hidden="true" class="visually-hidden">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div *ngFor="let liker of post.likers" class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
+                    <!-- <div>{{liker.userLikeID}}</div> -->
+                    <div class="posts-post-footer-likers__image">
+                      <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                    </div>
+                    <div class="posts-post-footer-likers__content">
+                      <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
+                      <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
+                      <!-- <pre>{{liker | json}}</pre> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="posts-post-footer-views d-flex">
           <span class="me-2 posts-post-footer-count">{{post.views}}</span>
@@ -139,8 +189,9 @@
             <div class="d-flex justify-content-between">
               <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
               <div class="posts-inner-comment-content__time">
-                <span>{{formatTimeAgo(comment.createdAt)}}</span>
+                <span>{{formatTimeAgo(comment.updatedAt)}}</span>
               </div>
+              <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited</div>
             </div>
             <p class="mb-0 p-2">{{comment.content}}</p>
             <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
@@ -205,6 +256,8 @@
     </div>
   </div>
 </div>
-<pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true" [totalItems]=" ((postsCount / limitPost)) * 11"
-  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-</pagination>
+<div class="flex-center">
+  <pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true" [totalItems]="roundUpNumber()" [maxSize]="5"
+    previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

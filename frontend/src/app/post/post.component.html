@@ -17,7 +17,7 @@
           </div>
           <div class="posts-post-head-tags">
             <!-- <strong class="text-white">#{{post.tag}}</strong> -->
-            <app-tag-view [content]="post.tag" [type]="post.tag"></app-tag-view>
+            <app-tag-view [type]="post.tag"></app-tag-view>
           </div>
         </div>
         <div class="posts-post-body my-4">
@@ -40,14 +40,9 @@
             </label>
             <input style="overflow: hidden; width: 0; height: 0;" type="checkbox" [id]="post._id" value="like"
               [checked]="userSession.likes.includes(post._id)" (change)="updateStatusLike($event, post._id)">
-            <!-- <span class="posts-post-footer-count">{{post.likers.length}}</span> -->
-            <span class="posts-post-footer-count">
-              {{post.likers.includes(userSession._id) && (post.likers.length === 1) ? 'You' :
-              post.likers.includes(userSession._id) && (post.likers.length > 1) ? "You and " +(post.likers.length - 1)
-              +'
-              others' :
-              (post.likers.length)}}
-            </span>
+            <a class="posts-post-footer-count text-decoration-none" [title]="post.likers">
+              {{countLikes(post.likers)}}
+            </a>
           </div>
           <div class="posts-post-footer-views d-flex">
             <span class="me-2 posts-post-footer-count">{{post.views}}</span>
@@ -108,7 +103,7 @@
       <div class="d-flex my-3 gap-2 align-items-center">
         <form class="d-block w-100 posts-inner-form" action="" [formGroup]="formCreateComment"
           (ngSubmit)="createComment(post._id)">
-          <input formControlName="content" placeholder="Type your comment" class="form-control" type="text" />
+          <input #inputComment formControlName="content" placeholder="Type your comment" class="form-control" type="text" />
           <button type="submit" class="btn">
             <i class="bi bi-send"></i>
           </button>

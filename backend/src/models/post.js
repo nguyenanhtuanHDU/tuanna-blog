@@ -8,7 +8,22 @@ const postSchema = new mongoose.Schema(
         title: { type: String },
         content: { type: String },
         views: { type: Number, default: 0 },
-        likers: { type: [String], default: [] },
+        // likers: { type: [String], default: [] },
+        likers: [{
+            type: new mongoose.Schema({
+                userLikeID: {
+                    type: String
+                },
+                avatar: {
+                    type: String
+                },
+                username: {
+                    type: String
+                }
+            }, {
+                timestamps: true,
+            })
+        }],
         tag: { type: String, require: true },
         images: { type: [String], default: [] },
         comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment' }],

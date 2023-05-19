@@ -13,7 +13,7 @@ const {
   putUpdateUserLikes,
 } = require('../controller/user.controller');
 const middleware = require('../middleware/middleware.controller');
-const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost } = require("../controller/post.controller");
+const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments } = require("../controller/post.controller");
 const { postCreateComment, putUpdateComment, deleteComment } = require("../controller/comment.controller");
 const router = express.Router();
 
@@ -43,6 +43,7 @@ router.get('/post', middleware.verifyToken, getAllPosts)
 router.get('/post/:id', middleware.verifyToken, getPostByID)
 router.get('/post/top-viewer/:count', middleware.verifyToken, getTopPostViewers)
 router.get('/post/top-likes/:count', middleware.verifyToken, getTopPostLikes)
+router.get('/post/top-comments/:count', middleware.verifyToken, getTopPostComments)
 router.post('/post', middleware.verifyToken, postCreatePost)
 router.put('/post/:id/viewer', middleware.verifyToken, putUpdatePostViews)
 router.put('/post/:id', middleware.verifyToken, putUpdatePost)

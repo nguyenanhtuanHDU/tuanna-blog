@@ -30,6 +30,10 @@ export class PostService {
     return this.httpClient.get(this.postUrl + '/top-likes/' + top, { headers: this.authService.getHeaders() });
   }
 
+  getTopComments(top: number) {
+    return this.httpClient.get(this.postUrl + '/top-comments/' + top, { headers: this.authService.getHeaders() });
+  }
+
   createPost(data: any, postImages: FileList) {
     const formData: FormData = new FormData();
     for (let i = 0; i < postImages.length; i++) {

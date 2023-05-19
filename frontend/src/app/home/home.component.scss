@@ -1,5 +1,94 @@
 $line-height-content: 22px;
 
+.header {
+  margin-top: var(--header-height);
+  padding: 0 100px;
+  text-shadow: #fc0 1px 0 10px;
+
+  &-wrapper {
+    height: 100vh;
+    position: relative;
+    padding: 0 300px 0 50px;
+
+    &-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      background-color: rgba(0, 0, 0, 0.35);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &__title {
+      font-size: 50px;
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__content {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__btn {
+      width: fit-content;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0);
+      border: 3px solid white !important;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: white;
+      transition: 0.6s ease;
+
+      &:hover {
+        background-color: white;
+        color: black;
+      }
+
+    }
+  }
+
+  &-list {
+    &-item {
+      position: relative;
+      cursor: pointer;
+      padding: 12px;
+
+      &:hover::after {
+        opacity: 1;
+      }
+
+      &::after {
+        border: 3px solid white;
+        opacity: 0;
+        border-radius: 12px;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: 0.6s ease;
+      }
+    }
+
+    h4 {}
+
+    span {}
+  }
+}
+
 .post {
 
   &-wrapper {
@@ -30,6 +119,9 @@ $line-height-content: 22px;
 
   &-tabs {
     &-tab {
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      border-radius: 8px;
+
       &-imgs {
         &-img {
           position: relative;
@@ -67,7 +159,7 @@ $line-height-content: 22px;
 
 .posts {
   &-wrapper {
-    padding: 200px;
+    padding: 80px 200px;
   }
 
   &-inner {
@@ -276,6 +368,7 @@ $line-height-content: 22px;
       &-count {
         opacity: 0.8;
         font-size: 15px;
+        cursor: pointer;
       }
 
       &-icon {
@@ -341,6 +434,34 @@ $line-height-content: 22px;
           i {
             color: white !important;
           }
+        }
+      }
+
+      &-likers {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        border-radius: 12px;
+
+        &__image {
+          width: 40px;
+          height: 40px;
+          border-radius: 50px;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        &__username {
+          line-height: 20px;
+          font-size: 15px;
+        }
+
+        &__time {
+          font-size: 13px;
+          opacity: 0.8;
         }
       }
     }

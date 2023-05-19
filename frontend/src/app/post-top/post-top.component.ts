@@ -23,7 +23,6 @@ export class PostTopComponent {
     const id = route.snapshot.paramMap.get('id');
     if (id !== null && id !== undefined) {
       this.idPost = id;
-      console.log("🚀 ~ this.idPost:", this.idPost);
     }
   }
 

@@ -38,7 +38,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     ProfileComponent,
     PostComponent,
     TagViewComponent,
-    PostTopComponent,
+    PostTopComponent
   ],
   imports: [
     BrowserModule,
@@ -61,11 +61,10 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     TabsModule.forRoot(),
     BsDatepickerModule.forRoot(),
     NgxSlickJsModule.forRoot(),
-    PaginationModule.forRoot(),
     PaginationModule.forRoot()
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
 })

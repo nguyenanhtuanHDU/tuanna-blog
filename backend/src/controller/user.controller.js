@@ -107,18 +107,25 @@ module.exports = {
   },
   putUpdateUserLikes: async (req, res) => {
     try {
-
       const data = req.body
       const userRedisStr = await client.get(process.env.REDIS_USER);
       const userRedis = JSON.parse(userRedisStr)
       const post = await Post.findById(data.idPost)
-
+      let postData = {}
+      postData.userLikeID = userRedis._id
+      postData.username = userRedis.username
+      postData.avatar = userRedis.avatar
       if (!userRedis.likes.includes(data.idPost) && data.like == true) {
         userRedis.likes.push(data.idPost)
-        post.likers.push(userRedis._id)
+        post.likers.push(postData)
       } else if (userRedis.likes.includes(data.idPost) && data.like == false) {
         userRedis.likes.splice(userRedis.likes.indexOf(data.idPost), 1)
-        post.likers.splice(post.likers.indexOf(userRedis._id), 1)
+        post.likers.map((item, index) => {
+          if (item.userLikeID === userRedis._id) {
+            post.likers.splice(index, 1)
+            return
+          }
+        })
       }
       await client.set(process.env.REDIS_USER, JSON.stringify(userRedis));
       await post.save()
