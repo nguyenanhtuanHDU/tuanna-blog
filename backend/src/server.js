@@ -5,13 +5,7 @@ const app = express();
 const { Server } = require('socket.io')
 const server = http.createServer(app)
 const mongoose = require('mongoose');
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
-const { initialize } = require("./services/socket")
+
 mongoose.set('strictQuery', true);
 var cors = require('cors');
 const fileUpload = require('express-fileupload');
@@ -41,11 +35,21 @@ app.use('/upload', uploadRoute);
 
 (async () => {
   try {
-    initialize(server)
     server.listen(port, hostname, () => {
       console.log(`Server listening on port ${port}`);
     });
     await connection();
+    global.io = new Server(server, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+      },
+    });
+    // io.on('connection', (socket) => {
+    //   socket.on('room1', (data) => {
+    //     console.log(`🚀 ~ data:`, data)
+    //   })
+    // })
   } catch (error) {
     console.log(`🚀 ~ error:`, error)
   }

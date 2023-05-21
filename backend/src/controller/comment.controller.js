@@ -34,8 +34,6 @@ module.exports = {
     },
     putUpdateComment: async (req, res) => {
         try {
-            console.log(req.params);
-            console.log(req.body);
             await Comment.findByIdAndUpdate(req.params.id, req.body)
             res.status(200).json({
                 msg: 'Update comment successfully'

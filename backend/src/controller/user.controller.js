@@ -3,6 +3,7 @@ const User = require('../models/user');
 const fs = require('fs');
 const client = require('../config/redis');
 const Post = require("../models/post");
+const { createNotice } = require("../services/notice.services");
 
 module.exports = {
 
@@ -112,12 +113,27 @@ module.exports = {
       const userRedis = JSON.parse(userRedisStr)
       const post = await Post.findById(data.idPost)
       let postData = {}
+
       postData.userLikeID = userRedis._id
       postData.username = userRedis.username
       postData.avatar = userRedis.avatar
+
       if (!userRedis.likes.includes(data.idPost) && data.like == true) {
         userRedis.likes.push(data.idPost)
         post.likers.push(postData)
+        const notice = await createNotice({
+          id: userRedis._id,
+          username: userRedis.username,
+          avatar: userRedis.avatar
+        }, {
+          id: post.userID
+        }, 'like')
+        io.on('connection', socket => {
+          socket.on('notice', (data) => {
+            console.log(`🚀 ~ data:`, data)
+            io.emit('notice', notice)
+          })
+        });
       } else if (userRedis.likes.includes(data.idPost) && data.like == false) {
         userRedis.likes.splice(userRedis.likes.indexOf(data.idPost), 1)
         post.likers.map((item, index) => {

@@ -54,4 +54,7 @@ router.post('/comment', middleware.verifyToken, postCreateComment)
 router.put('/comment/:id', middleware.verifyToken, putUpdateComment)
 router.delete('/comment/:id', middleware.verifyToken, deleteComment)
 
+// NOTICE
+// router.post('/notice', middleware.verifyToken, postCreateNotice)
+
 module.exports = router;

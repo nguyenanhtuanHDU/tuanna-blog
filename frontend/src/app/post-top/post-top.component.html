@@ -1,5 +1,5 @@
 <div class="post-popular border-radius-12 p-3">
-  <h2 class="post-popular-heading text-success">{{heading}}</h2>
+  <h2 class="post-popular-heading text-success">{{heading | uppercase}}</h2>
   <div class="post-popular-posts  d-flex flex-column gap-3">
     <div class="post-popular-posts-post border-radius-8 p-2 d-flex gap-3 align-items-center"
       *ngFor="let post of postsTop; trackBy: trackByFn" routerLink="/post/{{post._id}}"

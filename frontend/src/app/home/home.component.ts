@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup } from "@angular/forms";
@@ -20,28 +20,24 @@ import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { NgScrollbar } from "ngx-scrollbar";
 import { NotificationService } from "../services/notification.service";
 import { SocketService } from "../services/socket.service";
-// import io from 'socket.io-client'
-// let socket = io('http://localhost:8000')
+import { Socket } from "ngx-socket-io";
+// import { Socket, io } from 'socket.io-client'
+// const socket = io('ws://localhost:8000')
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  animations: [
-    trigger('fadeOut', [
-      transition(':leave', [
-        animate('0.5s ease-out', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
   @ViewChild('createPostModal') createPostModal: ModalDirective;
   @ViewChildren('commentScrollbar') commentScrollbar: QueryList<NgScrollbar>;
 
   // @ViewChild('editPost', { static: false }) editPost?: ModalDirective;
   // modalEditPost: BsModalRef
+  // private socket: Socket
 
   formCreatePost = new FormGroup({
     title: new FormControl(),
@@ -77,10 +73,14 @@ export class HomeComponent {
   postTopComments: Post[]
   postTopCommentsCount: number = 3
   currentPostHeader: Post
+  dataSocket: any
 
-  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socketService: SocketService) {
+  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socket: Socket) {
     title.setTitle("Tuanna Blog")
-    // socket = io('ws://localhost:8000')
+    this.socket.on('notice', (data: any) => {
+      console.log('Dữ liệu từ máy chủ:', data);
+      this.dataSocket = data
+    });
   }
 
   openModalViewLikers(template: any) {
@@ -202,8 +202,8 @@ export class HomeComponent {
   }
 
   updateStatusLike(event: any, idPost: string) {
-    // this.notificationService.like()
-    this.socketService.getNotice('kkk')
+    this.socket.emit('notice', { name: 'tuan', age: 25 });
+
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
@@ -348,6 +348,13 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
+    // this.socket.on('connect', () => {
+    //   console.log('Kết nối socket thành công');
+
+    //   this.socket.on('notice', (data: any) => {
+    //     console.log('Dữ liệu từ máy chủ:', data);
+    //   });
+    // });
     this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
       this.postTopComments = data.data
       this.currentPostHeader = this.postTopComments[0]

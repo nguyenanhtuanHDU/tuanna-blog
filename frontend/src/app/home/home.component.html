@@ -1,5 +1,7 @@
 <app-header></app-header>
-<button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post</button>
+<button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post
+  {{dataSocket}}
+</button>
 <div class="header">
   <img class="header-wrapper-bg" *ngIf="currentPostHeader && currentPostHeader.images"
     [src]="imagePath + 'posts/' + currentPostHeader.images[0]" alt="">
@@ -7,12 +9,11 @@
     <div class="header-wrapper flex-center-x flex-column gap-4 col-8 text-white">
       <app-tag-view *ngIf="currentPostHeader && currentPostHeader.tag" [type]="currentPostHeader.tag"></app-tag-view>
       <div *ngIf="currentPostHeader && currentPostHeader.title" class="header-wrapper__title">
-        {{currentPostHeader.title}}</div>
+        {{currentPostHeader.title | titlecase}}</div>
       <div *ngIf="currentPostHeader && currentPostHeader.content" class="header-wrapper__content">
         {{currentPostHeader.content}}</div>
       <button *ngIf="currentPostHeader && currentPostHeader._id" [routerLink]="['/post/',currentPostHeader._id]"
-        class="header-wrapper__btn d-inline-block px-3 py-2">Read
-        more</button>
+        class="header-wrapper__btn d-inline-block px-3 py-2">{{"Read more" | uppercase}}</button>
     </div>
     <div class="header-list text-white col-4 flex-center-x flex-column gap-5">
       <div *ngFor="let post of postTopComments" class="header-list-item p-3 d-flex flex-column gap-1"
@@ -24,7 +25,6 @@
     </div>
   </div>
 </div>
-<!-- <button class="btn btn-dark" style="position: absolute;top: 200px" (click)="testSocket()">Test socket</button> -->
 <div bsModal #createPostModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
   aria-labelledby="dialog-sizes-name1">
   <div class="modal-dialog modal-lg">

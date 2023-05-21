@@ -14,9 +14,11 @@ export class PostTopComponent {
   @Input() postsTop: Post[]
   @Input() icon: string
   @Input() type: string
-  @Output() getNewPost = new EventEmitter();
+  // @Output() getNewPost = new EventEmitter();
+  @Output() changeViews = new EventEmitter<boolean>();
 
   idPost: string
+  isChangeViews: boolean = false
 
   imagePath = environment.apiBackend + '/images/'
   constructor(private router: Router, private postService: PostService, route: ActivatedRoute) {
@@ -26,16 +28,27 @@ export class PostTopComponent {
     }
   }
 
+  onChangeViews() {
+    this.isChangeViews = false
+    this.changeViews.emit(this.isChangeViews);
+    this.isChangeViews = true
+  }
+
   trackByFn(index: number, item: any) {
     return item.id;
   }
 
   updatePostViewers(id: string) {
     if (this.idPost !== id) {
+      this.onChangeViews()
       this.idPost !== id && this.postService.updatePostViews(id).subscribe((data: any) => {
         console.log("🚀 ~ data:", data)
       })
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(`🚀 ~ changes:`, changes)
   }
 
   ngOnInit(): void {

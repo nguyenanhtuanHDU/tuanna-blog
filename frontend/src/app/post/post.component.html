@@ -67,7 +67,9 @@
               <div class="d-flex justify-content-between">
                 <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
                 <div class="posts-inner-comment-content__time">
-                  <span>{{formatTimeAgo(comment.createdAt)}}</span>
+                  <span>{{formatTimeAgo(comment.updatedAt)}}</span>
+                </div>
+                <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited
                 </div>
               </div>
               <p class="mb-0 p-2">{{comment.content}}</p>
@@ -91,7 +93,8 @@
                 </div>
                 <div class="modal-body">
                   <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
-                    <input class="form-control" type="text" formControlName="content" />
+                    <input class="form-control" type="text" #editCommentInput formControlName="content" />
+                    {{ editCommentInput.focus() }}
                     <button class="btn btn-primary d-flex gap-1" type="submit">
                       <span>Update</span>
                       <i class="bi bi-check-circle-fill"></i>
@@ -135,7 +138,8 @@
       <pre>{{post.comments | json}}</pre>
     </div> -->
     <div class="col-12 col-lg-4 d-flex flex-column gap-3">
-      <app-post-top heading="top viewers" [postsTop]="postsViewers" type="views" icon="bi bi-eye-fill"></app-post-top>
+      <app-post-top (changeViews)="onAngleChanged($event)" heading="top viewers" [postsTop]="postsViewers" type="views"
+        icon="bi bi-eye-fill"></app-post-top>
       <app-post-top heading="top likes" [postsTop]="postsLikers" type="likers"
         icon="bi bi-suit-heart-fill"></app-post-top>
     </div>

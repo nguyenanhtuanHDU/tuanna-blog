@@ -54,8 +54,6 @@ module.exports = {
     },
     getTopPostLikes: async (req, res) => {
         try {
-            console.log(req.params);
-            console.log(`🚀 ~ req.params:`, req.params)
             const posts = await Post.find()
             const data = posts.sort((a, b) => b.likers.length === a.likers.length ? a.title.localeCompare(b.title) : b.likers.length - a.likers.length).slice(0, Number(req.params.count))
             res.status(200).json({
@@ -70,7 +68,6 @@ module.exports = {
     },
     getTopPostComments: async (req, res) => {
         try {
-            console.log(req.params);
             const posts = await Post.find()
             const data = posts.sort((a, b) => b.comments.length === a.comments.length ? a.title.localeCompare(b.title) : b.comments.length - a.comments.length).slice(0, Number(req.params.count))
             res.status(200).json({

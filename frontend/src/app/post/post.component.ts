@@ -84,6 +84,8 @@ export class PostComponent {
   }
 
   getTopPostsViewers(top: number) {
+    console.log('>>> load lai top view');
+
     this.postService.getTopViewer(top).subscribe((data: any) => {
       this.postsViewers = data.data
     })
@@ -240,6 +242,16 @@ export class PostComponent {
     else if (checkUser && postLikers.length > 1) res = 'You and ' + (postLikers.length - 1) + ' others'
     else res = postLikers.length
     return res
+  }
+
+  onAngleChanged(changeViews: boolean) {
+    if (!changeViews) {
+      setTimeout(() => {
+        this.postService.getTopViewer(this.topPost).subscribe((data: any) => {
+          this.postsViewers = data.data
+        })
+      }, 500)
+    }
   }
 
   openFormEditComment(template: TemplateRef<any>, id: string, content: string) {

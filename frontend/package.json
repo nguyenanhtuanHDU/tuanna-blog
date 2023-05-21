@@ -41,6 +41,7 @@
     "ngx-scrollbar": "^11.0.0",
     "ngx-skeleton-loader": "^7.0.0",
     "ngx-slickjs": "^1.5.2",
+    "ngx-socket-io": "^4.5.1",
     "ngx-spinner": "^15.0.1",
     "ngx-toastr": "^16.1.0",
     "rxjs": "~7.5.0",

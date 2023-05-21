@@ -27,6 +27,8 @@ import { PostComponent } from './post/post.component';
 import { TagViewComponent } from './tag-view/tag-view.component';
 import { PostTopComponent } from './post-top/post-top.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     TabsModule.forRoot(),
     BsDatepickerModule.forRoot(),
     NgxSlickJsModule.forRoot(),
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    SocketIoModule.forRoot(config)
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true }
