@@ -95,19 +95,16 @@ export class HeaderComponent implements OnInit {
     })
   }
 
-  resetReadNotice(id: string, type: string, userID: string = '', postID: string = '') {
-    this.noticeService.resetNotices(id, type, userID, postID).subscribe((data: any) => {
+  resetReadNotice(id: string, type: string, noticeID: string) {
+    this.noticeService.resetNotices(id, type, noticeID).subscribe((data: any) => {
       this.getUserInfo();
       this.getNoticesByID(this.user._id)
     })
   }
 
-  changeId(id: string, type: string, userID: string, postID: string) {
+  changeId(id: string, type: string, noticeID: string) {
     this.router.navigate(['/post', id]);
-    // this.noticeService.resetNotices(id, type, userID, postID).subscribe((data: any) => {
-    //   this.getUserInfo();
-    // })
-    this.resetReadNotice(id, type, userID, postID)
+    this.resetReadNotice(id, type, noticeID)
     this.getNoticesByID(this.user._id)
   }
 

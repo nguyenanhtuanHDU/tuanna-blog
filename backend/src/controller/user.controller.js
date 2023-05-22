@@ -36,7 +36,7 @@ module.exports = {
       console.log(error);
       return res.status(404).json({
         EC: -1,
-        msg: 'Server error !',
+        msg: 'Server error',
       });
     }
   },
@@ -103,7 +103,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
   },
@@ -159,7 +159,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
 
@@ -187,7 +187,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
   },
@@ -243,7 +243,7 @@ module.exports = {
     } catch (error) {
       console.log("🚀 ~ error:", error)
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
   },
@@ -268,7 +268,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
   },
@@ -327,7 +327,7 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(404).json({
-        msg: 'Server error ! ',
+        msg: 'Server error',
       });
     }
   },

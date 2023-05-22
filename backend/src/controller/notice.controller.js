@@ -13,7 +13,7 @@ module.exports = {
             res.status(404).json({
                 EC: -1,
                 data: null,
-                msg: 'Server error !',
+                msg: 'Server error',
             });
         }
     },
@@ -25,25 +25,26 @@ module.exports = {
             res.status(404).json({
                 EC: -1,
                 data: null,
-                msg: 'Server error !',
+                msg: 'Server error',
             });
         }
     },
     postResetNotice: async (req, res) => {
         try {
-            const { type, userID, postID } = req.body
+            const { type, noticeID } = req.body
+            console.log(`🚀 ~ noticeID:`, noticeID)
             if (type === 'isRead') {
                 await Notice.updateMany({ 'userGet.id': req.params.id }, { isRead: true })
+                // reset all notice read
             } else if (type === 'isClick') {
-                const notice = await Notice.findOneAndUpdate({ postID, 'userGet.id': userID }, { isClick: true })
-                console.log(`🚀 ~ notice:`, notice)
+                const notice = await Notice.findByIdAndUpdate(noticeID, { isClick: true })
             }
         } catch (error) {
             console.log(`🚀 ~ error:`, error)
             res.status(404).json({
                 EC: -1,
                 data: null,
-                msg: 'Server error !',
+                msg: 'Server error',
             });
         }
     }

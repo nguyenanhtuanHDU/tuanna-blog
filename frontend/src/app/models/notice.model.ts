@@ -1,4 +1,5 @@
 export interface Notice {
+  _id: string,
   userSend: {
     id: string,
     username: string,

@@ -43,7 +43,7 @@
           </button>
         </form>
         <div class="btn-group" dropdown placement="bottom right">
-          <button (click)="noticeCount = 0; resetReadNotice(user._id, 'isRead')" id="button-alignment" dropdownToggle
+          <button (click)="noticeCount = 0; resetReadNotice(user._id, 'isRead', '')" id="button-alignment" dropdownToggle
             type="button" class="header-inner-right__btn  bg-white text-primary btn dropdown-toggle"
             aria-controls="dropdown-alignment">
             <i class="bi bi-bell-fill"></i>
@@ -53,10 +53,11 @@
           </button>
           <ul id="dropdown-alignment" *dropdownMenu class="header-inner-notices dropdown-menu dropdown-menu-right p-2"
             role="menu" aria-labelledby="button-alignment">
-            <ng-scrollbar style="height: 338px; width: 300px;">
-              <li (click)="changeId(notice.postID, 'isClick', user._id, notice.postID)" role="menuitem"
+            <ng-scrollbar style="height: 338px !important; width: 300px;">
+              <li (click)="changeId(notice.postID, 'isClick', notice._id)" role="menuitem"
                 class="header-inner-notices-notice p-2 gap-2 flex-center-y" *ngFor="let notice of listNotices">
-                <div *ngIf="!notice.isClick" class="header-inner-notices-notice__dot text-primary"><i class="bi bi-dot"></i></div>
+                <div *ngIf="!notice.isClick" class="header-inner-notices-notice__dot text-primary"><i
+                    class="bi bi-dot"></i></div>
                 <div class="header-inner-notices-notice__image">
                   <img width="30" [src]="imagePath + 'avatars/' + notice.userSend.avatar" alt="">
                   <ng-container [ngSwitch]="notice.type">
@@ -65,7 +66,7 @@
                       <i class="bi bi-suit-heart-fill"></i>
                     </div>
                     <div class="header-inner-notices-notice__image-icon flex-center bg-white" *ngSwitchCase="'comment'">
-                      <i class="bi bi-chat-square-fill"></i>
+                      <i class="bi bi-chat-square-fill text-info"></i>
                     </div>
                   </ng-container>
                 </div>

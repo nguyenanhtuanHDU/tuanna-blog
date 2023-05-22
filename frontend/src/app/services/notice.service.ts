@@ -16,8 +16,8 @@ export class NoticeService {
     return this.httpClient.get(this.noticeUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
 
-  resetNotices(id: string, type: string, userID: string, postID: string) {
-    const data = { type, userID,postID }
+  resetNotices(id: string, type: string, noticeID: string) {
+    const data = { type, noticeID }
     return this.httpClient.post(this.noticeUrl + '/' + id, data, { headers: this.authService.getHeaders() });
   }
 }

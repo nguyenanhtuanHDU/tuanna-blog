@@ -30,7 +30,7 @@ module.exports = {
       res.status(404).json({
         EC: -1,
         data: null,
-        msg: 'Server error !',
+        msg: 'Server error',
       });
     }
   },
@@ -81,7 +81,7 @@ module.exports = {
       console.log(error);
       res.status(404).json({
         EC: -1,
-        msg: 'Server error !',
+        msg: 'Server error',
       });
     }
   },
