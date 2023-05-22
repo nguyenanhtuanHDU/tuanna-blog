@@ -17,7 +17,8 @@ export interface User {
   listAvatarsDefault: string[];
   listBgAvatarsDefault: string[];
   totalUploadFileSize: number;
-  likes: string[]
+  likes: string[];
+  notices: any[]
 }
 
 

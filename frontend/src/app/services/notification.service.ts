@@ -19,4 +19,9 @@ export class NotificationService {
     this.audio.src = '../assets/audio/comment.mp3';
     this.audio.play();
   }
+
+  notice() {
+    this.audio.src = '../assets/audio/notice.mp3';
+    this.audio.play();
+  }
 }

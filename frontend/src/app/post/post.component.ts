@@ -244,6 +244,10 @@ export class PostComponent {
     return res
   }
 
+  openModalViewLikers(template: any) {
+    template.show()
+  }
+
   onAngleChanged(changeViews: boolean) {
     if (!changeViews) {
       setTimeout(() => {

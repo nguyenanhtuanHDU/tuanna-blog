@@ -24,6 +24,7 @@ module.exports = {
     try {
       const accessToken = req.headers.token.split(' ')[1];
       const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
+      const user = await User.findById(userDecoded._id).populate('notices')
       const usersInfoStr = await client.get(process.env.REDIS_USER);
 
       const { password, ...data } = JSON.parse(usersInfoStr)
@@ -127,7 +128,12 @@ module.exports = {
           avatar: userRedis.avatar
         }, {
           id: post.userID
-        }, 'like')
+        }, 'like', post._id)
+        const user = await User.findById(post.userID)
+        if (userRedis._id !== post.userID && notice) {
+          user.notices.push(notice._id)
+          await user.save()
+        }
         io.on('connection', socket => {
           socket.on('notice', (data) => {
             console.log(`🚀 ~ data:`, data)

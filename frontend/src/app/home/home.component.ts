@@ -21,6 +21,8 @@ import { NgScrollbar } from "ngx-scrollbar";
 import { NotificationService } from "../services/notification.service";
 import { SocketService } from "../services/socket.service";
 import { Socket } from "ngx-socket-io";
+import { NoticeService } from "../services/notice.service";
+import { Notice } from "../models/notice.model";
 // import { Socket, io } from 'socket.io-client'
 // const socket = io('ws://localhost:8000')
 
@@ -75,7 +77,9 @@ export class HomeComponent implements OnInit {
   currentPostHeader: Post
   dataSocket: any
 
-  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socket: Socket) {
+  listNotices: Notice[] = []
+
+  constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socket: Socket, private noticeService: NoticeService) {
     title.setTitle("Tuanna Blog")
     this.socket.on('notice', (data: any) => {
       console.log('Dữ liệu từ máy chủ:', data);
@@ -234,6 +238,7 @@ export class HomeComponent implements OnInit {
   getUserSessionInfo() {
     this.userService.getUserInfo().subscribe((data: any) => {
       this.userSession = data.data
+      console.log(`🚀 ~ this.userSession:`, this.userSession)
     })
   }
 
@@ -348,18 +353,20 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.socket.on('connect', () => {
-    //   console.log('Kết nối socket thành công');
+    this.getUserSessionInfo()
+    if(this.userSession){
+      console.log(`🚀 ~ this.userSession:`, this.userSession)
+      console.log(this.userSession);
+    }
 
-    //   this.socket.on('notice', (data: any) => {
-    //     console.log('Dữ liệu từ máy chủ:', data);
-    //   });
-    // });
+    // this.noticeService.getNoticesByUserID(this.userSession._id).subscribe((data: any) => {
+    //   console.log(`🚀 ~ data:`, data);
+    // })
     this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
       this.postTopComments = data.data
       this.currentPostHeader = this.postTopComments[0]
     })
-    this.getUserSessionInfo()
+
     const token = this.authService.checkToken();
     if (
       !token

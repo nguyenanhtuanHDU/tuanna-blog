@@ -12,6 +12,9 @@ const noticeSchema = new mongoose.Schema(
         },
         type: { type: String, required: true, enum: ['comment', 'like'] },
         content: { type: String, required: true },
+        isRead: { type: Boolean, default: false },
+        isClick: { type: Boolean, default: false },
+        postID: { type: String, required: true },
     },
     {
         timestamps: true,

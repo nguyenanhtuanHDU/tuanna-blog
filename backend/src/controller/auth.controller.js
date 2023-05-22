@@ -37,8 +37,8 @@ module.exports = {
   logInController: async (req, res) => {
     try {
       const data = req.body;
-      const emailFind = await User.findOne({ email: data.email });
-      const usernameFind = await User.findOne({ username: data.email });
+      const emailFind = await User.findOne({ email: data.email })?.populate('notices');
+      const usernameFind = await User.findOne({ username: data.email })?.populate('notices');
 
       if (!emailFind && !usernameFind) {
         res.status(401).json({

@@ -15,6 +15,7 @@ const {
 const middleware = require('../middleware/middleware.controller');
 const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments } = require("../controller/post.controller");
 const { postCreateComment, putUpdateComment, deleteComment } = require("../controller/comment.controller");
+const { getNotices, postResetNotice } = require("../controller/notice.controller");
 const router = express.Router();
 
 // USER
@@ -55,6 +56,7 @@ router.put('/comment/:id', middleware.verifyToken, putUpdateComment)
 router.delete('/comment/:id', middleware.verifyToken, deleteComment)
 
 // NOTICE
-// router.post('/notice', middleware.verifyToken, postCreateNotice)
+router.get('/notice/:id', middleware.verifyToken, getNotices)
+router.post('/notice/:id', middleware.verifyToken, postResetNotice)
 
 module.exports = router;
