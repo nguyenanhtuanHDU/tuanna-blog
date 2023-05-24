@@ -1,8 +1,11 @@
-<app-header></app-header>
-<button class="btn btn-primary mt-5 position-fixed" (click)="openModalCreatePost()">Create post
-  {{dataSocket}}
-</button>
+<app-header (getTag)="getPostsByTag($event)" (getAllPosts)="resetAllPosts($event)"></app-header>
+
 <div class="header">
+  <button class="header-create btn btn-primary mt-5 position-fixed flex-center p-3 text-white"
+    (click)="openModalCreatePost()">
+    <i class="bi bi-plus"></i>
+    <!-- {{dataSocket}} -->
+  </button>
   <img class="header-wrapper-bg" *ngIf="currentPostHeader && currentPostHeader.images"
     [src]="imagePath + 'posts/' + currentPostHeader.images[0]" alt="">
   <div class="row">
@@ -50,12 +53,7 @@
               <div class="form-group">
                 <label for="tag">Tags</label>
                 <select id="tag" class="form-select" aria-label="Default select example" formControlName="tag">
-                  <option value="Asia">Asia</option>
-                  <option value="Europe">Europe</option>
-                  <option value="Africa">Africa</option>
-                  <option value="America">America</option>
-                  <option value="Oceania">Oceania</option>
-                  <option value="Antarctica">Antarctica</option>
+                  <option *ngFor="let tag of listTags" [value]="tag">{{tag}}</option>
                 </select>
               </div>
               <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
@@ -107,6 +105,10 @@
   </div>
 </div>
 <div class="row posts-wrapper">
+  <div *ngIf="isPostsTag" class="d-flex gap-2 mb-5 p-2 border-radius-12">
+    <strong class="text-uppercase">Tag:</strong> <app-tag-view [type]="isPostsTag"></app-tag-view> ·
+    <strong class="text-primary">{{this.postsCount}} posts</strong>
+  </div>
   <div class="col-12 col-lg-6 posts-post mb-4" *ngFor="let post of posts; index as i; trackBy: trackByFn">
     <div class="posts-inner p-3 border-radius-12">
       <div class="posts-post-head d-flex justify-content-between">
@@ -186,25 +188,28 @@
         <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
           *ngFor="let comment of post.comments; trackBy: trackByFn">
           <!-- <pre>{{comment |json}}</pre> -->
-          <div class="posts-inner-comment-image">
+          <div class="posts-inner-comment-image" *ngIf="comment.author && comment.author.avatar">
             <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
           </div>
           <div class="posts-inner-comment-content">
             <div class="d-flex justify-content-between">
-              <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
+              <div *ngIf="comment.author && comment.author.username"
+                class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
               <div class="posts-inner-comment-content__time">
                 <span>{{formatTimeAgo(comment.updatedAt)}}</span>
               </div>
-              <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited</div>
+              <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited
+              </div>
             </div>
             <p class="mb-0 p-2">{{comment.content}}</p>
             <ng-container *ngIf="userSession && userSession._id">
-              <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
-                style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
+              <button *ngIf="comment.author && comment.author.id === userSession._id"
+                class="btn text-primary flex-center" style="right: 35px;"
+                (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
                 <i class="bi bi-pencil-square"></i>
               </button>
-              <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
-                style="right: 5px;" (click)="deleteCommentByID(comment._id)">
+              <button *ngIf="comment.author && comment.author.id === userSession._id"
+                class="btn text-danger flex-center" style="right: 5px;" (click)="deleteCommentByID(comment._id)">
                 <i class="bi bi-trash"></i>
               </button>
             </ng-container>
@@ -263,7 +268,8 @@
   </div>
 </div>
 <div class="flex-center">
-  <pagination (pageChanged)="pageChanged($event)" [boundaryLinks]="true" [totalItems]="roundUpNumber()" [maxSize]="5"
-    previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  <pagination [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)" [boundaryLinks]="true"
+    [totalItems]="roundUpNumber()" [maxSize]="5" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+    lastText="&raquo;" [ngModel]="2">
   </pagination>
 </div>

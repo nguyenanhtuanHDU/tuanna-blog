@@ -41,36 +41,38 @@
             <input *ngIf="userSession && userSession.likes.length > 0" style="overflow: hidden; width: 0; height: 0;"
               type="checkbox" [id]="post._id" value="like" [checked]="userSession.likes.includes(post._id)"
               (change)="updateStatusLike($event, post._id)">
-            <a *ngIf="post && post.likers" class="posts-post-footer-count text-decoration-none" [title]="post.likers" (click)="openModalViewLikers(modalViewLikers)">
+            <a *ngIf="post && post.likers" class="posts-post-footer-count text-decoration-none" [title]="post.likers"
+              (click)="openModalViewLikers(modalViewLikers)">
               {{countLikes(post.likers)}}
             </a>
             <div bsModal #modalViewLikers="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-            aria-labelledby="dialog-sizes-name1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 id="dialog-sizes-name1" class="modal-title pull-left">List users likes</h4>
-                  <button type="button" class="btn-close close pull-right" (click)="modalViewLikers.hide()"
-                    aria-label="Close">
-                    <span aria-hidden="true" class="visually-hidden">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div *ngFor="let liker of post.likers" class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
-                    <!-- <div>{{liker.userLikeID}}</div> -->
-                    <div class="posts-post-footer-likers__image">
-                      <img [src]="imagePath + 'avatars/' + liker.avatar" />
-                    </div>
-                    <div class="posts-post-footer-likers__content">
-                      <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
-                      <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
-                      <!-- <pre>{{liker | json}}</pre> -->
+              aria-labelledby="dialog-sizes-name1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 id="dialog-sizes-name1" class="modal-title pull-left">List users likes</h4>
+                    <button type="button" class="btn-close close pull-right" (click)="modalViewLikers.hide()"
+                      aria-label="Close">
+                      <span aria-hidden="true" class="visually-hidden">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div *ngFor="let liker of post.likers"
+                      class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
+                      <!-- <div>{{liker.userLikeID}}</div> -->
+                      <div class="posts-post-footer-likers__image">
+                        <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                      </div>
+                      <div class="posts-post-footer-likers__content">
+                        <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
+                        <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
+                        <!-- <pre>{{liker | json}}</pre> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
           <div class="posts-post-footer-views d-flex">
             <span *ngIf="post && post.views" class="me-2 posts-post-footer-count">{{post.views}}</span>
@@ -144,10 +146,12 @@
           </button>
         </form>
         <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
-          <button id="button-dropup" dropdownToggle type="button"
-            class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
-            <i class="bi bi-three-dots"></i>
-          </button>
+          <ng-container *ngIf="post.userID === userSession._id">
+            <button id="button-dropup" dropdownToggle type="button"
+              class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </ng-container>
           <ul id="dropdown-dropup" *dropdownMenu class="p-2 dropdown-menu" role="menu" aria-labelledby="button-dropup">
             <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID"
               (click)="openModalEditPost(post._id)">

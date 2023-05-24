@@ -76,6 +76,9 @@ export class HomeComponent implements OnInit {
   postTopCommentsCount: number = 3
   currentPostHeader: Post
   dataSocket: any
+  isPostsTag: string = ''
+  listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
+  currentPage: number = 1
 
   listNotices: Notice[] = []
 
@@ -92,7 +95,7 @@ export class HomeComponent implements OnInit {
   }
 
   trackByFn(index: number, item: any) {
-    return item.id; // hoặc bất kỳ giá trị unique nào khác của phần tử
+    return item.id;
   }
 
   getAllPosts() {
@@ -100,6 +103,24 @@ export class HomeComponent implements OnInit {
       this.posts = data.data
       this.postsCount = Number(data.postsCount)
     })
+  }
+
+  getPostsByTag(tag: string) {
+    this.page = 1
+    this.limitPost = 4
+    this.currentPage = 1
+    this.postService.getPostsByTag(tag, this.page, this.limitPost).subscribe((data: any) => {
+      this.posts = data.data
+      this.isPostsTag = tag
+      this.postsCount = data.postsCount
+      console.log(`🚀 ~ this.postsCount:`, this.postsCount)
+    })
+  }
+
+  resetAllPosts(event: any) {
+    this.isPostsTag = ''
+    event && this.getAllPosts()
+    this.currentPage = 1
   }
 
   getPostToEditByID(id: string) {
@@ -148,7 +169,8 @@ export class HomeComponent implements OnInit {
 
   updatePostViews(id: string) {
     this.postService.updatePostViews(id).subscribe((data) => {
-      this.getAllPosts()
+      console.log(`🚀 ~ data:`, data)
+      // this.getAllPosts()
     })
   }
 
@@ -161,7 +183,7 @@ export class HomeComponent implements OnInit {
         '',
         'success'
       );
-      this.getAllPosts()
+      this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       this.createPostModal.hide()
       this.formCreatePost.reset()
       this.imagesSelected = []
@@ -197,7 +219,11 @@ export class HomeComponent implements OnInit {
   }
 
   formatTimeAgo(time: any) {
-    return formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    let timeRes;
+    if (time) {
+      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    }
+    return timeRes
   }
 
   roundUpNumber(): number {
@@ -206,13 +232,14 @@ export class HomeComponent implements OnInit {
   }
 
   updateStatusLike(event: any, idPost: string) {
-    this.socket.emit('notice', { name: 'tuan', age: 25 });
+    // this.socket.emit('notice', { name: 'tuan', age: 25 });
 
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
     }).subscribe((data: any) => {
-      this.getAllPosts()
+      // this.getAllPosts()
+      this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       this.getUserSessionInfo()
     })
   }
@@ -222,7 +249,7 @@ export class HomeComponent implements OnInit {
       this.spinner.show();
       this.postService.deletePost(idPost).subscribe(
         (data: any) => {
-          this.getAllPosts()
+          this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
           this.spinner.hide();
           Swal.fire(data.msg, 'Success', 'success');
         },
@@ -238,7 +265,6 @@ export class HomeComponent implements OnInit {
   getUserSessionInfo() {
     this.userService.getUserInfo().subscribe((data: any) => {
       this.userSession = data.data
-      console.log(`🚀 ~ this.userSession:`, this.userSession)
     })
   }
 
@@ -264,7 +290,7 @@ export class HomeComponent implements OnInit {
     if (content) {
       this.notificationService.comment()
       this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
-        this.getAllPosts()
+        this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
         this.formCreateComment.reset()
 
         if (this.commentScrollbar) {
@@ -280,7 +306,6 @@ export class HomeComponent implements OnInit {
         'warning'
       );
     }
-
   }
 
   editComment(id: string) {
@@ -291,7 +316,7 @@ export class HomeComponent implements OnInit {
         '',
         'success'
       );
-      this.getAllPosts()
+      this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       this.formEditComment.reset()
       this.modalCreateCommentRef?.hide()
     }, (err: any) => {
@@ -306,7 +331,7 @@ export class HomeComponent implements OnInit {
   deleteCommentByID(id: string) {
     this.sweetAlert.yesNo('Are you sure to delete this comment ?', (() => {
       this.commentService.deleteComment(id).subscribe((data: any) => {
-        this.getAllPosts()
+        this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
         Swal.fire(
           data.msg,
           '',
@@ -354,13 +379,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserSessionInfo()
-    if(this.userSession){
-      console.log(`🚀 ~ this.userSession:`, this.userSession)
+    if (this.userSession) {
       console.log(this.userSession);
     }
 
     // this.noticeService.getNoticesByUserID(this.userSession._id).subscribe((data: any) => {
-    //   console.log(`🚀 ~ data:`, data);
     // })
     this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
       this.postTopComments = data.data
@@ -379,7 +402,7 @@ export class HomeComponent implements OnInit {
       if (params['page'] && params['limit']) {
         this.page = Number(params['page'])
         this.limitPost = params['limit'];
-        this.getAllPosts()
+        this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       }
     });
     this.getAllPosts()

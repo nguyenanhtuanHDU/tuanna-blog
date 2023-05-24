@@ -4,7 +4,7 @@ const Notice = require("../models/notice");
 module.exports = {
     getNotices: async (req, res) => {
         try {
-            const data = await Notice.find({ 'userGet.id': req.params.id }).sort({ updateAt: -1 })
+            const data = await Notice.find({ 'userGet.id': req.params.id }).sort({ createdAt: -1 })
             res.status(200).json({
                 data
             })
@@ -32,7 +32,6 @@ module.exports = {
     postResetNotice: async (req, res) => {
         try {
             const { type, noticeID } = req.body
-            console.log(`🚀 ~ noticeID:`, noticeID)
             if (type === 'isRead') {
                 await Notice.updateMany({ 'userGet.id': req.params.id }, { isRead: true })
                 // reset all notice read

@@ -116,9 +116,9 @@ export class PostComponent {
   }
 
   createComment(postID: string) {
-    this.notification.comment()
     const content = this.formCreateComment.get('content')?.value
     if (content) {
+    this.notification.comment()
       this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
         this.getPostByID()
         this.formCreateComment.reset()
@@ -136,7 +136,6 @@ export class PostComponent {
         'warning'
       );
     }
-
   }
 
   editComment(id: string) {
@@ -253,6 +252,7 @@ export class PostComponent {
       setTimeout(() => {
         this.postService.getTopViewer(this.topPost).subscribe((data: any) => {
           this.postsViewers = data.data
+          this.getPostByID()
         })
       }, 500)
     }

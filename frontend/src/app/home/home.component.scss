@@ -5,6 +5,19 @@ $line-height-content: 22px;
   padding: 0 100px;
   text-shadow: #fc0 1px 0 10px;
 
+  &-create {
+    z-index: 10;
+    top: 34px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    font-size: 31px;
+    border: 3px solid white !important;
+    transition: 0.5s ease;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  }
+
   &-wrapper {
     height: 100vh;
     position: relative;

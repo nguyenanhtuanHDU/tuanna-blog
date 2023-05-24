@@ -39,6 +39,23 @@ module.exports = {
             })
         }
     },
+    getPostsByTag: async (req, res) => {
+        try {
+            const { page, limit } = req.query
+            const skip = (page - 1) * limit
+            const postsCount = await Post.find({ tag: req.query.tag })
+            const posts = await Post.find({ tag: req.query.tag }).populate('comments').skip(skip).limit(limit).sort({ createdAt: -1 })
+            res.status(200).json({
+                data: posts,
+                postsCount: postsCount.length
+            })
+        } catch (error) {
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
     getTopPostViewers: async (req, res) => {
         try {
             const data = await Post.find().sort({ views: -1, title: -1 }).limit(req.params.count)

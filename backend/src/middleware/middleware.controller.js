@@ -6,6 +6,9 @@ const User = require("../models/user");
 const middleware = {
   verifyToken: (req, res, next) => {
     const token = req.headers.token;
+    if (!token) {
+      res.send('Token is not valid')
+    }
     const accessToken = token.split(' ')[1];
     if (!accessToken) {
       return res.status(401).json({

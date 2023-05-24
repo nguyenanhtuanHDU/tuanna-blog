@@ -10,6 +10,7 @@ import { Post } from "../models/post.model";
 export class PostService {
   uploadPostUrl = `${environment.apiBackend}/upload/post`;
   postUrl = `${environment.apiBackend}/v1/api/post`;
+  listPostUrl = `${environment.apiBackend}/v1/api/posts`;
 
   constructor(private httpClient: HttpClient,
     private authService: AuthService) { }
@@ -20,6 +21,10 @@ export class PostService {
 
   getPostByID(id: string) {
     return this.httpClient.get(this.postUrl + '/' + id, { headers: this.authService.getHeaders() });
+  }
+
+  getPostsByTag(tagName: string, page: number, limit: number) {
+    return this.httpClient.get(this.listPostUrl + '/filter?tag=' + tagName + '&page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 
   getTopViewer(top: number) {

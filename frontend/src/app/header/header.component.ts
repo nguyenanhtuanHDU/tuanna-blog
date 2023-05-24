@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Injectable, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,7 @@ import { NoticeService } from "../services/notice.service";
 import { Notice } from "../models/notice.model";
 import { formatDistanceToNow } from "date-fns";
 import { NotificationService } from "../services/notification.service";
+import { HomeComponent } from "../home/home.component";
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,9 @@ import { NotificationService } from "../services/notification.service";
 //   providedIn: 'root',
 // })
 export class HeaderComponent implements OnInit {
+  @Output() getTag = new EventEmitter<string>();
+  @Output() getAllPosts = new EventEmitter<any>();
+
   user: User
   listNotices: Notice[] = []
   avatarSrc: string = `${environment.apiBackend}/images/avatars/`;
@@ -30,6 +34,8 @@ export class HeaderComponent implements OnInit {
   faRightFromBracket = faRightFromBracket;
   imagePath = environment.apiBackend + '/images/'
   noticeCount: number = 0
+  listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
+
   constructor(
     private authService: AuthService,
     private userService: UserService,
@@ -48,6 +54,14 @@ export class HeaderComponent implements OnInit {
       //   this.listNotices = data
       // })
     });
+  }
+
+  passTag(tag: string): void {
+    this.getTag.next(tag);
+  }
+
+  callGetAllPost() {
+    this.getAllPosts.next(true);
   }
 
   public logOut() {
@@ -70,6 +84,13 @@ export class HeaderComponent implements OnInit {
         );
       }
     });
+  }
+
+  getPostsByTag(tagName: string) {
+    console.log(`🚀 ~ tagName:`, tagName)
+    // this.postService.getPostsByTag(tagName).subscribe((data:any) => {
+    //   console.log(`🚀 ~ data:`, data)
+    // })
   }
 
   getUserInfo() {
@@ -102,7 +123,7 @@ export class HeaderComponent implements OnInit {
     })
   }
 
-  changeId(id: string, type: string, noticeID: string) {
+  getSinglePost(id: string, type: string, noticeID: string) {
     this.router.navigate(['/post', id]);
     this.resetReadNotice(id, type, noticeID)
     this.getNoticesByID(this.user._id)
