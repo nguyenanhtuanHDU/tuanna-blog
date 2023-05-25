@@ -11,7 +11,6 @@ import { Router } from "@angular/router";
 import { Socket } from "ngx-socket-io";
 import { NoticeService } from "../services/notice.service";
 import { Notice } from "../models/notice.model";
-import { formatDistanceToNow } from "date-fns";
 import { NotificationService } from "../services/notification.service";
 import { Post } from "../models/post.model";
 import { PostService } from "../services/post.service";
@@ -148,14 +147,6 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/post', id]);
     this.resetReadNotice(id, type, noticeID)
     this.getNoticesByID(this.user._id)
-  }
-
-  formatTimeAgo(time: any) {
-    let timeRes;
-    if (time) {
-      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
-    }
-    return timeRes
   }
 
   ngOnInit() {

@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
-import { formatDistanceToNow } from "date-fns";
 import { Slick } from "ngx-slickjs";
 import { environment } from "src/environments/environment";
 import { User } from "../models/user.model";
@@ -68,13 +67,6 @@ export class PostComponent {
     mouseWheelMove: false
     // accessibility: true
   };
-  formatTimeAgo(time: any) {
-    let timeRes;
-    if (time) {
-      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
-    }
-    return timeRes
-  }
 
   getPostByID() {
     const id = this.route.snapshot.paramMap.get('id')

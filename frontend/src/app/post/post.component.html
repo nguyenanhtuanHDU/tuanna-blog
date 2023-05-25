@@ -11,7 +11,7 @@
             </div>
             <div class="posts-post-head-info d-flex flex-column my-auto">
               <strong *ngIf="post && post.userUsername">{{post.userUsername}}</strong>
-              <span *ngIf="post && post.createdAt">{{formatTimeAgo(post.createdAt)}}</span>
+              <span *ngIf="post && post.createdAt">{{post.createdAt | TimeAgo}}</span>
               <!-- <div>{{post.createdAt | date}}</div> -->
             </div>
           </div>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="posts-post-footer-likers__content">
                           <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
-                          <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
+                          <div class="posts-post-footer-likers__time">{{liker.createdAt | TimeAgo}}</div>
                           <!-- <pre>{{liker | json}}</pre> -->
                         </div>
                       </div>
@@ -98,7 +98,7 @@
               <div class="d-flex justify-content-between">
                 <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
                 <div class="posts-inner-comment-content__time">
-                  <span>{{formatTimeAgo(comment.updatedAt)}}</span>
+                  <span>{{comment.updatedAt | TimeAgo}}</span>
                 </div>
                 <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited
                 </div>

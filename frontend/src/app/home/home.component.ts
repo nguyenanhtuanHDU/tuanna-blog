@@ -6,7 +6,6 @@ import { PostService } from "../services/post.service";
 import Swal from 'sweetalert2';
 import { Post } from "../models/post.model";
 import { environment } from 'src/environments/environment';
-import { formatDistanceToNow } from 'date-fns';
 import { UserService } from "../services/user.service";
 import { User } from "../models/user.model";
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -216,14 +215,6 @@ export class HomeComponent implements OnInit {
 
   deleteImagePost(index: number) {
     this.imagesSelected.splice(index, 1)
-  }
-
-  formatTimeAgo(time: any) {
-    let timeRes;
-    if (time) {
-      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
-    }
-    return timeRes
   }
 
   roundUpNumber(): number {

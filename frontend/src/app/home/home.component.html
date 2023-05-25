@@ -63,9 +63,9 @@
             <form class="post-tabs-tab-imgs" [formGroup]="formCreatePost">
               <div class="form-group">
                 <button class="btn btn-primary"><label for="image" class="d-flex gap-1">
-                  Choose Images
-                  <i class="bi bi-plus-circle-fill"></i>
-                </label></button>
+                    Choose Images
+                    <i class="bi bi-plus-circle-fill"></i>
+                  </label></button>
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
                   multiple class="form-control-file d-none" id="image">
               </div>
@@ -95,7 +95,8 @@
             </form>
           </tab>
         </tabset>
-        <button class="btn btn-primary d-flex gap-1" type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">
+        <button class="btn btn-primary d-flex gap-1" type="submit" *ngIf="isCreate"
+          (click)="createPost(createPostModal)">
           <span>Create</span>
           <!-- <i class="bi bi-plus-circle-fill"></i> -->
           <i class="bi bi-check-circle-fill"></i>
@@ -122,7 +123,7 @@
           </div>
           <div class="posts-post-head-info d-flex flex-column my-auto">
             <strong>{{post.userUsername}}</strong>
-            <span>{{formatTimeAgo(post.createdAt)}}</span>
+            <span>{{post.createdAt | TimeAgo}}</span>
             <!-- <div>{{post.createdAt | date}}</div> -->
           </div>
         </div>
@@ -174,7 +175,7 @@
                     </div>
                     <div class="posts-post-footer-likers__content">
                       <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
-                      <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
+                      <div class="posts-post-footer-likers__time">{{liker.createdAt | TimeAgo}}</div>
                       <!-- <pre>{{liker | json}}</pre> -->
                     </div>
                   </div>
@@ -200,7 +201,7 @@
               <div *ngIf="comment.author && comment.author.username"
                 class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
               <div class="posts-inner-comment-content__time">
-                <span>{{formatTimeAgo(comment.updatedAt)}}</span>
+                <span>{{comment.updatedAt | TimeAgo}}</span>
               </div>
               <div class="posts-inner-comment-content__time" *ngIf="comment.updatedAt > comment.createdAt">Edited
               </div>

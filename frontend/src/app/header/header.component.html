@@ -56,7 +56,7 @@
                   <div class="header-inner-search-items-item__content">
                     <a class="m-0 p-0 dropdown-item" href="#" [innerHTML]="post.title"></a>
                     <div class="d-flex gap-2">
-                      <span>{{formatTimeAgo(post.updatedAt)}}</span>
+                      <span>{{post.updatedAt | TimeAgo}}</span>
                       <strong>·</strong>
                       <span>by {{post.userUsername}}</span>
                     </div>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="header-inner-notices-notice__content">
                   <p class="text-dark m-0"><strong>{{notice.userSend.username }}</strong> {{notice.content}}</p>
-                  <span class="text-primary">{{formatTimeAgo(notice.createdAt)}}</span>
+                  <span class="text-primary">{{notice.createdAt | TimeAgo}}</span>
                 </div>
               </li>
             </ng-scrollbar>
