@@ -1,4 +1,4 @@
-<app-header (getTag)="getPostsByTag($event)" (getAllPosts)="resetAllPosts($event)"></app-header>
+<app-header [listPosts]="posts" (getTag)="getPostsByTag($event)" (getAllPosts)="resetAllPosts($event)"></app-header>
 
 <div class="header">
   <button class="header-create btn btn-primary mt-5 position-fixed flex-center p-3 text-white"
@@ -62,7 +62,10 @@
           <tab heading="Images" class="post-tabs-tab p-3 my-3">
             <form class="post-tabs-tab-imgs" [formGroup]="formCreatePost">
               <div class="form-group">
-                <label for="image">Choose Images</label>
+                <button class="btn btn-primary"><label for="image" class="d-flex gap-1">
+                  Choose Images
+                  <i class="bi bi-plus-circle-fill"></i>
+                </label></button>
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
                   multiple class="form-control-file d-none" id="image">
               </div>
@@ -92,9 +95,10 @@
             </form>
           </tab>
         </tabset>
-        <button class="btn btn-primary" type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">
+        <button class="btn btn-primary d-flex gap-1" type="submit" *ngIf="isCreate" (click)="createPost(createPostModal)">
           <span>Create</span>
-          <i class="bi bi-plus-circle-fill"></i>
+          <!-- <i class="bi bi-plus-circle-fill"></i> -->
+          <i class="bi bi-check-circle-fill"></i>
         </button>
         <button class="btn btn-primary" type="submit" *ngIf="isEdit" (click)="editPost()">
           <span>Edit</span>

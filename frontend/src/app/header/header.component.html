@@ -33,11 +33,47 @@
       </ul>
       <div class="header-inner-right d-flex gap-3">
         <form class="d-flex header-inner-search">
-          <input class="form-control me-3" type="search" placeholder="Search" aria-label="Search" />
+          <!-- <input class="form-control me-3" type="search" placeholder="Type title of post" aria-label="Search" /> -->
+          <div class="btn-group" #searchDropdown="bs-dropdown" dropdown placement="bottom right">
+            <!-- <button id="button-alignment" dropdownToggle type="button"
+                    class="btn btn-primary dropdown-toggle" aria-controls="dropdown-alignment">
+              This dropdown's menu is right-aligned <span class="caret"></span>
+            </button> -->
+            <input (input)="searchListPosts(searchDropdown, $event)" class="form-control me-3" type="search"
+              placeholder="Type title of post" aria-label="Search" />
+            <ul id="dropdown-alignment" *dropdownMenu
+              class="header-inner-search-items dropdown-menu dropdown-menu-right p-2" role="menu"
+              aria-labelledby="button-alignment">
+              <ng-scrollbar style="height: 300px; width: 425px;" appearance="standard">
+                <strong *ngIf="postsByTitle && postsByTitle.length > 0">{{postsByTitle.length}} posts match</strong>
+                <strong *ngIf="postsByTitle && postsByTitle.length === 0">Not found</strong>
+
+                <li *ngFor="let post of postsByTitle" role="menuitem"
+                  class="header-inner-search-items-item flex-center-y gap-3 p-2" [routerLink]="'post/' + post._id">
+                  <div class="header-inner-search-items-item__image">
+                    <img width="30" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
+                  </div>
+                  <div class="header-inner-search-items-item__content">
+                    <a class="m-0 p-0 dropdown-item" href="#" [innerHTML]="post.title"></a>
+                    <div class="d-flex gap-2">
+                      <span>{{formatTimeAgo(post.updatedAt)}}</span>
+                      <strong>·</strong>
+                      <span>by {{post.userUsername}}</span>
+                    </div>
+                  </div>
+                </li>
+              </ng-scrollbar>
+            </ul>
+          </div>
           <button class="btn btn-outline-light header-inner-right__btn  bg-white text-primary" type="submit">
             <i class="bi bi-search"></i>
           </button>
         </form>
+
+        <button class="bg-white text-primary btn">
+          <i class="bi bi-filter"></i>
+          Advance search
+        </button>
         <div class="btn-group" dropdown placement="bottom right">
           <button (click)="noticeCount = 0; resetReadNotice(user._id, 'isRead', '')" id="button-alignment"
             dropdownToggle type="button" class="header-inner-right__btn  bg-white text-primary btn dropdown-toggle"
@@ -68,7 +104,7 @@
                 </div>
                 <div class="header-inner-notices-notice__content">
                   <p class="text-dark m-0"><strong>{{notice.userSend.username }}</strong> {{notice.content}}</p>
-                  <span class="text-primary">{{formatTimeAgo(notice.updatedAt)}}</span>
+                  <span class="text-primary">{{formatTimeAgo(notice.createdAt)}}</span>
                 </div>
               </li>
             </ng-scrollbar>
@@ -76,8 +112,8 @@
         </div>
 
         <div class="btn-group header-inner-user" dropdown>
-          <button id="button-animated" dropdownToggle type="button"
-            class="btn btn-primary p-0 header-inner-user__avatar" aria-controls="dropdown-animated">
+          <button id="button-animated" dropdownToggle type="button" class="btn p-0 header-inner-user__avatar"
+            aria-controls="dropdown-animated">
             <ngx-skeleton-loader appearance="circle" [theme]="{ margin: 0}" *ngIf="!user"></ngx-skeleton-loader>
             <img *ngIf="user && user.avatar" [src]="avatarSrc + user.avatar" alt="" />
           </button>

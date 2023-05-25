@@ -11,6 +11,7 @@ export interface Notice {
   type: string
   content: string,
   updatedAt: string
+  createdAt: string
   isRead: boolean,
   isClick: boolean,
   postID: string

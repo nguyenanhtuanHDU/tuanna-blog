@@ -13,7 +13,7 @@ const {
   putUpdateUserLikes,
 } = require('../controller/user.controller');
 const middleware = require('../middleware/middleware.controller');
-const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments, getPostsByTag } = require("../controller/post.controller");
+const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments, getPostsByInfo } = require("../controller/post.controller");
 const { postCreateComment, putUpdateComment, deleteComment } = require("../controller/comment.controller");
 const { getNotices, postResetNotice } = require("../controller/notice.controller");
 const router = express.Router();
@@ -42,7 +42,7 @@ router.delete(
 // POST
 router.get('/post', middleware.verifyToken, getAllPosts)
 router.get('/post/:id', middleware.verifyToken, getPostByID)
-router.get('/posts/filter', middleware.verifyToken, getPostsByTag)
+router.get('/posts/filter', middleware.verifyToken, getPostsByInfo)
 router.get('/post/top-viewer/:count', middleware.verifyToken, getTopPostViewers)
 router.get('/post/top-likes/:count', middleware.verifyToken, getTopPostLikes)
 router.get('/post/top-comments/:count', middleware.verifyToken, getTopPostComments)

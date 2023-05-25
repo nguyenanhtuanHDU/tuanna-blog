@@ -27,6 +27,10 @@ export class PostService {
     return this.httpClient.get(this.listPostUrl + '/filter?tag=' + tagName + '&page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 
+  getPostsByTitle(title: string) {
+    return this.httpClient.get(this.listPostUrl + '/filter?title=' + title, { headers: this.authService.getHeaders() });
+  }
+
   getTopViewer(top: number) {
     return this.httpClient.get(this.postUrl + '/top-viewer/' + top, { headers: this.authService.getHeaders() });
   }

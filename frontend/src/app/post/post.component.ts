@@ -68,9 +68,12 @@ export class PostComponent {
     mouseWheelMove: false
     // accessibility: true
   };
-
   formatTimeAgo(time: any) {
-    return formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    let timeRes;
+    if (time) {
+      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    }
+    return timeRes
   }
 
   getPostByID() {

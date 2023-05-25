@@ -33,7 +33,7 @@
         </div>
         <div class="posts-post-footer d-flex justify-content-between">
           <div class="posts-post-footer-likes d-flex">
-            <label *ngIf="userSession && userSession.likes.length > 0" [for]=" post._id"
+            <label *ngIf="userSession && userSession.likes.length > 0 && post" [for]=" post._id"
               [ngClass]="{'posts-post-footer-icon': userSession.likes.length > 0 && !userSession.likes.includes(post._id), 'second': true, 'third': false}"
               class="me-2" [class.active]="userSession.likes.includes(post._id)">
               <i class="bi bi-suit-heart-fill text-white"></i>
@@ -57,18 +57,20 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <div *ngFor="let liker of post.likers"
-                      class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
-                      <!-- <div>{{liker.userLikeID}}</div> -->
-                      <div class="posts-post-footer-likers__image">
-                        <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                    <ng-container *ngIf="post && post.likers">
+                      <div *ngFor="let liker of post.likers"
+                        class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
+                        <!-- <div>{{liker.userLikeID}}</div> -->
+                        <div class="posts-post-footer-likers__image">
+                          <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                        </div>
+                        <div class="posts-post-footer-likers__content">
+                          <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
+                          <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
+                          <!-- <pre>{{liker | json}}</pre> -->
+                        </div>
                       </div>
-                      <div class="posts-post-footer-likers__content">
-                        <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
-                        <div class="posts-post-footer-likers__time">{{formatTimeAgo(liker.createdAt)}}</div>
-                        <!-- <pre>{{liker | json}}</pre> -->
-                      </div>
-                    </div>
+                    </ng-container>
                   </div>
                 </div>
               </div>
@@ -146,7 +148,7 @@
           </button>
         </form>
         <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
-          <ng-container *ngIf="post.userID === userSession._id">
+          <ng-container *ngIf="post && userSession && post.userID === userSession._id">
             <button id="button-dropup" dropdownToggle type="button"
               class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
               <i class="bi bi-three-dots"></i>

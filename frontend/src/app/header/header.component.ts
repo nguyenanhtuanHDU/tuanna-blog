@@ -13,7 +13,9 @@ import { NoticeService } from "../services/notice.service";
 import { Notice } from "../models/notice.model";
 import { formatDistanceToNow } from "date-fns";
 import { NotificationService } from "../services/notification.service";
-import { HomeComponent } from "../home/home.component";
+import { Post } from "../models/post.model";
+import { PostService } from "../services/post.service";
+import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -27,6 +29,9 @@ export class HeaderComponent implements OnInit {
   @Output() getTag = new EventEmitter<string>();
   @Output() getAllPosts = new EventEmitter<any>();
 
+  @Input() listPosts: Post[] = []
+
+  private searchTerm = new Subject<string>();
   user: User
   listNotices: Notice[] = []
   avatarSrc: string = `${environment.apiBackend}/images/avatars/`;
@@ -35,6 +40,8 @@ export class HeaderComponent implements OnInit {
   imagePath = environment.apiBackend + '/images/'
   noticeCount: number = 0
   listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
+  postsByTitle: Post[] = []
+  searchPostsSubject = new Subject<string>();
 
   constructor(
     private authService: AuthService,
@@ -44,6 +51,7 @@ export class HeaderComponent implements OnInit {
     private socket: Socket,
     private noticeService: NoticeService,
     private notificationService: NotificationService,
+    private postService: PostService,
   ) {
     this.socket.on('notice', (data: any) => {
       console.log('Dữ liệu từ máy chủ:', data);
@@ -54,6 +62,7 @@ export class HeaderComponent implements OnInit {
       //   this.listNotices = data
       // })
     });
+
   }
 
   passTag(tag: string): void {
@@ -86,11 +95,23 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  getPostsByTag(tagName: string) {
-    console.log(`🚀 ~ tagName:`, tagName)
-    // this.postService.getPostsByTag(tagName).subscribe((data:any) => {
-    //   console.log(`🚀 ~ data:`, data)
-    // })
+  searchListPosts(dropdown: any, event: any) {
+    const titleSearch: string = event.target.value
+    this.searchPostsSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe((titleSearch: string) => {
+      console.log(`🚀 ~ titleSearch:`, titleSearch)
+      titleSearch ? dropdown.show() : dropdown.hide(); this.postsByTitle = [];
+      this.postService.getPostsByTitle(titleSearch).subscribe((data: any) => {
+        this.postsByTitle = data.data;
+        console.log(`🚀 ~ data.data:`, data.data);
+        this.postsByTitle.map((item: any) => {
+          item.title = item.title.replaceAll(new RegExp(titleSearch, "gi"), "<b class='text-primary'>$&</b>");
+        });
+      });
+    });
+    this.searchPostsSubject.next(titleSearch);
   }
 
   getUserInfo() {
@@ -130,7 +151,11 @@ export class HeaderComponent implements OnInit {
   }
 
   formatTimeAgo(time: any) {
-    return formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    let timeRes;
+    if (time) {
+      timeRes = formatDistanceToNow(new Date(time), { addSuffix: true, includeSeconds: true });
+    }
+    return timeRes
   }
 
   ngOnInit() {
