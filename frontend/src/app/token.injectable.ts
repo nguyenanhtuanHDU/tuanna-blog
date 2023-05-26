@@ -18,7 +18,6 @@ export class tokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    this.logApiCall();
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         // this.router.navigate(['/login']);
@@ -33,9 +32,5 @@ export class tokenInterceptor implements HttpInterceptor {
         return throwError(error);
       })
     );
-  }
-
-  private logApiCall() {
-    console.log('API call is being made');
   }
 }

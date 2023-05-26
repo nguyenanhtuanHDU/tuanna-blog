@@ -27,7 +27,6 @@ export class AuthService {
   }
 
   getToken() {
-    console.log(this.cookieService.getAll());
     return this.cookieService.getAll();
   }
 

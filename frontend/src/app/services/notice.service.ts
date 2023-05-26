@@ -2,6 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { environment } from "src/environments/environment";
 import { AuthService } from "./auth.service";
+import { Observable } from "rxjs";
+import { Notice } from "../models/notice.model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +14,8 @@ export class NoticeService {
 
   constructor(private httpClient: HttpClient, private authService: AuthService) { }
 
-  getNoticesByUserID(id: string) {
-    return this.httpClient.get(this.noticeUrl + '/' + id, { headers: this.authService.getHeaders() });
+  getNoticesByUserID(id: string): Observable<Notice[]> {
+    return this.httpClient.get<Notice[]>(this.noticeUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
 
   resetNotices(id: string, type: string, noticeID: string) {

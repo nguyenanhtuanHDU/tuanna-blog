@@ -28,8 +28,6 @@ export class HeaderComponent implements OnInit {
   @Output() getTag = new EventEmitter<string>();
   @Output() getAllPosts = new EventEmitter<any>();
 
-  @Input() listPosts: Post[] = []
-
   private searchTerm = new Subject<string>();
   user: User
   listNotices: Notice[] = []

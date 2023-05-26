@@ -80,7 +80,7 @@ export class LogInComponent {
         Swal.fire(error.error.msg, 'Error', 'error');
 
         this.authService.logOut();
-        console.log(this.authService.getToken());
+        // console.log(this.authService.getToken());
 
         const statusCode = error.status;
         if (statusCode === 401) {

@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { environment } from 'src/environments/environment';
+import { Observable } from "rxjs";
+import { User } from "../models/user.model";
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +20,8 @@ export class UserService {
     private authService: AuthService
   ) { }
 
-  getUserInfo() {
-    return this.httpClient.get(this.userInfoUrl, { headers: this.authService.getHeaders() });
+  getUserInfo(): Observable<User> {
+    return this.httpClient.get<User>(this.userInfoUrl, { headers: this.authService.getHeaders() });
   }
 
   getListAvatars() {

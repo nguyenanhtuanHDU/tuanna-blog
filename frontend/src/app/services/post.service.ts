@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from "src/environments/environment";
 import { AuthService } from "./auth.service";
 import { Post } from "../models/post.model";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -15,32 +16,32 @@ export class PostService {
   constructor(private httpClient: HttpClient,
     private authService: AuthService) { }
 
-  getAllPosts(page: number = 1, limit: number = 4) {
-    return this.httpClient.get(this.postUrl + '?page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
+  getAllPosts(page: number = 1, limit: number = 4): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.postUrl + '?page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 
-  getPostByID(id: string) {
-    return this.httpClient.get(this.postUrl + '/' + id, { headers: this.authService.getHeaders() });
+  getPostByID(id: string): Observable<Post> {
+    return this.httpClient.get<Post>(this.postUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
 
-  getPostsByTag(tagName: string, page: number, limit: number) {
-    return this.httpClient.get(this.listPostUrl + '/filter?tag=' + tagName + '&page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
+  getPostsByTag(tagName: string, page: number, limit: number): Observable<Post> {
+    return this.httpClient.get<Post>(this.listPostUrl + '/filter?tag=' + tagName + '&page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 
-  getPostsByTitle(title: string) {
-    return this.httpClient.get(this.listPostUrl + '/filter?title=' + title, { headers: this.authService.getHeaders() });
+  getPostsByTitle(title: string): Observable<Post> {
+    return this.httpClient.get<Post>(this.listPostUrl + '/filter?title=' + title, { headers: this.authService.getHeaders() });
   }
 
-  getTopViewer(top: number) {
-    return this.httpClient.get(this.postUrl + '/top-viewer/' + top, { headers: this.authService.getHeaders() });
+  getTopViewer(top: number): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.postUrl + '/top-viewer/' + top, { headers: this.authService.getHeaders() });
   }
 
-  getTopLikes(top: number) {
-    return this.httpClient.get(this.postUrl + '/top-likes/' + top, { headers: this.authService.getHeaders() });
+  getTopLikes(top: number): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.postUrl + '/top-likes/' + top, { headers: this.authService.getHeaders() });
   }
 
-  getTopComments(top: number) {
-    return this.httpClient.get(this.postUrl + '/top-comments/' + top, { headers: this.authService.getHeaders() });
+  getTopComments(top: number): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.postUrl + '/top-comments/' + top, { headers: this.authService.getHeaders() });
   }
 
   createPost(data: any, postImages: FileList) {

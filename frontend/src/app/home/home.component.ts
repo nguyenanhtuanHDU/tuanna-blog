@@ -117,9 +117,11 @@ export class HomeComponent implements OnInit {
   }
 
   resetAllPosts(event: any) {
+    setTimeout(() => {
+      this.currentPage = 1
+    }, 200)
     this.isPostsTag = ''
     event && this.getAllPosts()
-    this.currentPage = 1
   }
 
   getPostToEditByID(id: string) {
