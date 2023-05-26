@@ -47,10 +47,6 @@ export class PostTopComponent {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(`🚀 ~ changes:`, changes)
-  }
-
   ngOnInit(): void {
     console.log(`🚀 ~ this.type:`, this.type)
   }

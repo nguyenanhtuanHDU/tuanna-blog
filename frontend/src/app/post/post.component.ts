@@ -4,9 +4,9 @@ import { environment } from "src/environments/environment";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
 import { PostService } from "../services/post.service";
-import { ActivatedRoute, Route, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, NavigationStart, Route, Router } from "@angular/router";
 import { Post } from "../models/post.model";
-import { Subscription } from "rxjs";
+import { Subscription, of, switchMap } from "rxjs";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 import { SweetAlertService } from "../services/sweet-alert.service";
@@ -53,9 +53,15 @@ export class PostComponent {
   selectedFiles: any
   postEditID: string
   topPost: number = 3
+  postIDParam: string
 
   constructor(private userService: UserService, private route: ActivatedRoute, private postService: PostService, private router: Router, private bsModalService: BsModalService, private sweetAlert: SweetAlertService, private commentService: CommentService, private spinner: NgxSpinnerService, private notification: NotificationService) {
-
+    // this.router.events.subscribe(event => {
+    //   if (event instanceof NavigationEnd) {
+    //     console.warn('change path');
+    //     this.getPostByID()
+    //   }
+    // });
   }
 
   config: Slick.Config = {
@@ -70,17 +76,24 @@ export class PostComponent {
 
   getPostByID() {
     const id = this.route.snapshot.paramMap.get('id')
-    if (id) this.postEditID = id
-    this.getPostByIDSub = this.postService.getPostByID(String(id)).subscribe((data: any) => {
-      this.post = data.data
-      this.imagesSelected = data.data.images
-      console.log("🚀 ~ this.imagesSelected:", this.imagesSelected)
-    })
+    console.log(`🚀 ~ id:`, id)
+    if (id) {
+      this.postEditID = id
+      this.postService.getPostByID(id).subscribe((data: any) => {
+        console.log('>>> get post moi');
+        this.post = data.data
+        this.imagesSelected = data.data.images
+      })
+    }
+  }
+
+  reloadPostByNotice(postID: string) {
+    console.log(`🚀 ~ postID:`, postID)
+    this.router.navigate(['post', postID])
+    this.getPostByID()
   }
 
   getTopPostsViewers(top: number) {
-    console.log('>>> load lai top view');
-
     this.postService.getTopViewer(top).subscribe((data: any) => {
       this.postsViewers = data.data
     })
@@ -113,7 +126,7 @@ export class PostComponent {
   createComment(postID: string) {
     const content = this.formCreateComment.get('content')?.value
     if (content) {
-    this.notification.comment()
+      this.notification.comment()
       this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
         this.getPostByID()
         this.formCreateComment.reset()
@@ -217,6 +230,7 @@ export class PostComponent {
         '',
         'success'
       );
+      this.getPostByID()
       this.createPostModal.hide()
       this.formEditPost.reset()
       this.imagesSelected = []
@@ -273,6 +287,10 @@ export class PostComponent {
   }
 
   ngOnInit(): void {
+    // this.route.params.subscribe(params => {
+    //   console.log(params['id'])
+    //   this.postIDParam = params['id']
+    // });
     setTimeout(() => {
       this.inputComment.nativeElement.focus()
     }, 500)
@@ -280,10 +298,6 @@ export class PostComponent {
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)
     this.getTopPostsLikes(this.topPost)
-    this.route.paramMap.subscribe(params => {
-      this.router.navigate(['/', params.get('id')])
-      this.getPostByID()
-    });
   }
 
   ngOnDestroy(): void {

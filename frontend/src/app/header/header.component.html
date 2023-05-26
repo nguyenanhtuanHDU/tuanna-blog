@@ -25,7 +25,7 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link active text-white" aria-current="page" href="#">Contact</a>
+          <a class="nav-link active text-white" aria-current="page" routerLink="search-advance">Advance Search</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active text-white" aria-current="page" href="#">Home</a>
@@ -70,10 +70,6 @@
           </button>
         </form>
 
-        <button class="bg-white text-primary btn">
-          <i class="bi bi-filter"></i>
-          Advance search
-        </button>
         <div class="btn-group" dropdown placement="bottom right">
           <button (click)="noticeCount = 0; resetReadNotice(user._id, 'isRead', '')" id="button-alignment"
             dropdownToggle type="button" class="header-inner-right__btn  bg-white text-primary btn dropdown-toggle"
@@ -86,7 +82,7 @@
           <ul id="dropdown-alignment" *dropdownMenu class="header-inner-notices dropdown-menu dropdown-menu-right p-2"
             role="menu" aria-labelledby="button-alignment">
             <ng-scrollbar style="height: 338px !important; width: 300px;">
-              <li (click)="getSinglePost(notice.postID, 'isClick', notice._id)" role="menuitem"
+              <li routerLinkActive="active" (click)="getSinglePost(notice.postID, 'isClick', notice._id)" role="menuitem"
                 class="header-inner-notices-notice p-2 gap-2 flex-center-y" *ngFor="let notice of listNotices">
                 <div *ngIf="!notice.isClick" class="header-inner-notices-notice__dot text-primary"><i
                     class="bi bi-dot"></i></div>

@@ -26,7 +26,8 @@ import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
 // })
 export class HeaderComponent implements OnInit {
   @Output() getTag = new EventEmitter<string>();
-  @Output() getAllPosts = new EventEmitter<any>();
+  @Output() getAllPosts = new EventEmitter<boolean>();
+  @Output() passPostID = new EventEmitter<string>();
 
   private searchTerm = new Subject<string>();
   user: User
@@ -68,6 +69,10 @@ export class HeaderComponent implements OnInit {
 
   callGetAllPost() {
     this.getAllPosts.next(true);
+  }
+
+  onPassPostID(postID: string) {
+    this.passPostID.next(postID)
   }
 
   public logOut() {
@@ -142,7 +147,8 @@ export class HeaderComponent implements OnInit {
   }
 
   getSinglePost(id: string, type: string, noticeID: string) {
-    this.router.navigate(['/post', id]);
+    this.router.navigate(['post', id]);
+    this.onPassPostID(id)
     this.resetReadNotice(id, type, noticeID)
     this.getNoticesByID(this.user._id)
   }

@@ -74,6 +74,10 @@ button {
   overflow-y: scroll !important;
 }
 
+// .modal-backdrop {
+//   display: none;
+// }
+
 /* Importing Bootstrap SCSS file. */
 @import "./node_modules/bootstrap/scss/bootstrap";
 
@@ -85,16 +89,16 @@ button {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-}
 
-.flex-center-x {
-  display: flex !important;
-  justify-content: center !important;
-}
+  &-x {
+    display: flex !important;
+    justify-content: center !important;
+  }
 
-.flex-center-y {
-  display: flex !important;
-  align-items: center !important;
+  &-y {
+    display: flex !important;
+    align-items: center !important;
+  }
 }
 
 /* Importing Bootstrap SCSS file. */
