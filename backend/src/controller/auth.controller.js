@@ -68,7 +68,7 @@ module.exports = {
         const accessToken = jwt.sign(
           { id: userInfoLogin._id, admin: userInfoLogin.admin },
           process.env.TOKEN_KEY,
-          { expiresIn: '10d' }
+          { expiresIn: '1d' }
         );
         res.status(200).json({
           EC: 0,

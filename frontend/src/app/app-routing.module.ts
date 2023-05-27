@@ -5,15 +5,17 @@ import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from "./profile/profile.component";
 import { PostComponent } from "./post/post.component";
+import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+import { AuthGuard } from "./auth.guard";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  // { path: '?page=:page&limit=:limit', component: HomeComponent },
-
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LogInComponent },
   { path: 'sign-up', component: SignUpComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'post/:id', component: PostComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'post/:id', component: PostComponent, canActivate: [AuthGuard] },
+
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({

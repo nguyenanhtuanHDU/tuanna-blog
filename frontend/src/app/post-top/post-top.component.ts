@@ -3,6 +3,7 @@ import { Post } from "../models/post.model";
 import { environment } from "src/environments/environment";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PostService } from "../services/post.service";
+import { global } from "../shared/global";
 
 @Component({
   selector: 'app-post-top',
@@ -10,17 +11,16 @@ import { PostService } from "../services/post.service";
   styleUrls: ['./post-top.component.scss'],
 })
 export class PostTopComponent {
-  @Input() heading: string
   @Input() postsTop: Post[]
   @Input() icon: string
   @Input() type: string
-  // @Output() getNewPost = new EventEmitter();
   @Output() changeViews = new EventEmitter<boolean>();
+  @Output() passPostID = new EventEmitter<string>();
 
   idPost: string
   isChangeViews: boolean = false
 
-  imagePath = environment.apiBackend + '/images/'
+  imagePath = global.imagePath
   constructor(private router: Router, private postService: PostService, route: ActivatedRoute) {
     const id = route.snapshot.paramMap.get('id');
     if (id !== null && id !== undefined) {
@@ -39,12 +39,12 @@ export class PostTopComponent {
   }
 
   updatePostViewers(id: string) {
-    if (this.idPost !== id) {
-      this.onChangeViews()
-      this.idPost !== id && this.postService.updatePostViews(id).subscribe((data: any) => {
-        console.log("🚀 ~ data:", data)
-      })
-    }
+    console.log('>>> run post top');
+    this.passPostID.emit(id);
+    this.onChangeViews()
+    this.idPost !== id && this.postService.updatePostViews(id).subscribe((data: any) => {
+      console.log("🚀 ~ data:", data)
+    })
   }
 
   ngOnInit(): void {

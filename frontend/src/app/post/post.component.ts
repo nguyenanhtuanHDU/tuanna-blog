@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import { NgScrollbar } from "ngx-scrollbar";
 import { NgxSpinnerService } from "ngx-spinner";
 import { NotificationService } from "../services/notification.service";
+import { global } from "../shared/global";
 
 @Component({
   selector: 'app-post',
@@ -41,7 +42,7 @@ export class PostComponent {
     images: new FormControl(),
   });
 
-  imagePath = environment.apiBackend + '/images/'
+  imagePath = global.imagePath
   userSession: User
   post: Post
   postsViewers: Post[]
@@ -53,7 +54,6 @@ export class PostComponent {
   selectedFiles: any
   postEditID: string
   topPost: number = 3
-  postIDParam: string
 
   constructor(private userService: UserService, private route: ActivatedRoute, private postService: PostService, private router: Router, private bsModalService: BsModalService, private sweetAlert: SweetAlertService, private commentService: CommentService, private spinner: NgxSpinnerService, private notification: NotificationService) {
     // this.router.events.subscribe(event => {
@@ -88,8 +88,7 @@ export class PostComponent {
   }
 
   reloadPostByNotice(postID: string) {
-    console.log(`🚀 ~ postID:`, postID)
-    this.router.navigate(['post', postID])
+    this.router.navigate(['/post', postID])
     this.getPostByID()
   }
 
@@ -287,20 +286,19 @@ export class PostComponent {
   }
 
   ngOnInit(): void {
-    // this.route.params.subscribe(params => {
-    //   console.log(params['id'])
-    //   this.postIDParam = params['id']
-    // });
+    this.route.params.subscribe(params => {
+      this.postService.getPostByID(params['id']).subscribe((data: any) => {
+        console.log('>>> get post moi');
+        this.post = data.data
+        this.imagesSelected = data.data.images
+      })
+    });
     setTimeout(() => {
       this.inputComment.nativeElement.focus()
     }, 500)
-    this.getPostByID()
+    // this.getPostByID()
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)
     this.getTopPostsLikes(this.topPost)
-  }
-
-  ngOnDestroy(): void {
-    this.getPostByIDSub.unsubscribe()
   }
 }

@@ -29,6 +29,7 @@ import { PostTopComponent } from './post-top/post-top.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { TimeAgo } from "./custom-pipe/TimeAgo.pipe";
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
 
 @NgModule({
@@ -42,7 +43,8 @@ const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
     PostComponent,
     TagViewComponent,
     PostTopComponent,
-    TimeAgo
+    TimeAgo,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

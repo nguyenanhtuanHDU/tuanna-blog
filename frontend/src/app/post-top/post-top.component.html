@@ -1,9 +1,10 @@
 <div class="post-popular border-radius-12 p-3">
-  <h2 class="post-popular-heading text-success">{{heading | uppercase}}</h2>
+  <h2 class="post-popular-heading text-success">
+    <ng-content></ng-content>
+  </h2>
   <div class="post-popular-posts  d-flex flex-column gap-3">
-    <div class="post-popular-posts-post border-radius-8 p-2 d-flex gap-3 align-items-center"
-      *ngFor="let post of postsTop; trackBy: trackByFn" routerLink="/post/{{post._id}}"
-      (click)="updatePostViewers(post._id)">
+    <div class="post-popular-posts-post border-radius-8 p-2 flex-center-y gap-3"
+      *ngFor="let post of postsTop; trackBy: trackByFn" (click)="updatePostViewers(post._id)">
       <div class="post-popular-posts-post-image border-radius-rounded"><img
           [src]="imagePath + 'avatars/' + post.userAvatar" alt=""></div>
       <div class="post-popular-posts-post-content">

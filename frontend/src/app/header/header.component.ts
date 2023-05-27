@@ -15,6 +15,7 @@ import { NotificationService } from "../services/notification.service";
 import { Post } from "../models/post.model";
 import { PostService } from "../services/post.service";
 import { Subject, debounceTime, distinctUntilChanged } from "rxjs";
+import { global } from "../shared/global";
 
 @Component({
   selector: 'app-header',
@@ -29,13 +30,12 @@ export class HeaderComponent implements OnInit {
   @Output() getAllPosts = new EventEmitter<boolean>();
   @Output() passPostID = new EventEmitter<string>();
 
-  private searchTerm = new Subject<string>();
   user: User
   listNotices: Notice[] = []
   avatarSrc: string = `${environment.apiBackend}/images/avatars/`;
   faBars = faBars;
   faRightFromBracket = faRightFromBracket;
-  imagePath = environment.apiBackend + '/images/'
+  imagePath = global.imagePath
   noticeCount: number = 0
   listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
   postsByTitle: Post[] = []

@@ -22,6 +22,7 @@ import { SocketService } from "../services/socket.service";
 import { Socket } from "ngx-socket-io";
 import { NoticeService } from "../services/notice.service";
 import { Notice } from "../models/notice.model";
+import { global } from "../shared/global";
 // import { Socket, io } from 'socket.io-client'
 // const socket = io('ws://localhost:8000')
 
@@ -60,7 +61,7 @@ export class HomeComponent implements OnInit {
   selectedFiles: any
   posts: Post[]
   postEdit: Post
-  imagePath = environment.apiBackend + '/images/'
+  imagePath = global.imagePath
   userSession: User
   postEditID: string
   isCreate: boolean = false
@@ -383,13 +384,6 @@ export class HomeComponent implements OnInit {
       this.currentPostHeader = this.postTopComments[0]
     })
 
-    const token = this.authService.checkToken();
-    if (
-      !token
-    ) {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.route.queryParams.subscribe((params: Params) => {
       console.log(params['page']);
       if (params['page'] && params['limit']) {

@@ -38,19 +38,6 @@ export class LogInComponent {
     const media = this.videoRef.nativeElement;
     media.muted = true;
     media.play();
-    const token = this.authService.getToken();
-    if (
-      token['token'] &&
-      !token['token'].includes('Object') &&
-      !token['token'].includes('object')
-    ) {
-      console.log('co token');
-    } else {
-      console.log('ko co token');
-      this.spinner.show();
-      this.router.navigate(['/login']);
-      this.spinner.hide();
-    }
   }
 
   activeLogin() {
