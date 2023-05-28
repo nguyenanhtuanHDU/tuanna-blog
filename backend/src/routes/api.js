@@ -11,6 +11,7 @@ const {
   clearRedis,
   getRedis,
   putUpdateUserLikes,
+  getUserByID,
 } = require('../controller/user.controller');
 const middleware = require('../middleware/middleware.controller');
 const { postCreatePost, getAllPosts, deletePost, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments, getPostsByInfo } = require("../controller/post.controller");
@@ -21,13 +22,14 @@ const router = express.Router();
 // USER
 // router.get('/user', getAllUsers);
 router.get('/user/clear-redis', clearRedis);
+router.get('/user/:id', getUserByID);
 router.get('/user/redis', getRedis);
+router.get('/user-info', middleware.verifyToken, getUserInfo);
+router.get('/user/:id/listAvatars', middleware.verifyToken, getListAvatars);
 router.put('/user', middleware.verifyUpdateUser, putUpdateUserInfo);
 router.put('/user/likes', middleware.verifyUpdateUser, putUpdateUserLikes);
 router.put('/user/:id/avatar', middleware.verifyToken, putUpdateUserAvatar);
 router.put('/user/:id/bgAvatar', middleware.verifyToken, postUpdateUserBg);
-router.get('/user-info', middleware.verifyToken, getUserInfo);
-router.get('/user/:id/listAvatars', middleware.verifyToken, getListAvatars);
 router.delete(
   '/user/:id/listAvatars/:avatar',
   middleware.verifyToken,

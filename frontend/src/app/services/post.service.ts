@@ -16,8 +16,8 @@ export class PostService {
   constructor(private httpClient: HttpClient,
     private authService: AuthService) { }
 
-  getAllPosts(page: number = 1, limit: number = 4): Observable<Post[]> {
-    return this.httpClient.get<Post[]>(this.postUrl + '?page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
+  getAllPosts(page: number = 1, limit: number = 4, userID: string = ''): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.postUrl + '?page=' + page + '&limit=' + limit + '&userID=' + userID, { headers: this.authService.getHeaders() });
   }
 
   getPostByID(id: string): Observable<Post> {

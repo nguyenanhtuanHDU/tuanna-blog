@@ -14,8 +14,7 @@
     object-fit: cover;
   }
 
-  &-container {
-  }
+  &-container {}
 
   &-inner {
     &-head {
@@ -34,6 +33,7 @@
       &-card {
         border-radius: 12px;
         box-shadow: var(--box-shadow);
+        height: fit-content !important;
 
         &-body {
           &__avatar {
@@ -58,6 +58,7 @@
                   background-color: var(--bs-primary);
                   border-radius: 50px;
                 }
+
                 .avatars {
                   grid-template-columns: repeat(4, 1fr);
                   height: 383px;
@@ -84,6 +85,7 @@
                         height: 30px;
                         cursor: pointer;
                         box-shadow: var(--box-shadow);
+
                         &:hover {
                           opacity: 0.6;
                         }
@@ -124,8 +126,7 @@
 
           &-infor {
             &-item {
-              &__username {
-              }
+              &__username {}
             }
           }
         }

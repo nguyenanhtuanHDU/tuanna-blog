@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
   faRightFromBracket = faRightFromBracket;
   imagePath = global.imagePath
   noticeCount: number = 0
-  listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
+  listTags = global.listTags
   postsByTitle: Post[] = []
   searchPostsSubject = new Subject<string>();
 
@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit {
     this.passPostID.next(postID)
   }
 
-  public logOut() {
+  logOut() {
     Swal.fire({
       title: 'Are you sure to log out ?',
       text: "You won't be able to revert this!",
@@ -95,6 +95,10 @@ export class HeaderComponent implements OnInit {
         );
       }
     });
+  }
+
+  naviagteToProfile(id: string) {
+    this.router.navigate(['profile', id])
   }
 
   searchListPosts(dropdown: any, event: any) {

@@ -23,9 +23,9 @@ import { global } from "../shared/global";
   styleUrls: ['./post.component.scss']
 })
 export class PostComponent {
-  @ViewChild('commentScrollbar') commentScrollbar: NgScrollbar;
-  @ViewChild('createPostModal') createPostModal: ModalDirective;
-  @ViewChild('inputComment') inputComment: ElementRef;
+  @ViewChild('commentScrollbar', { static: true }) commentScrollbar: NgScrollbar;
+  @ViewChild('createPostModal', { static: true }) createPostModal: ModalDirective;
+  @ViewChild('inputComment', { static: true }) inputComment: ElementRef;
 
   formEditComment = new FormGroup({
     content: new FormControl(),
@@ -300,5 +300,10 @@ export class PostComponent {
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)
     this.getTopPostsLikes(this.topPost)
+  }
+
+  ngOnDestroy(): void {
+    console.log('destroy profile');
+
   }
 }

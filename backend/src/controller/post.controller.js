@@ -7,15 +7,49 @@ var fs = require('fs');
 module.exports = {
     getAllPosts: async (req, res) => {
         try {
-            const { page, limit } = req.query
-            const skip = (page - 1) * limit
-            const postsCount = await Post.count({}).exec()
-            const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate('comments').exec()
-            res.status(200).json({
-                EC: 0,
-                data: posts,
-                postsCount
-            })
+            const { page, limit, userID } = req.query
+            if (userID) {
+
+                let Asia = Europe = Africa = America = Oceania = Antarctica = 0;
+                const posts = await Post.find({ userID })
+                posts.map((post) => {
+                    if (post.tag === "Asia") {
+                        Asia += 1;
+                    }
+                    if (post.tag === "Europe") {
+                        Europe += 1;
+                    }
+                    if (post.tag === "Africa") {
+                        Africa += 1;
+                    }
+                    if (post.tag === "America") {
+                        America += 1;
+                    }
+                    if (post.tag === "Oceania") {
+                        Oceania += 1;
+                    }
+                    if (post.tag === "Antarctica") {
+                        Antarctica += 1;
+                    }
+                })
+                res.status(200).json({
+                    Asia,
+                    Europe,
+                    Africa,
+                    America,
+                    Oceania,
+                    Antarctica
+                })
+            } else {
+                const skip = (page - 1) * limit
+                const postsCount = await Post.count({}).exec()
+                const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate('comments').exec()
+                res.status(200).json({
+                    EC: 0,
+                    data: posts,
+                    postsCount
+                })
+            }
         } catch (error) {
             res.status(404).json({
                 EC: -1,
@@ -26,8 +60,6 @@ module.exports = {
     getPostByID: async (req, res) => {
         try {
             const data = await Post.findById(req.params.id).populate('comments').exec()
-            // data.views = data.views + 1
-            // data.save()
             res.status(200).json({
                 EC: 0,
                 data

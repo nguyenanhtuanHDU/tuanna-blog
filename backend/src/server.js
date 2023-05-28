@@ -35,10 +35,10 @@ app.use('/upload', uploadRoute);
 
 (async () => {
   try {
+    await connection();
     server.listen(port, hostname, () => {
       console.log(`Server listening on port ${port}`);
     });
-    await connection();
     global.io = new Server(server, {
       cors: {
         origin: "*",

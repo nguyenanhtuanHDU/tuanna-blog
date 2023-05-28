@@ -24,6 +24,10 @@ export class UserService {
     return this.httpClient.get<User>(this.userInfoUrl, { headers: this.authService.getHeaders() });
   }
 
+  getUserByID(id: string): Observable<User> {
+    return this.httpClient.get<User>(this.userUrl + '/' + id, { headers: this.authService.getHeaders() });
+  }
+
   getListAvatars() {
     return this.httpClient.get(
       `${environment.apiBackend}/v1/api/user/:id/listAvatars`,

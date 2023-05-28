@@ -40,6 +40,23 @@ module.exports = {
       });
     }
   },
+  getUserByID: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id).select('-password')
+      user.views = user.views + 1
+      user.save()
+      res.status(200).json({
+        data: user
+      });
+
+    } catch (error) {
+      console.log(error);
+      return res.status(404).json({
+        EC: -1,
+        msg: 'Server error',
+      });
+    }
+  },
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find({});

@@ -33,8 +33,7 @@ import { global } from "../shared/global";
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('scrollContainer', { static: true }) scrollContainer: ElementRef;
-  @ViewChild('createPostModal') createPostModal: ModalDirective;
+  @ViewChild('createPostModal', { static: true }) createPostModal: ModalDirective;
   @ViewChildren('commentScrollbar') commentScrollbar: QueryList<NgScrollbar>;
 
   // @ViewChild('editPost', { static: false }) editPost?: ModalDirective;
@@ -77,7 +76,7 @@ export class HomeComponent implements OnInit {
   currentPostHeader: Post
   dataSocket: any
   isPostsTag: string = ''
-  listTags = ['Asia', 'Europe', 'Africa', 'America', 'Oceania', 'Antarctica']
+  listTags = global.listTags
   currentPage: number = 1
 
   listNotices: Notice[] = []

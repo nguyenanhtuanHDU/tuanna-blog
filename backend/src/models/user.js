@@ -84,6 +84,10 @@ const userSchema = new mongoose.Schema(
     follow: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     likes: { type: [String], default: [] },
     notices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'notice' }],
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

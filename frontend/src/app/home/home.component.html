@@ -118,7 +118,7 @@
     <div class="posts-inner p-3 border-radius-12">
       <div class="posts-post-head d-flex justify-content-between">
         <div class="d-flex">
-          <div class="posts-post-head-avatar me-3 border-radius-rounded">
+          <div class="posts-post-head-avatar me-3 border-radius-rounded" [routerLink]="'profile/' + post.userID">
             <img [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
           </div>
           <div class="posts-post-head-info d-flex flex-column my-auto">

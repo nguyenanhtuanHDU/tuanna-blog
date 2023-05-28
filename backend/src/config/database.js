@@ -23,7 +23,7 @@ const connection = async () => {
   ];
 
   await mongoose.connect(
-    'mongodb://localhost:27017',
+    process.env.DB_LINK,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
