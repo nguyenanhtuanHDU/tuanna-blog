@@ -293,9 +293,9 @@ export class PostComponent {
         this.imagesSelected = data.data.images
       })
     });
-    timer(500).subscribe(() => {
-      this.inputComment.nativeElement.focus()
-    })
+    // timer(500).subscribe(() => {
+    //   this.inputComment.nativeElement.focus()
+    // })
     // this.getPostByID()
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)

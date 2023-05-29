@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const fs = require('fs');
 const Post = require("../models/post");
+const client = require("../config/redis");
 const { createNotice } = require("../services/notice.services");
 const { getUserRedis, setUserRedis } = require("../services/user.redis");
 
@@ -27,8 +28,6 @@ module.exports = {
       const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
       const user = await User.findById(userDecoded._id).populate('notices')
       const { password, ...data } = await getUserRedis()
-      console.log(`🚀 ~ data:`, data)
-    
       res.status(200).json({
         data
       });
@@ -44,8 +43,11 @@ module.exports = {
   getUserByID: async (req, res) => {
     try {
       const user = await User.findById(req.params.id).select('-password')
-      user.views = user.views + 1
-      user.save()
+      const userRedis = await getUserRedis()
+      if (user._id.toString() !== userRedis._id) {
+        user.views = user.views + 1
+        user.save()
+      }
       res.status(200).json({
         data: user
       });
@@ -104,8 +106,7 @@ module.exports = {
       const accessToken = token.split(' ')[1];
       const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
       const user = await User.findById(userDecoded.id)
-      const userInfoStr = await client.get(process.env.REDIS_USER);
-      const userInfoArr = JSON.parse(userInfoStr)
+      const userInfoArr = await getUserRedis()
       data.editCount = user.editCount + 1;
       for (let key in userInfoArr) {
         if (data.hasOwnProperty(key)) {

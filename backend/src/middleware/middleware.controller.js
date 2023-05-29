@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
 const User = require("../models/user");
+const { getUserRedis } = require("../services/user.redis");
 
 const middleware = {
   verifyToken: (req, res, next) => {

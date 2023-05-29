@@ -128,7 +128,7 @@
             <div class="profile-inner-left-card-body-item">
               <h6 class="text-uppercase text-muted">posts information</h6>
               <div id="divChart">
-                <strong></strong>
+                <strong *ngIf="user && user.posts.length > 0" class="ms-2">Total: {{user.posts.length}} posts</strong>
                 <canvas id="myChart"></canvas>
               </div>
               <!-- <h6 class="text-color">Address</h6>
@@ -311,18 +311,6 @@
       </div>
       <div class="modal-body">
         <form class="row" autocomplete="off" [formGroup]="editUserForm" (ngSubmit)="updateUser()">
-          <!-- <div class="col-6 form-inner-body__item mt-3">
-            <label for="username" class="">Username</label>
-            <input class="form-control my-2" (input)="validateUsername()" formControlName="username" id="username"
-              #inputUsername spellcheck="false" />
-            <span *ngIf="editUserForm.value.username" class="text-danger">{{
-              validateUsername()
-              }}</span>
-          </div>
-          <div class="col-6 form-inner-body__item mt-3">
-            <label for="email" class="">Email</label>
-            <input class="form-control my-2" type="text" id="email" formControlName="email" spellcheck="false" />
-          </div> -->
           <div class="col-6 form-inner-body__item mt-3">
             <label for="firstName" class="">FirstName</label>
             <input class="form-control my-2" type="text" id="firstName" formControlName="firstName"

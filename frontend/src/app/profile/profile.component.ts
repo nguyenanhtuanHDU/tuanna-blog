@@ -24,7 +24,7 @@ Chart.register(...registerables);
 export class ProfileComponent implements OnInit {
   @ViewChild(HeaderComponent, { static: true }) header!: HeaderComponent;
   @ViewChild('userInfolgModal', { static: true }) userInfolgModal: any;
-  @ViewChild('inputUsername', { static: false }) inputUsername: ElementRef;
+  @ViewChild('inputUsername', { static: true }) inputUsername: ElementRef;
   user: User
   userSession: User
   avatarData: any;
@@ -134,9 +134,9 @@ export class ProfileComponent implements OnInit {
     this.editUserForm.get('birthday')?.setValue(this.user.birthday);
     this.editUserForm.get('address')?.setValue(this.user.address);
     this.editUserForm.get('gender')?.setValue(this.user.gender);
-    timer(500).subscribe(() => {
-      this.inputUsername.nativeElement.focus();
-    })
+    // timer(500).subscribe(() => {
+    //   this.inputUsername.nativeElement.focus();
+    // })
   }
 
   updateAvatar(avatar: string) {
@@ -211,7 +211,8 @@ export class ProfileComponent implements OnInit {
       lastName: data.lastName
     }
     data.fullName = fullName
-    data.birthday = format(new Date(data.birthday), 'dd/MM/yyyy')
+    // console.log(`🚀 ~ data.birthday:`, data.birthday)
+    // data.birthday = format(new Date(data.birthday), 'dd/MM/yyyy')
     delete data.firstName
     delete data.lastName
 

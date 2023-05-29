@@ -20,6 +20,7 @@ export interface User {
   likes: string[];
   notices: any[],
   views: number
+  posts: string[]
 }
 
 

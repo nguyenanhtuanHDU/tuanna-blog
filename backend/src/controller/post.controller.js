@@ -183,7 +183,9 @@ module.exports = {
             data.userID = userDecoded.id
             data.userAvatar = user.avatar
             data.userUsername = user.username
-            await Post.create(data)
+            const post = await Post.create(data)
+            user.posts.push(post.id)
+            await user.save()
             res.status(200).json({
                 EC: 0,
                 msg: 'Create post successfully'
