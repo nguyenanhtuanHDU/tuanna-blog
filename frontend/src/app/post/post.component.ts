@@ -6,7 +6,7 @@ import { UserService } from "../services/user.service";
 import { PostService } from "../services/post.service";
 import { ActivatedRoute, NavigationEnd, NavigationStart, Route, Router } from "@angular/router";
 import { Post } from "../models/post.model";
-import { Subscription, of, switchMap } from "rxjs";
+import { Subscription, of, switchMap, timer } from "rxjs";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 import { SweetAlertService } from "../services/sweet-alert.service";
@@ -131,9 +131,9 @@ export class PostComponent {
         this.formCreateComment.reset()
 
         if (this.commentScrollbar) {
-          setTimeout(() => {
+          timer(500).subscribe(() => {
             this.commentScrollbar.scrollTo({ bottom: 0, end: 0, duration: 500 })
-          }, 500)
+          })
         }
       })
     } else {
@@ -257,12 +257,12 @@ export class PostComponent {
 
   onAngleChanged(changeViews: boolean) {
     if (!changeViews) {
-      setTimeout(() => {
+      timer(500).subscribe(() => {
         this.postService.getTopViewer(this.topPost).subscribe((data: any) => {
           this.postsViewers = data.data
           this.getPostByID()
         })
-      }, 500)
+      })
     }
   }
 
@@ -293,9 +293,9 @@ export class PostComponent {
         this.imagesSelected = data.data.images
       })
     });
-    setTimeout(() => {
+    timer(500).subscribe(() => {
       this.inputComment.nativeElement.focus()
-    }, 500)
+    })
     // this.getPostByID()
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)

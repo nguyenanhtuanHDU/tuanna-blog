@@ -23,6 +23,7 @@ import { Socket } from "ngx-socket-io";
 import { NoticeService } from "../services/notice.service";
 import { Notice } from "../models/notice.model";
 import { global } from "../shared/global";
+import { Subject, Subscription, takeUntil, timer } from "rxjs";
 // import { Socket, io } from 'socket.io-client'
 // const socket = io('ws://localhost:8000')
 
@@ -39,7 +40,7 @@ export class HomeComponent implements OnInit {
   // @ViewChild('editPost', { static: false }) editPost?: ModalDirective;
   // modalEditPost: BsModalRef
   // private socket: Socket
-
+  private unsub = new Subject<void>();
   formCreatePost = new FormGroup({
     title: new FormControl(),
     content: new FormControl(),
@@ -98,7 +99,7 @@ export class HomeComponent implements OnInit {
   }
 
   getAllPosts() {
-    this.postService.getAllPosts(this.page, this.limitPost).subscribe((data: any) => {
+    this.postService.getAllPosts(this.page, this.limitPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.posts = data.data
       this.postsCount = Number(data.postsCount)
     })
@@ -108,7 +109,7 @@ export class HomeComponent implements OnInit {
     this.page = 1
     this.limitPost = 4
     this.currentPage = 1
-    this.postService.getPostsByTag(tag, this.page, this.limitPost).subscribe((data: any) => {
+    this.postService.getPostsByTag(tag, this.page, this.limitPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.posts = data.data
       this.isPostsTag = tag
       this.postsCount = data.postsCount
@@ -117,16 +118,16 @@ export class HomeComponent implements OnInit {
   }
 
   resetAllPosts(event: any) {
-    setTimeout(() => {
+    timer(200).subscribe(() => {
       this.currentPage = 1
-    }, 200)
+    })
     this.isPostsTag = ''
     event && this.getAllPosts()
   }
 
   getPostToEditByID(id: string) {
     this.postEditID = id
-    this.postService.getPostByID(id).subscribe((data: any) => {
+    this.postService.getPostByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postEdit = data.data
       this.formCreatePost.get('title')?.setValue(this.postEdit.title);
       this.formCreatePost.get('content')?.setValue(this.postEdit.content);
@@ -256,7 +257,7 @@ export class HomeComponent implements OnInit {
   }
 
   getUserSessionInfo() {
-    this.userService.getUserInfo().subscribe((data: any) => {
+    this.userService.getUserInfo().pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.userSession = data.data
     })
   }
@@ -287,9 +288,9 @@ export class HomeComponent implements OnInit {
         this.formCreateComment.reset()
 
         if (this.commentScrollbar) {
-          setTimeout(() => {
+          timer(500).subscribe(() => {
             this.commentScrollbar.toArray()[this.indexPost].scrollTo({ bottom: 0, end: 0, duration: 500 })
-          }, 500)
+          })
         }
       })
     } else {
@@ -372,13 +373,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserSessionInfo()
-    if (this.userSession) {
-      console.log(this.userSession);
-    }
-
-    // this.noticeService.getNoticesByUserID(this.userSession._id).subscribe((data: any) => {
-    // })
-    this.postService.getTopComments(this.postTopCommentsCount).subscribe((data: any) => {
+    this.postService.getTopComments(this.postTopCommentsCount).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postTopComments = data.data
       this.currentPostHeader = this.postTopComments[0]
     })
@@ -392,6 +387,11 @@ export class HomeComponent implements OnInit {
       }
     });
     this.getAllPosts()
+  }
+
+  ngOnDestroy(): void {
+    this.unsub.next()
+    this.unsub.complete()
   }
 }
 

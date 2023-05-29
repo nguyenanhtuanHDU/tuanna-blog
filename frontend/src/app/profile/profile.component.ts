@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { Chart, registerables } from 'chart.js';
 import { global } from "../shared/global";
 import { PostService } from "../services/post.service";
+import { Subject, takeUntil, timer } from "rxjs";
 Chart.register(...registerables);
 
 @Component({
@@ -38,6 +39,7 @@ export class ProfileComponent implements OnInit {
   maxDate: Date;
   listTags = global.listTags
   countPostEachTag: any
+  private unsub = new Subject<void>();
 
   editUserForm = new FormGroup({
     username: new FormControl('', Validators.minLength(6)),
@@ -71,8 +73,9 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserSession() {
-    this.userService.getUserInfo().subscribe((data: any) => {
+    this.userService.getUserInfo().pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.userSession = data.data
+      console.log(`🚀 ~ this.userSession:`, this.userSession)
     })
   }
 
@@ -131,9 +134,9 @@ export class ProfileComponent implements OnInit {
     this.editUserForm.get('birthday')?.setValue(this.user.birthday);
     this.editUserForm.get('address')?.setValue(this.user.address);
     this.editUserForm.get('gender')?.setValue(this.user.gender);
-    setTimeout(() => {
+    timer(500).subscribe(() => {
       this.inputUsername.nativeElement.focus();
-    }, 500);
+    })
   }
 
   updateAvatar(avatar: string) {
@@ -191,7 +194,7 @@ export class ProfileComponent implements OnInit {
 
   getUserByID(id: string) {
     this.spinner.show();
-    this.userService.getUserByID(id).subscribe((data: any) => {
+    this.userService.getUserByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.user = data.data;
       this.srcImage = `${this.srcImagesParent}${data.data.avatar}`;
       this.srcBg = `${this.srcBgsParent}${data.data.bgAvatar}`;
@@ -290,7 +293,7 @@ export class ProfileComponent implements OnInit {
   }
 
   createChartPosts(data: any) {
-    if(this.chart){
+    if (this.chart) {
       this.chart.destroy()
       console.log('co chart');
     }
@@ -340,7 +343,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getPostCountEachTagByUserID(id: string) {
-    this.postService.getAllPosts(undefined, undefined, id).subscribe((data: any) => {
+    this.postService.getAllPosts(undefined, undefined, id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.createChartPosts(data)
     })
   }
@@ -352,5 +355,10 @@ export class ProfileComponent implements OnInit {
       this.getPostCountEachTagByUserID(id)
     });
     this.getUserSession()
+  }
+
+  ngOnDestroy(): void {
+    this.unsub.next();
+    this.unsub.complete();
   }
 }

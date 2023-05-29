@@ -38,7 +38,7 @@
               class="me-2" [class.active]="userSession.likes.includes(post._id)">
               <i class="bi bi-suit-heart-fill text-white"></i>
             </label>
-            <input *ngIf="userSession && userSession.likes.length > 0" style="overflow: hidden; width: 0; height: 0;"
+            <input *ngIf="userSession && userSession.likes.length > 0 && post" style="overflow: hidden; width: 0; height: 0;"
               type="checkbox" [id]="post._id" value="like" [checked]="userSession.likes.includes(post._id)"
               (change)="updateStatusLike($event, post._id)">
             <a *ngIf="post && post.likers" class="posts-post-footer-count text-decoration-none" [title]="post.likers"
