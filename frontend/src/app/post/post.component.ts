@@ -6,7 +6,7 @@ import { UserService } from "../services/user.service";
 import { PostService } from "../services/post.service";
 import { ActivatedRoute, NavigationEnd, NavigationStart, Route, Router } from "@angular/router";
 import { Post } from "../models/post.model";
-import { Subscription, of, switchMap, timer } from "rxjs";
+import { Observable, Subscription, map, of, switchMap, timer } from "rxjs";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 import { SweetAlertService } from "../services/sweet-alert.service";
@@ -76,11 +76,10 @@ export class PostComponent {
 
   getPostByID() {
     const id = this.route.snapshot.paramMap.get('id')
-    console.log(`🚀 ~ id:`, id)
     if (id) {
       this.postEditID = id
       this.postService.getPostByID(id).subscribe((data: any) => {
-        console.log('>>> get post moi');
+        console.log(`🚀 ~ data:`, data)
         this.post = data.data
         this.imagesSelected = data.data.images
       })
@@ -126,7 +125,7 @@ export class PostComponent {
     const content = this.formCreateComment.get('content')?.value
     if (content) {
       this.notification.comment()
-      this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
+      this.commentService.createComment({ postID: postID, content }).subscribe((data) => {
         this.getPostByID()
         this.formCreateComment.reset()
 
@@ -203,6 +202,8 @@ export class PostComponent {
   }
 
   selectImagesPost(event: any) {
+    console.log('choose image');
+
     this.newImagesSelected = []
     this.selectedFiles = event.target.files;
     console.log("🚀 ~ this.selectedFiles:", this.selectedFiles)
@@ -216,8 +217,8 @@ export class PostComponent {
     }
   }
 
-  deleteImagePost(index: number) {
-    this.imagesSelected.splice(index, 1)
+  deleteImagePost(index: number, type: string) {
+    type === 'old' ? this.imagesSelected.splice(index, 1) : this.newImagesSelected.splice(index, 1)
   }
 
   editPost() {
@@ -287,19 +288,22 @@ export class PostComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.postService.getPostByID(params['id']).subscribe((data: any) => {
+      const id = params['id']
+      id && this.postService.getPostByID(id).subscribe((data: any) => {
         console.log('>>> get post moi');
         this.post = data.data
         this.imagesSelected = data.data.images
       })
     });
-    // timer(500).subscribe(() => {
-    //   this.inputComment.nativeElement.focus()
-    // })
-    // this.getPostByID()
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)
     this.getTopPostsLikes(this.topPost)
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.inputComment.nativeElement.focus();
+    }, 300);
   }
 
   ngOnDestroy(): void {

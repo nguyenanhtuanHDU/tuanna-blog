@@ -47,8 +47,8 @@ export class PostTopComponent {
     })
   }
 
-  ngOnInit(): void {
-    console.log(`🚀 ~ this.type:`, this.type)
-  }
+  // ngOnInit(): void {
+  //   console.log(`🚀 ~ this.type:`, this.type)
+  // }
 }
 

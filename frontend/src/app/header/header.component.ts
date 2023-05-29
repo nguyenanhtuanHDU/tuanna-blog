@@ -97,10 +97,6 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  naviagteToProfile(id: string) {
-    this.router.navigate(['profile', id])
-  }
-
   searchListPosts(dropdown: any, event: any) {
     const titleSearch: string = event.target.value
     this.searchPostsSubject.pipe(

@@ -7,9 +7,8 @@ var fs = require('fs');
 module.exports = {
     getAllPosts: async (req, res) => {
         try {
-            const { page, limit, userID } = req.query
+            const { page, limit, userID, tag } = req.query
             if (userID) {
-
                 let Asia = Europe = Africa = America = Oceania = Antarctica = 0;
                 const posts = await Post.find({ userID })
                 posts.map((post) => {
@@ -43,7 +42,14 @@ module.exports = {
             } else {
                 const skip = (page - 1) * limit
                 const postsCount = await Post.count({}).exec()
-                const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate('comments').exec()
+                const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'author',
+                        model: 'user',
+                        select: 'avatar username _id'
+                    }
+                }).exec()
                 res.status(200).json({
                     EC: 0,
                     data: posts,
@@ -59,7 +65,15 @@ module.exports = {
     },
     getPostByID: async (req, res) => {
         try {
-            const data = await Post.findById(req.params.id).populate('comments').exec()
+            console.log('run');
+            const data = await Post.findById(req.params.id).populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    model: 'user',
+                    select: 'avatar username _id'
+                }
+            }).exec()
             res.status(200).json({
                 EC: 0,
                 data
@@ -73,12 +87,19 @@ module.exports = {
     },
     getPostsByInfo: async (req, res) => {
         try {
-            const { page, limit, title } = req.query
+            const { page, limit, title, tag } = req.query
             //  PHÂN TRANG
             if (page && limit) {
                 const skip = (page - 1) * limit
-                const postsCount = await Post.find({ tag: req.query.tag })
-                const posts = await Post.find({ tag: req.query.tag }).populate('comments').skip(skip).limit(limit).sort({ createdAt: -1 })
+                const postsCount = await Post.find({ tag })
+                const posts = await Post.find({ tag }).populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'author',
+                        model: 'user',
+                        select: 'avatar username _id'
+                    }
+                }).skip(skip).limit(limit).sort({ createdAt: -1 })
                 res.status(200).json({
                     data: posts,
                     postsCount: postsCount.length
@@ -94,20 +115,6 @@ module.exports = {
             }
 
 
-        } catch (error) {
-            res.status(404).json({
-                EC: -1,
-                msg: 'Server error'
-            })
-        }
-    },
-    getPostsByTitle: async (req, res) => {
-        try {
-            console.log(req.body);
-            // res.status(200).json({
-            //     data: posts,
-            //     postsCount: postsCount.length
-            // })
         } catch (error) {
             res.status(404).json({
                 EC: -1,

@@ -24,7 +24,7 @@ export class PostService {
     return this.httpClient.get<Post>(this.postUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
 
-  getPostsByTag(tagName: string, page: number, limit: number): Observable<Post> {
+  getPostsByTag(tagName: string, page: number = 1, limit: number = 4): Observable<Post> {
     return this.httpClient.get<Post>(this.listPostUrl + '/filter?tag=' + tagName + '&page=' + page + '&limit=' + limit, { headers: this.authService.getHeaders() });
   }
 

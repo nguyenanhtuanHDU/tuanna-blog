@@ -90,13 +90,14 @@
         <ng-container *ngIf="post && post.comments">
           <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
             *ngFor="let comment of post.comments; trackBy: trackByFn">
-            <!-- <pre>{{comment |json}}</pre> -->
-            <div class="posts-inner-comment-image">
+            <!-- <pre>{{comment | json}}</pre> -->
+            <div class="posts-inner-comment-image" type="button" [routerLink]="['/profile', comment.author._id]">
               <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
             </div>
             <div class="posts-inner-comment-content">
               <div class="d-flex justify-content-between">
-                <div class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
+                <div class="posts-inner-comment-content__username fw-6 text-primary" type="button"
+                  [routerLink]="['/profile', comment.author._id]">{{comment.author.username}}</div>
                 <div class="posts-inner-comment-content__time">
                   <span>{{comment.updatedAt | TimeAgo}}</span>
                 </div>
@@ -105,11 +106,11 @@
               </div>
               <p class="mb-0 p-2">{{comment.content}}</p>
               <ng-container *ngIf="userSession && userSession._id">
-                <button *ngIf="comment.author.id === userSession._id" class="btn text-primary flex-center"
+                <button *ngIf="comment.author._id === userSession._id" class="btn text-primary flex-center"
                   style="right: 35px;" (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
                   <i class="bi bi-pencil-square"></i>
                 </button>
-                <button *ngIf="comment.author.id === userSession._id" class="btn text-danger flex-center"
+                <button *ngIf="comment.author._id === userSession._id" class="btn text-danger flex-center"
                   style="right: 5px;" (click)="deleteCommentByID(comment._id)">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -143,7 +144,6 @@
           (ngSubmit)="createComment(post._id)">
           <input #inputComment formControlName="content" placeholder="Type your comment" class="form-control"
             type="text" />
-          {{inputComment.focus()}}
           <button type="submit" class="btn">
             <i class="bi bi-send"></i>
           </button>
@@ -193,7 +193,7 @@
       </div>
       <div class="modal-body post">
         <tabset type="pills" class="post-tabs">
-          <tab heading="Content" class="post-tabs-tab">
+          <tab heading="Content" class="post-tabs-tab p-3 my-3">
             <form class="post-tabs-tab-content" [formGroup]="formEditPost">
               <div class="form-group">
                 <label for="title">Title</label>
@@ -216,39 +216,46 @@
               </div>
             </form>
           </tab>
-          <tab heading="Images" class="post-tabs-tab">
-            <form class="post-tabs-tab-imgs" [formGroup]="formEditPost">
-              <div class="form-group">
-                <label for="image"></label>
-                <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
-                  multiple class="form-control-file" id="image">
-              </div>
-              <div class="row">
-                <span>Image old</span>
-                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
-                  *ngFor="let img of imagesSelected; index as i">
-                  <img class="border-radius-8" [src]="imagePath + '/posts/' + img" alt="">
-                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
-                </div>
 
-              </div>
-              <div class="row">
-                <span>image new</span>
-                <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
-                  *ngFor="let img of newImagesSelected; index as i">
-                  <img class="border-radius-8" [src]="img" alt="">
-                  <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
+          <tab heading="Images" class="post-tabs-tab p-3 my-3">
+            <ng-scrollbar style="max-height: 510px; height: 438px;" appearance="standard">
+              <form class="post-tabs-tab-imgs" [formGroup]="formEditPost">
+                <!-- <div class="form-group">
+                  <label for="image"></label>
+                  <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
+                    multiple class="form-control-file" id="image">
+                </div> -->
+                <div class="row">
+                  <strong class="my-2">Current Images</strong>
+                  <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                    *ngFor="let img of imagesSelected; index as i">
+                    <img class="border-radius-8" [src]="imagePath + '/posts/' + img" alt="">
+                    <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i, 'old')"></i></button>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="image2">Add Image</label>
-                <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
-                  multiple class="form-control-file" id="image2">
-              </div>
-            </form>
+                <div class="row">
+                  <strong class="my-2" *ngIf="newImagesSelected.length > 0">New Images</strong>
+                  <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                    *ngFor="let img of newImagesSelected; index as i">
+                    <img class="border-radius-8" [src]="img" alt="">
+                    <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i, 'new')"></i></button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="image2" class="btn btn-primary">
+                    Add Image
+                    <i class="bi bi-plus-circle-fill"></i>
+                  </label>
+                  <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
+                    multiple class="form-control-file d-none" id="image2">
+                </div>
+              </form>
+            </ng-scrollbar>
           </tab>
         </tabset>
-        <button (click)="editPost()">Edit</button>
+        <button class="btn btn-primary" type="submit" (click)="editPost()">
+          <span>Edit</span>
+          <i class="bi bi-pencil-square ms-1"></i></button>
       </div>
     </div>
   </div>

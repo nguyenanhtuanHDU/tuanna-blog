@@ -6,26 +6,20 @@ const { getUserRedis } = require("../services/user.redis");
 module.exports = {
     postCreateComment: async (req, res) => {
         try {
-            if (req.body.type === 'CREATE_COMMENT') {
-                const userRedis = await getUserRedis()
-                const data = {
-                    author: {
-                        id: userRedis._id,
-                        avatar: userRedis.avatar,
-                        username: userRedis.username
-                    },
-                    content: req.body.content,
-                    postID: req.body.postID
-                }
-                const post = await Post.findById(data.postID)
-                await createNotice(data.author, { id: post.userID }, 'comment', data.postID)
-                const comment = await Comment.create(data)
-                post.comments = [...post.comments, comment._id]
-                await post.save()
-                res.status(200).json({
-                    msg: 'Success',
-                })
+            const userRedis = await getUserRedis()
+            const data = {
+                author: userRedis._id,
+                content: req.body.content,
+                postID: req.body.postID
             }
+            const post = await Post.findById(data.postID)
+            await createNotice(data.author, { id: post.userID }, 'comment', data.postID)
+            const comment = await Comment.create(data)
+            post.comments = [...post.comments, comment._id]
+            await post.save()
+            res.status(200).json({
+                msg: 'Success',
+            })
         } catch (error) {
             console.log("🚀 ~ error:", error)
             res.status(404).json({

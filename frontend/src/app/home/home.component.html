@@ -193,12 +193,14 @@
         <div class="posts-inner-comment d-flex gap-2 my-3 p-2"
           *ngFor="let comment of post.comments; trackBy: trackByFn">
           <!-- <pre>{{comment |json}}</pre> -->
-          <div class="posts-inner-comment-image" *ngIf="comment.author && comment.author.avatar">
+          <div class="posts-inner-comment-image" type="button" *ngIf="comment.author && comment.author.avatar"
+            [routerLink]="'profile/' + comment.author.id">
             <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
           </div>
           <div class="posts-inner-comment-content">
             <div class="d-flex justify-content-between">
-              <div *ngIf="comment.author && comment.author.username"
+              <div type="button" [routerLink]="'profile/' + comment.author.id"
+                *ngIf="comment.author && comment.author.username"
                 class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
               <div class="posts-inner-comment-content__time">
                 <span>{{comment.updatedAt | TimeAgo}}</span>

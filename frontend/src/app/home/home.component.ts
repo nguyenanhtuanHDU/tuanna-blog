@@ -106,14 +106,11 @@ export class HomeComponent implements OnInit {
   }
 
   getPostsByTag(tag: string) {
-    this.page = 1
-    this.limitPost = 4
-    this.currentPage = 1
     this.postService.getPostsByTag(tag, this.page, this.limitPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
+      console.log(`🚀 ~ data:`, data)
       this.posts = data.data
       this.isPostsTag = tag
       this.postsCount = data.postsCount
-      console.log(`🚀 ~ this.postsCount:`, this.postsCount)
     })
   }
 
@@ -283,7 +280,7 @@ export class HomeComponent implements OnInit {
     this.indexPost = index % this.limitPost
     if (content) {
       this.notificationService.comment()
-      this.commentService.createPost({ type: 'CREATE_COMMENT', postID: postID, content }).subscribe((data) => {
+      this.commentService.createComment({ postID: postID, content }).subscribe((data) => {
         this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
         this.formCreateComment.reset()
 
@@ -364,6 +361,7 @@ export class HomeComponent implements OnInit {
   pageChanged(event: PageChangedEvent): void {
     this.page = event.page;
     this.router.navigate([''], { queryParams: { page: this.page, limit: this.limitPost } });
+    this.isPostsTag && this.getPostsByTag(this.isPostsTag)
   }
 
   openFormEditComment(template: TemplateRef<any>, id: string, content: string) {
