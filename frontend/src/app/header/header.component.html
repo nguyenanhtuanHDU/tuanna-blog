@@ -54,7 +54,7 @@
                     <img width="30" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
                   </div>
                   <div class="header-inner-search-items-item__content">
-                    <a class="m-0 p-0 dropdown-item" href="#" [innerHTML]="post.title"></a>
+                    <a class="m-0 p-0 dropdown-item" [innerHTML]="post.title"></a>
                     <div class="d-flex gap-2">
                       <span>{{post.updatedAt | TimeAgo}}</span>
                       <strong>·</strong>

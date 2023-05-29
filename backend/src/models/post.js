@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
     {
-        userID: { type: String },
-        userAvatar: { type: String },
-        userUsername: { type: String },
-        title: { type: String },
-        content: { type: String },
+        userID: { type: String, require: true },
+        userAvatar: { type: String, require: true },
+        userUsername: { type: String, require: true },
+        title: { type: String, require: true },
+        content: { type: String, require: true },
         views: { type: Number, default: 0 },
-        // likers: { type: [String], default: [] },
         likers: [{
             type: new mongoose.Schema({
                 userLikeID: {

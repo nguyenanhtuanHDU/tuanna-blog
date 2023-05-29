@@ -80,6 +80,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     follow: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     likes: { type: [String], default: [] },

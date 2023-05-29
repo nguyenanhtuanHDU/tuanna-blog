@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const User = require('../models/user');
 const isImage = require('is-image');
-const client = require('../config/redis');
 const Post = require("../models/post");
+const { getUserRedis, setUserRedis } = require("../services/user.redis");
 
 module.exports = {
   postUploadAvatar: async (req, res) => {
@@ -42,8 +42,7 @@ module.exports = {
           msg: 'You have run out of space to upload !',
         });
       } else {
-        const userRedisStr = await client.get(process.env.REDIS_USER);
-        const userRedis = JSON.parse(userRedisStr)
+        const userRedis = await getUserRedis()
         userRedis.totalUploadFileSize = totalUploadFileSize
         await User.findByIdAndUpdate(decoded.id, { totalUploadFileSize });
         if (Array.isArray(avatars)) {
@@ -60,7 +59,7 @@ module.exports = {
           const oldListAvatars = user.listAvatars;
           const newListAvatars = [...oldListAvatars, ...listAvatars];
           userRedis.listAvatars = newListAvatars
-          await client.set(process.env.REDIS_USER, JSON.stringify(userRedis));
+          await setUserRedis(userRedis)
           await User.findByIdAndUpdate(decoded.id, {
             listAvatars: newListAvatars,
           });
@@ -71,10 +70,9 @@ module.exports = {
           await avatars.mv(uploadPath);
           const oldListAvatars = user.listAvatars;
           const newListAvatars = [...oldListAvatars, avatarName];
-          const userRedisStr = await client.get(process.env.REDIS_USER);
-          const userRedis = JSON.parse(userRedisStr)
+          const userRedis = await getUserRedis()
           userRedis.listAvatars = newListAvatars
-          await client.set(process.env.REDIS_USER, JSON.stringify(userRedis));
+          await setUserRedis(userRedis)
           await User.findByIdAndUpdate(decoded.id, {
             listAvatars: newListAvatars,
           });
@@ -127,8 +125,7 @@ module.exports = {
           msg: 'You have run out of space to upload !',
         });
       } else {
-        const userRedisStr = await client.get(process.env.REDIS_USER);
-        const userRedis = JSON.parse(userRedisStr)
+        const userRedis = await getUserRedis()
         userRedis.totalUploadFileSize = totalUploadFileSize
         await User.findByIdAndUpdate(decoded.id, { totalUploadFileSize });
         if (Array.isArray(bgs)) {
@@ -145,7 +142,7 @@ module.exports = {
           const oldListAvatars = user.listBgAvatars;
           const newListAvatars = [...oldListAvatars, ...listBgAvatars];
           userRedis.listBgAvatars = newListAvatars
-          await client.set(process.env.REDIS_USER, JSON.stringify(userRedis));
+          await setUserRedis(userRedis)
           console.log("👉👉👉 ~ userRedis.listBgAvatars:", userRedis.listBgAvatars)
           await User.findByIdAndUpdate(decoded.id, {
             listBgAvatars: newListAvatars,
@@ -159,7 +156,7 @@ module.exports = {
           const oldListAvatars = user.listBgAvatars;
           const newListAvatars = [...oldListAvatars, bgName];
           userRedis.listBgAvatars = newListAvatars
-          await client.set(process.env.REDIS_USER, JSON.stringify(userRedis));
+          await setUserRedis(userRedis)
           await User.findByIdAndUpdate(decoded.id, {
             listBgAvatars: newListAvatars,
           });

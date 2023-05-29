@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
-const client = require("../config/redis");
 const User = require("../models/user");
 
 const middleware = {
@@ -30,8 +29,7 @@ const middleware = {
       const token = req.headers.token;
       const accessToken = token.split(' ')[1];
       const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
 
       if (!userDecoded.admin && userRedis.editCount >= 1) {
         return res.status(400).json({

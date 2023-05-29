@@ -1,14 +1,13 @@
-const client = require('../config/redis');
 const Comment = require("../models/comment");
 const Post = require("../models/post");
 const { createNotice } = require("../services/notice.services");
+const { getUserRedis } = require("../services/user.redis");
 
 module.exports = {
     postCreateComment: async (req, res) => {
         try {
             if (req.body.type === 'CREATE_COMMENT') {
-                const userRedisStr = await client.get(process.env.REDIS_USER);
-                const userRedis = JSON.parse(userRedisStr)
+                const userRedis = await getUserRedis()
                 const data = {
                     author: {
                         id: userRedis._id,

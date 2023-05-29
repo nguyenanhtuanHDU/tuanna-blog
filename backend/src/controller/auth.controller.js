@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const client = require('../config/redis');
+const { setUserRedis } = require("../services/user.redis");
 
 module.exports = {
   signUpController: async (req, res) => {
@@ -48,10 +48,7 @@ module.exports = {
       }
 
       const userInfoLogin = emailFind || usernameFind;
-      client.set(process.env.REDIS_USER, JSON.stringify(userInfoLogin))
-
-      const dataRedis = await client.get(process.env.REDIS_USER)
-
+      await setUserRedis(userInfoLogin)
       const passwordCheck = await bcrypt.compareSync(
         data.password,
         userInfoLogin.password

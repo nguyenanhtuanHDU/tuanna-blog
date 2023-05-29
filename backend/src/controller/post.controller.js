@@ -184,8 +184,6 @@ module.exports = {
             data.userAvatar = user.avatar
             data.userUsername = user.username
             await Post.create(data)
-            user.postsCount = user.postsCount + 1
-            await user.save()
             res.status(200).json({
                 EC: 0,
                 msg: 'Create post successfully'

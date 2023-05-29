@@ -1,15 +1,16 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const fs = require('fs');
-const client = require('../config/redis');
 const Post = require("../models/post");
 const { createNotice } = require("../services/notice.services");
+const { getUserRedis, setUserRedis } = require("../services/user.redis");
 
 module.exports = {
 
   clearRedis: async (req, res) => {
     console.log('clear redis');
-    await client.set(process.env.REDIS_USER, '')
+    await setUserRedis('')
+    console.log(getUserRedis());
     res.status(200).json({
       msg: 'clear done'
     });
@@ -25,9 +26,9 @@ module.exports = {
       const accessToken = req.headers.token.split(' ')[1];
       const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
       const user = await User.findById(userDecoded._id).populate('notices')
-      const usersInfoStr = await client.get(process.env.REDIS_USER);
-
-      const { password, ...data } = JSON.parse(usersInfoStr)
+      const { password, ...data } = await getUserRedis()
+      console.log(`🚀 ~ data:`, data)
+    
       res.status(200).json({
         data
       });
@@ -127,8 +128,7 @@ module.exports = {
   putUpdateUserLikes: async (req, res) => {
     try {
       const data = req.body
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
       const post = await Post.findById(data.idPost)
       let postData = {}
 
@@ -186,8 +186,7 @@ module.exports = {
       const avatar = req.body.avatar;
       const id = req.params.id;
       const user = await User.findById(id);
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
       if (user.avatar === avatar) {
         res.status(400).json({
           msg: 'Please choose another image !',
@@ -213,8 +212,7 @@ module.exports = {
       let msgError = '';
       const { id, avatar } = req.params;
       const user = await User.findById(id);
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
       user.listAvatars.map(async (avatarItem) => {
         if (avatarItem === avatar) {
           if (user.avatar === avatar) {
@@ -268,8 +266,7 @@ module.exports = {
     try {
       const bgAvatar = req.body.bgAvatar;
       const id = req.params.id;
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
       if (userRedis.bgAvatar === bgAvatar) {
         res.status(400).json({
           msg: 'Please choose another image !',
@@ -294,8 +291,7 @@ module.exports = {
       let msgError = '';
       const { id, bgAvatar } = req.params;
       const user = await User.findById(id);
-      const userRedisStr = await client.get(process.env.REDIS_USER);
-      const userRedis = JSON.parse(userRedisStr)
+      const userRedis = await getUserRedis()
       user.listBgAvatars.map(async (bgItem) => {
         if (bgItem === bgAvatar) {
           if (user.bgAvatar === bgAvatar) {
