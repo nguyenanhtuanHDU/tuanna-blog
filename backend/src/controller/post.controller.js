@@ -65,7 +65,6 @@ module.exports = {
     },
     getPostByID: async (req, res) => {
         try {
-            console.log('run');
             const data = await Post.findById(req.params.id).populate({
                 path: 'comments',
                 populate: {

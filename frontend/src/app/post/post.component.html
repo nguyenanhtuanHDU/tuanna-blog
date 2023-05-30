@@ -7,7 +7,8 @@
         <div class="posts-post-head d-flex justify-content-between">
           <div class="d-flex">
             <div class="posts-post-head-avatar me-3 border-radius-rounded">
-              <img *ngIf="post && post.userAvatar" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
+              <img *ngIf="post && post.userAvatar" [defaultImage]="defaultImage"
+                [lazyLoad]="imagePath + 'avatars/' + post.userAvatar" alt="">
             </div>
             <div class="posts-post-head-info d-flex flex-column my-auto">
               <strong *ngIf="post && post.userUsername">{{post.userUsername}}</strong>
@@ -16,17 +17,29 @@
             </div>
           </div>
           <div class="posts-post-head-tags">
-            <!-- <strong class="text-white">#{{post.tag}}</strong> -->
             <app-tag-view *ngIf="post && post.tag" [type]="post.tag"></app-tag-view>
           </div>
         </div>
         <div class="posts-post-body my-4">
           <strong *ngIf="post && post.title" class="posts-post-body-title mb-2">{{post.title}}</strong>
-          <div class="posts-post-body-images my-4" slickContainer #slickController="slick" [slickConfig]="config">
-            <ng-container *ngIf="post && post.images">
-              <img class="posts-post-body-images-image" slickItem *ngFor="let image of post.images"
-                [src]="imagePath + 'posts/'+ image" alt="">
-            </ng-container>
+          <div *ngIf="post && post.images" class="position-relative" style="height: 400px;"
+            tooltip="Double click to zoom" type="button">
+            <swiper [zoom]="{maxRatio: 3,
+              minRatio: 1}" [scrollbar]="{ draggable: true }" class="posts-post-body-images my-4" [loop]="true"
+              [autoHeight]="true" [allowTouchMove]="true" [autoplay]="{ delay: 3000, disableOnInteraction: false}">
+              <ng-template swiperSlide *ngFor="let image of post.images">
+                <div class="swiper-zoom-container">
+                  <img class="posts-post-body-images-image" swiperSlide [defaultImage]="defaultImage"
+                    [lazyLoad]="imagePath + 'posts/'+ image" alt="">
+                </div>
+              </ng-template>
+            </swiper>
+            <button
+              class="posts-post-body-images__btn posts-post-body-images__btn-left bg-primary text-white flex-center"
+              (click)="swipePrev()"><i class="bi bi-chevron-left"></i></button>
+            <button
+              class="posts-post-body-images__btn posts-post-body-images__btn-right bg-primary text-white flex-center"
+              (click)="swipeNext()"><i class="bi bi-chevron-right"></i></button>
           </div>
           <p *ngIf="post && post.content" class="posts-post-body-content">{{post.content}}</p>
           <!-- <button (click)="slickController.pause()">Pause</button> -->
@@ -62,7 +75,7 @@
                         class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
                         <!-- <div>{{liker.userLikeID}}</div> -->
                         <div class="posts-post-footer-likers__image">
-                          <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                          <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + liker.avatar" />
                         </div>
                         <div class="posts-post-footer-likers__content">
                           <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
@@ -92,7 +105,7 @@
             *ngFor="let comment of post.comments; trackBy: trackByFn">
             <!-- <pre>{{comment | json}}</pre> -->
             <div class="posts-inner-comment-image" type="button" [routerLink]="['/profile', comment.author._id]">
-              <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
+              <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + comment.author.avatar" width="50">
             </div>
             <div class="posts-inner-comment-content">
               <div class="d-flex justify-content-between">
@@ -229,7 +242,8 @@
                   <strong class="my-2">Current Images</strong>
                   <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                     *ngFor="let img of imagesSelected; index as i">
-                    <img class="border-radius-8" [src]="imagePath + '/posts/' + img" alt="">
+                    <img class="border-radius-8" [defaultImage]="defaultImage" [lazyLoad]="imagePath + '/posts/' + img"
+                      alt="">
                     <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i, 'old')"></i></button>
                   </div>
                 </div>
@@ -237,7 +251,7 @@
                   <strong class="my-2" *ngIf="newImagesSelected.length > 0">New Images</strong>
                   <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                     *ngFor="let img of newImagesSelected; index as i">
-                    <img class="border-radius-8" [src]="img" alt="">
+                    <img class="border-radius-8" [defaultImage]="defaultImage" [lazyLoad]="img" alt="">
                     <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i, 'new')"></i></button>
                   </div>
                 </div>

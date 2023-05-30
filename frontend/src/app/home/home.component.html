@@ -6,8 +6,8 @@
     <i class="bi bi-plus"></i>
     <!-- {{dataSocket}} -->
   </button>
-  <img class="header-wrapper-bg" *ngIf="currentPostHeader && currentPostHeader.images"
-    [src]="imagePath + 'posts/' + currentPostHeader.images[0]" alt="">
+  <img class="header-wrapper-bg" *ngIf="currentPostHeader && currentPostHeader.images" [defaultImage]="defaultImage"
+    [lazyLoad]="imagePath + 'posts/' + currentPostHeader.images[0]" alt="">
   <div class="row">
     <div class="header-wrapper flex-center-x flex-column gap-4 col-8 text-white">
       <app-tag-view *ngIf="currentPostHeader && currentPostHeader.tag" [type]="currentPostHeader.tag"></app-tag-view>
@@ -72,9 +72,10 @@
               <ng-scrollbar style="height: 265px;">
                 <div class="row">
                   <span *ngIf="isEdit">Image old</span>
-                  <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
+                  <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img my-4"
                     *ngFor="let img of imagesSelected; index as i">
-                    <img class="border-radius-8" src="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
+                    <img [defaultImage]="defaultImage" class="border-radius-8"
+                      lazyLoad="{{isCreate ? img : imagePath + '/posts/' + img}}" alt="">
                     <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
                   </div>
                 </div>
@@ -83,7 +84,7 @@
                 <span *ngIf="isEdit">image new</span>
                 <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                   *ngFor="let img of newImagesSelected; index as i">
-                  <img class="border-radius-8" [src]="img" alt="">
+                  <img class="border-radius-8" [defaultImage]="defaultImage" [lazyLoad]="img" alt="">
                   <button class="flex-center"><i class="bi bi-x" (click)="deleteImagePost(i)"></i></button>
                 </div>
               </div>
@@ -119,7 +120,7 @@
       <div class="posts-post-head d-flex justify-content-between">
         <div class="d-flex">
           <div class="posts-post-head-avatar me-3 border-radius-rounded" [routerLink]="'profile/' + post.userID">
-            <img [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
+            <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + post.userAvatar" alt="">
           </div>
           <div class="posts-post-head-info d-flex flex-column my-auto">
             <strong>{{post.userUsername}}</strong>
@@ -136,7 +137,8 @@
         <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
         <p class="posts-post-body-content">{{post.content}}</p>
         <div class="posts-post-body-images">
-          <img class="posts-post-body-images-image" [src]="imagePath + 'posts/'+ post.images[0]" alt="">
+          <img class="posts-post-body-images-image" [defaultImage]="defaultImage"
+            [lazyLoad]="imagePath + 'posts/'+ post.images[0]" alt="">
           <strong routerLink="/post/{{post._id}}" class="p-2 bg-white" *ngIf="post.images.length > 1">+
             {{post.images.length - 1}}</strong>
         </div>
@@ -171,7 +173,7 @@
                   <div *ngFor="let liker of post.likers" class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
                     <!-- <div>{{liker.userLikeID}}</div> -->
                     <div class="posts-post-footer-likers__image">
-                      <img [src]="imagePath + 'avatars/' + liker.avatar" />
+                      <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + liker.avatar" />
                     </div>
                     <div class="posts-post-footer-likers__content">
                       <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
@@ -194,12 +196,12 @@
           *ngFor="let comment of post.comments; trackBy: trackByFn">
           <!-- <pre>{{comment |json}}</pre> -->
           <div class="posts-inner-comment-image" type="button" *ngIf="comment.author && comment.author.avatar"
-            [routerLink]="'profile/' + comment.author.id">
-            <img [src]="imagePath + 'avatars/' + comment.author.avatar" width="50">
+            [routerLink]="'profile/' + comment.author._id">
+            <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + comment.author.avatar" width="50">
           </div>
           <div class="posts-inner-comment-content">
             <div class="d-flex justify-content-between">
-              <div type="button" [routerLink]="'profile/' + comment.author.id"
+              <div type="button" [routerLink]="'profile/' + comment.author._id"
                 *ngIf="comment.author && comment.author.username"
                 class="posts-inner-comment-content__username fw-6 text-primary">{{comment.author.username}}</div>
               <div class="posts-inner-comment-content__time">
@@ -210,12 +212,12 @@
             </div>
             <p class="mb-0 p-2">{{comment.content}}</p>
             <ng-container *ngIf="userSession && userSession._id">
-              <button *ngIf="comment.author && comment.author.id === userSession._id"
+              <button *ngIf="comment.author && comment.author._id === userSession._id"
                 class="btn text-primary flex-center" style="right: 35px;"
                 (click)="openFormEditComment(editCommentModal, comment._id, comment.content)">
                 <i class="bi bi-pencil-square"></i>
               </button>
-              <button *ngIf="comment.author && comment.author.id === userSession._id"
+              <button *ngIf="comment.author && comment.author._id === userSession._id"
                 class="btn text-danger flex-center" style="right: 5px;" (click)="deleteCommentByID(comment._id)">
                 <i class="bi bi-trash"></i>
               </button>

@@ -1,5 +1,5 @@
 <div class="form flex-center px-3 px-md-0">
-  <video autoplay muted loop class="form-video">
+  <video preload="none" autoplay muted loop class="form-video">
     <source [src]="videoSrc" type="video/mp4">
   </video>
   <button title="back to login" class="btn form-back bg-primary flex-center" routerLink="/login">
@@ -83,7 +83,7 @@
 
         </div>
 
-        <button type="submit" class="btn btn-primary py-3 mt-3 text-white">
+        <button type="submit" class="btn btn-primary mt-auto mb-2 text-white">
           Sign Up Now
         </button>
       </form>

@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
   isPostsTag: string = ''
   listTags = global.listTags
   currentPage: number = 1
-
+  defaultImage = global.defaultImage
   listNotices: Notice[] = []
 
   constructor(private authService: AuthService, private router: Router, private postService: PostService, private userService: UserService, private sweetAlert: SweetAlertService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private title: Title, private bsModalService: BsModalService, private commentService: CommentService, private route: ActivatedRoute, public notificationService: NotificationService, private socket: Socket, private noticeService: NoticeService) {

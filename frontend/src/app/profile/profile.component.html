@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="profile">
-  <img *ngIf="user && user.bgAvatar" [src]="srcBg" alt="" class="profile-bg" />
+  <img [defaultImage]="defaultImage" *ngIf="user && user.bgAvatar" [lazyLoad]="srcBg" alt="" class="profile-bg" />
   <ngx-skeleton-loader *ngIf="!user" [theme]="{
       height: '90vh',
       position: 'absolute',
@@ -170,7 +170,7 @@
                       <span *ngIf="user" class="ms-5">
                         (
                         {{
-                        user.totalUploadFileSize / 1000000 | number : "1.0-2"
+                        user.totalUploadFileSize / 1048576 | number : "1.0-2"
                         }}
                         / 100 MB )
                       </span>
@@ -191,8 +191,8 @@
                                     index as i; trackBy: trackByFn
                                   ">
                                   <div class="avatars-item-img ms-auto me-auto position-relative">
-                                    <img class="border-radius-14" [src]="srcImagesParent + '/' + avatar"
-                                      (click)="updateAvatar(avatar)" />
+                                    <img class="border-radius-14" [defaultImage]="defaultImage"
+                                      [lazyLoad]="srcImagesParent + '/' + avatar" (click)="updateAvatar(avatar)" />
                                     <i class="bi bi-trash position-absolute border-radius-rounded flex-center bg-white d-none"
                                       (click)="deleteAvatar(avatar)"></i>
                                   </div>
@@ -213,7 +213,8 @@
                                     index as i
                                   ">
                                   <div class="avatars-item-img ms-auto me-auto position-relative">
-                                    <img class="border-radius-14" [src]="srcBgsParent  + bg" (click)="updateBg(bg)" />
+                                    <img [defaultImage]="defaultImage" class="border-radius-14"
+                                      [lazyLoad]="srcBgsParent  + bg" (click)="updateBg(bg)" />
                                     <i class="bi bi-trash position-absolute border-radius-rounded flex-center bg-white d-none"
                                       (click)="deleteBg(bg)"></i>
                                   </div>
@@ -233,8 +234,8 @@
                             <div class="avatars d-grid py-3">
                               <div class="avatars-item" *ngFor="let avatar of listAvatarsDefault">
                                 <div class="avatars-item-img ms-auto me-auto position-relative">
-                                  <img class="border-radius-14" [src]="srcImagesParent +  avatar"
-                                    (click)="updateAvatar(avatar)" />
+                                  <img class="border-radius-14" [defaultImage]="defaultImage"
+                                    [lazyLoad]="srcImagesParent +  avatar" (click)="updateAvatar(avatar)" />
                                 </div>
                                 <h4 class="avatars-name">{{ avatar }}</h4>
                               </div>
@@ -246,10 +247,9 @@
                             <div class="avatars d-grid py-3">
                               <div class="avatars-item" *ngFor="let avatar of listBgAvatarsDefault">
                                 <div class="avatars-item-img ms-auto me-auto position-relative">
-                                  <img class="border-radius-14" [src]="srcBgsParent + '/' + avatar"
-                                    (click)="updateBg(avatar)" />
+                                  <img [defaultImage]="defaultImage" class="border-radius-14"
+                                    [lazyLoad]="srcBgsParent + '/' + avatar" (click)="updateBg(avatar)" />
                                 </div>
-
                                 <h4 class="avatars-name">{{ avatar }}</h4>
                               </div>
                             </div>
@@ -272,7 +272,7 @@
                 </div>
               </div>
               <div *ngIf="user && user.avatar" class="profile-inner-right-card-body__avatar-item">
-                <img [src]="srcImage" />
+                <img [defaultImage]="defaultImage" [lazyLoad]="srcImage" />
               </div>
             </div>
             <div class="my-3">

@@ -16,6 +16,33 @@ import { NgScrollbar } from "ngx-scrollbar";
 import { NgxSpinnerService } from "ngx-spinner";
 import { NotificationService } from "../services/notification.service";
 import { global } from "../shared/global";
+import SwiperCore, {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Virtual,
+  Zoom,
+  Autoplay,
+  Thumbs,
+  Controller,
+  SwiperOptions,
+  EffectFade,
+} from 'swiper';
+import { SwiperComponent } from "swiper/angular";
+
+SwiperCore.use([
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Virtual,
+  Zoom,
+  Autoplay,
+  Thumbs,
+  Controller,
+  EffectFade,
+]);
 
 @Component({
   selector: 'app-post',
@@ -26,6 +53,7 @@ export class PostComponent {
   @ViewChild('commentScrollbar', { static: true }) commentScrollbar: NgScrollbar;
   @ViewChild('createPostModal', { static: true }) createPostModal: ModalDirective;
   @ViewChild('inputComment', { static: true }) inputComment: ElementRef;
+  @ViewChild(SwiperComponent) swiper: SwiperComponent;
 
   formEditComment = new FormGroup({
     content: new FormControl(),
@@ -54,6 +82,7 @@ export class PostComponent {
   selectedFiles: any
   postEditID: string
   topPost: number = 3
+  defaultImage = global.defaultImage
 
   constructor(private userService: UserService, private route: ActivatedRoute, private postService: PostService, private router: Router, private bsModalService: BsModalService, private sweetAlert: SweetAlertService, private commentService: CommentService, private spinner: NgxSpinnerService, private notification: NotificationService) {
     // this.router.events.subscribe(event => {
@@ -64,15 +93,34 @@ export class PostComponent {
     // });
   }
 
-  config: Slick.Config = {
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    mouseWheelMove: false
-    // accessibility: true
+  // config: Slick.Config = {
+  //   infinite: true,
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  //   autoplay: true,
+  //   autoplaySpeed: 2000,
+  //   mouseWheelMove: false
+  //   // accessibility: true
+  // };
+
+  config: SwiperOptions = {
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+    spaceBetween: 30
   };
+
+  swipePrev() {
+    this.swiper.swiperRef.slidePrev();
+  }
+  swipeNext() {
+    this.swiper.swiperRef.slideNext();
+  }
 
   getPostByID() {
     const id = this.route.snapshot.paramMap.get('id')
@@ -293,6 +341,9 @@ export class PostComponent {
         console.log('>>> get post moi');
         this.post = data.data
         this.imagesSelected = data.data.images
+      }, (err: any) => {
+        console.log(`🚀 ~ err:`, err)
+        this.router.navigate(['**'])
       })
     });
     this.getUserSessionInfo()

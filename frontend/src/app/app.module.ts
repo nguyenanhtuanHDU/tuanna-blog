@@ -29,7 +29,9 @@ import { PostTopComponent } from './post-top/post-top.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { TimeAgo } from "./custom-pipe/TimeAgo.pipe";
+import { SwiperModule } from 'swiper/angular';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
 
 @NgModule({
@@ -56,6 +58,8 @@ const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
     CommonModule,
     NgScrollbarModule,
     NgOptimizedImage,
+    SwiperModule,
+    LazyLoadImageModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
     FontAwesomeModule,
     BsDropdownModule.forRoot(),
@@ -68,7 +72,7 @@ const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
     BsDatepickerModule.forRoot(),
     NgxSlickJsModule.forRoot(),
     PaginationModule.forRoot(),
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true }

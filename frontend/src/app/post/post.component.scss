@@ -166,6 +166,10 @@
       }
 
       &-images {
+        .swiper-scrollbar-drag {
+          background: var(--bs-primary) !important;
+        }
+
         &-image {
           width: 100%;
           height: 400px !important;
@@ -175,6 +179,29 @@
 
           &:hover {
             cursor: pointer;
+          }
+        }
+
+        &__btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 2;
+          border-radius: 50px;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+          width: 30px;
+          height: 30px;
+
+          i {
+            font-size: 14px;
+          }
+
+          &-left {
+            left: 5px;
+          }
+
+          &-right {
+            right: 5px;
           }
         }
       }

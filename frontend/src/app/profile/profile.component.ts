@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit {
   maxDate: Date;
   listTags = global.listTags
   countPostEachTag: any
+  defaultImage = global.defaultImage
   private unsub = new Subject<void>();
 
   editUserForm = new FormGroup({
@@ -193,12 +194,16 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserByID(id: string) {
+    console.log(`🚀 ~ id2:`, id)
     this.spinner.show();
     this.userService.getUserByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.user = data.data;
       this.srcImage = `${this.srcImagesParent}${data.data.avatar}`;
       this.srcBg = `${this.srcBgsParent}${data.data.bgAvatar}`;
       this.spinner.hide();
+    }, (err: any) => {
+      console.log(`🚀 ~ err:`, err)
+      this.router.navigate(['**'])
     });
   }
 
@@ -352,6 +357,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const id = params['id']
+      console.log(`🚀 ~ id:`, id)
       this.getUserByID(id)
       this.getPostCountEachTagByUserID(id)
     });
