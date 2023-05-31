@@ -32,6 +32,12 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
   --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
+:global{
+  @mixin color($color) {
+    color: $color !important;
+  }
+}
+
 html {
   // scroll-behavior: smooth;
 }

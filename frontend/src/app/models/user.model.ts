@@ -21,6 +21,7 @@ export interface User {
   notices: any[],
   views: number
   posts: string[]
+  createdAt: string
 }
 
 

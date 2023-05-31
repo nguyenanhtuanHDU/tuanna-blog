@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 
 @Injectable()
 export class tokenInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   intercept(
     request: HttpRequest<any>,
@@ -20,7 +20,6 @@ export class tokenInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // this.router.navigate(['/login']);
         if (error.status == 401) {
           this.router.navigate(['/login']);
           Swal.fire(

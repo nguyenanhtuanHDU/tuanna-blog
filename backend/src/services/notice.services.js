@@ -5,18 +5,20 @@ module.exports = {
         try {
             const data = { userSend, userGet, type, postID }
             const noticeOld = await Notice.findOne({ 'userSend.id': userSend.id, postID })
-            if (userGet.id !== userSend.id) { // chi thuc hien khi user like bai ng khac
-                if (type === 'like') {
-                    if (noticeOld) {
+            console.log(`🚀 ~ userGet:`, userGet)
+            console.log(`🚀 ~ userSend:`, userSend)
+            if (userGet.id.toString() !== userSend) { // chi thuc hien khi user like bai ng khac
+                if (type === 'like') { // action like
+                    if (noticeOld) { // case user like 2 lần
                         noticeOld.type = type
-                    } else {
+                        await noticeOld.save()
+                    } else { // user chưa like lần nào
                         data.content = 'like your post'
                         const notice = await Notice.create(data)
                         return notice
                     }
                 }
-
-                else if (type === 'comment') {
+                else if (type === 'comment') { // action comment
                     data.content = 'comment in your post'
                     const notice = await Notice.create(data)
                     console.log(`🚀 ~ notice:`, notice)

@@ -129,6 +129,7 @@ export class PostComponent {
       this.postService.getPostByID(id).subscribe((data: any) => {
         console.log(`🚀 ~ data:`, data)
         this.post = data.data
+        console.log(`🚀 ~ data:`, data)
         this.imagesSelected = data.data.images
       })
     }
@@ -234,7 +235,7 @@ export class PostComponent {
   deletePost(idPost: string) {
     this.sweetAlert.yesNo('Do you want to upload this image ?', () => {
       this.spinner.show();
-      this.postService.deletePost(idPost).subscribe(
+      this.postService.deletePostByID(idPost).subscribe(
         (data: any) => {
           this.router.navigate([''])
           this.spinner.hide();
@@ -338,7 +339,6 @@ export class PostComponent {
     this.route.params.subscribe(params => {
       const id = params['id']
       id && this.postService.getPostByID(id).subscribe((data: any) => {
-        console.log('>>> get post moi');
         this.post = data.data
         this.imagesSelected = data.data.images
       }, (err: any) => {
@@ -349,6 +349,10 @@ export class PostComponent {
     this.getUserSessionInfo()
     this.getTopPostsViewers(this.topPost)
     this.getTopPostsLikes(this.topPost)
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(`🚀 ~ changes:`, changes)
   }
 
   ngAfterViewInit(): void {

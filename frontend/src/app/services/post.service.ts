@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 export class PostService {
   uploadPostUrl = `${environment.apiBackend}/upload/post`;
   postUrl = `${environment.apiBackend}/v1/api/post`;
+  postsUrl = `${environment.apiBackend}/v1/api/posts`;
   listPostUrl = `${environment.apiBackend}/v1/api/posts`;
 
   constructor(private httpClient: HttpClient,
@@ -18,6 +19,10 @@ export class PostService {
 
   getAllPosts(page: number = 1, limit: number = 4, userID: string = ''): Observable<Post[]> {
     return this.httpClient.get<Post[]>(this.postUrl + '?page=' + page + '&limit=' + limit + '&userID=' + userID, { headers: this.authService.getHeaders() });
+  }
+
+  getAllPostsNonPaging() {
+    return this.httpClient.get<Post>(this.postsUrl, { headers: this.authService.getHeaders() });
   }
 
   getPostByID(id: string): Observable<Post> {
@@ -70,7 +75,7 @@ export class PostService {
     return this.httpClient.put(this.postUrl + '/' + id + '/viewer', null, { headers: this.authService.getHeaders() });
   }
 
-  deletePost(data: any) {
+  deletePostByID(data: any) {
     return this.httpClient.delete(this.postUrl + '/' + data, { headers: this.authService.getHeaders() });
   }
 }

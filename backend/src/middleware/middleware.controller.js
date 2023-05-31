@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const redis = require('redis');
 const User = require("../models/user");
-const { getUserRedis } = require("../services/user.redis");
+const { getUserRedis } = require("../services/user.services");
 
 const middleware = {
   verifyToken: (req, res, next) => {
@@ -35,6 +35,21 @@ const middleware = {
       if (!userDecoded.admin && userRedis.editCount >= 1) {
         return res.status(400).json({
           msg: 'You have run out of times to edit !',
+        });
+      } else {
+        next();
+      }
+    });
+  },
+  verifyAdmin: (req, res, next) => {
+    middleware.verifyToken(req, res, async () => {
+      const token = req.headers.token;
+      const accessToken = token.split(' ')[1];
+      const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
+
+      if (!userDecoded.admin) {
+        return res.status(400).json({
+          msg: 'You have not permission !',
         });
       } else {
         next();

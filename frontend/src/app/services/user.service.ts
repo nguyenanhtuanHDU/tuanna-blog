@@ -24,6 +24,14 @@ export class UserService {
     return this.httpClient.get<User>(this.userInfoUrl, { headers: this.authService.getHeaders() });
   }
 
+  getListAdmin(): Observable<User> {
+    return this.httpClient.get<User>(this.userUrl + '/list-admins', { headers: this.authService.getHeaders() });
+  }
+
+  getNonAdminUsers(): Observable<User> {
+    return this.httpClient.get<User>(this.userUrl + '/list-users', { headers: this.authService.getHeaders() });
+  }
+
   getUserByID(id: string): Observable<User> {
     return this.httpClient.get<User>(this.userUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
@@ -59,12 +67,21 @@ export class UserService {
     );
   }
 
+  deleteUserByID(id: string) {
+    return this.httpClient.delete(
+      `${environment.apiBackend}/v1/api/user/${id}`,
+      { headers: this.authService.getHeaders() }
+    );
+  }
+
+
   deleteAvatar(idUser: string, avatar: string) {
     return this.httpClient.delete(
       `${environment.apiBackend}/v1/api/user/${idUser}/listAvatars/${avatar}`,
       { headers: this.authService.getHeaders() }
     );
   }
+
   deleteBgAvatar(idUser: string, bgAvatar: string) {
     return this.httpClient.delete(
       `${environment.apiBackend}/v1/api/user/${idUser}/listBgAvatars/${bgAvatar}`,

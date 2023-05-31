@@ -22,25 +22,21 @@ Chart.register(...registerables);
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
-  @ViewChild(HeaderComponent, { static: true }) header!: HeaderComponent;
+  @ViewChild(HeaderComponent, { static: true }) header: HeaderComponent;
   @ViewChild('userInfolgModal', { static: true }) userInfolgModal: any;
   @ViewChild('inputUsername', { static: true }) inputUsername: ElementRef;
   user: User
   userSession: User
   avatarData: any;
-  listBgAvatarsDefault: string[];
-  srcImagesParent = `${environment.apiBackend}/images/avatars/`;
-  srcBgsParent = `${environment.apiBackend}/images/bg-avatars/`;
-  srcImage: string;
-  srcBg: string;
-  listAvatarsDefault: string[];
+  imagePath = global.imagePath
   avatarSelected: string;
   imageItem: string;
   maxDate: Date;
   listTags = global.listTags
   countPostEachTag: any
   defaultImage = global.defaultImage
-  private unsub = new Subject<void>();
+  chart: any
+  unsub = new Subject<void>();
 
   editUserForm = new FormGroup({
     username: new FormControl('', Validators.minLength(6)),
@@ -54,7 +50,6 @@ export class ProfileComponent implements OnInit {
     gender: new FormControl(''),
   });
 
-  chart: any
 
   constructor(
     private authService: AuthService,
@@ -78,16 +73,6 @@ export class ProfileComponent implements OnInit {
       this.userSession = data.data
       console.log(`🚀 ~ this.userSession:`, this.userSession)
     })
-  }
-
-  getListAvatarDefault(typeImage: string) {
-    this.spinner.show();
-    if (typeImage === 'avatar') {
-      this.listAvatarsDefault = this.user.listAvatarsDefault;
-    } else if (typeImage === 'bg') {
-      this.listBgAvatarsDefault = this.user.listBgAvatarsDefault;
-    }
-    this.spinner.hide();
   }
 
   deleteAvatar(avatar: string) {
@@ -187,19 +172,14 @@ export class ProfileComponent implements OnInit {
     this.header?.getUserInfo();
     this.userService.getUserInfo().subscribe((data: any) => {
       this.user = data.data;
-      this.srcImage = `${this.srcImagesParent}${data.data.avatar}`;
-      this.srcBg = `${this.srcBgsParent}${data.data.bgAvatar}`;
       this.spinner.hide();
     });
   }
 
   getUserByID(id: string) {
-    console.log(`🚀 ~ id2:`, id)
     this.spinner.show();
     this.userService.getUserByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.user = data.data;
-      this.srcImage = `${this.srcImagesParent}${data.data.avatar}`;
-      this.srcBg = `${this.srcBgsParent}${data.data.bgAvatar}`;
       this.spinner.hide();
     }, (err: any) => {
       console.log(`🚀 ~ err:`, err)

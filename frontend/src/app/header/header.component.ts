@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
   listNotices: Notice[] = []
   avatarSrc: string = `${environment.apiBackend}/images/avatars/`;
   faBars = faBars;
-  faRightFromBracket = faRightFromBracket;
+  // faRightFromBracket = faRightFromBracket;
   imagePath = global.imagePath
   noticeCount: number = 0
   listTags = global.listTags

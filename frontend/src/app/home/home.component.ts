@@ -101,6 +101,7 @@ export class HomeComponent implements OnInit {
   getAllPosts() {
     this.postService.getAllPosts(this.page, this.limitPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.posts = data.data
+      console.log(`🚀 ~ data.data:`, data.data)
       this.postsCount = Number(data.postsCount)
     })
   }
@@ -224,7 +225,6 @@ export class HomeComponent implements OnInit {
 
   updateStatusLike(event: any, idPost: string) {
     // this.socket.emit('notice', { name: 'tuan', age: 25 });
-
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
@@ -238,8 +238,9 @@ export class HomeComponent implements OnInit {
   deletePost(idPost: string) {
     this.sweetAlert.yesNo('Do you want to upload this image ?', () => {
       this.spinner.show();
-      this.postService.deletePost(idPost).subscribe(
+      this.postService.deletePostByID(idPost).subscribe(
         (data: any) => {
+          this.getTopPostsComment()
           this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
           this.spinner.hide();
           Swal.fire(data.msg, 'Success', 'success');
@@ -343,7 +344,7 @@ export class HomeComponent implements OnInit {
     let res = ''
     if (this.userSession && this.userSession._id) {
       postLikers.map((post: any) => {
-        checkUser = post.userLikeID === this.userSession._id ? true : false
+        checkUser = post._id === this.userSession._id ? true : false
       })
     }
     if (checkUser && postLikers.length === 1) res = 'You'
@@ -369,12 +370,16 @@ export class HomeComponent implements OnInit {
     this.modalCreateCommentRef = this.bsModalService.show(template);
   }
 
-  ngOnInit(): void {
-    this.getUserSessionInfo()
+  getTopPostsComment() {
     this.postService.getTopComments(this.postTopCommentsCount).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postTopComments = data.data
       this.currentPostHeader = this.postTopComments[0]
     })
+  }
+
+  ngOnInit(): void {
+    this.getUserSessionInfo()
+    this.getTopPostsComment()
 
     this.route.queryParams.subscribe((params: Params) => {
       console.log(params['page']);

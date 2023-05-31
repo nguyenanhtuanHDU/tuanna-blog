@@ -41,7 +41,7 @@
       <div class="modal-body post">
         <tabset type="pills" class="post-tabs">
           <tab heading="Content" class="post-tabs-tab p-3 my-3">
-            <form class="post-tabs-tab-content" [formGroup]="formCreatePost">
+            <form class="post-tabs-tab-content d-flex flex-column gap-2" [formGroup]="formCreatePost">
               <div class="form-group">
                 <label for="title">Title</label>
                 <input class="form-control" id="title" formControlName="title">
@@ -56,7 +56,6 @@
                   <option *ngFor="let tag of listTags" [value]="tag">{{tag}}</option>
                 </select>
               </div>
-              <button type="submit" *ngIf="isEdit" (click)="editPost()">Edit</button>
             </form>
           </tab>
           <tab heading="Images" class="post-tabs-tab p-3 my-3">
@@ -71,7 +70,7 @@
               </div>
               <ng-scrollbar style="height: 265px;">
                 <div class="row">
-                  <span *ngIf="isEdit">Image old</span>
+                  <span *ngIf="isEdit" class="my-2">Current Images</span>
                   <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img my-4"
                     *ngFor="let img of imagesSelected; index as i">
                     <img [defaultImage]="defaultImage" class="border-radius-8"
@@ -81,7 +80,7 @@
                 </div>
               </ng-scrollbar>
               <div class="row">
-                <span *ngIf="isEdit">image new</span>
+                <strong class="my-2" *ngIf="isEdit && newImagesSelected.length > 0">New Images</strong>
                 <div class="col-6 col-md-4 col-lg-3 post-tabs-tab-imgs-img mb-4"
                   *ngFor="let img of newImagesSelected; index as i">
                   <img class="border-radius-8" [defaultImage]="defaultImage" [lazyLoad]="img" alt="">
@@ -89,9 +88,12 @@
                 </div>
               </div>
               <div *ngIf="isEdit" class="form-group">
-                <label for="image2">Add Image</label>
+                <label for="image2" class="btn btn-primary">
+                  Add Image
+                  <i class="bi bi-plus-circle-fill"></i>
+                </label>
                 <input type="file" accept="image/*" formControlName="images" (change)="selectImagesPost($event)"
-                  multiple class="form-control-file" id="image2">
+                  multiple class="form-control-file d-none" id="image2">
               </div>
             </form>
           </tab>
@@ -104,7 +106,7 @@
         </button>
         <button class="btn btn-primary" type="submit" *ngIf="isEdit" (click)="editPost()">
           <span>Edit</span>
-          <i class="bi bi-pencil-square"></i>
+          <i class="bi bi-pencil-square ms-1"></i>
         </button>
       </div>
     </div>
@@ -119,11 +121,11 @@
     <div class="posts-inner p-3 border-radius-12">
       <div class="posts-post-head d-flex justify-content-between">
         <div class="d-flex">
-          <div class="posts-post-head-avatar me-3 border-radius-rounded" [routerLink]="'profile/' + post.userID">
-            <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + post.userAvatar" alt="">
+          <div class="posts-post-head-avatar me-3 border-radius-rounded" [routerLink]="'profile/' + post.author._id">
+            <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + post.author.avatar" alt="">
           </div>
           <div class="posts-post-head-info d-flex flex-column my-auto">
-            <strong>{{post.userUsername}}</strong>
+            <strong>{{post.author.username}}</strong>
             <span>{{post.createdAt | TimeAgo}}</span>
             <!-- <div>{{post.createdAt | date}}</div> -->
           </div>
@@ -137,7 +139,7 @@
         <strong class="posts-post-body-title mb-2">{{post.title}}</strong>
         <p class="posts-post-body-content">{{post.content}}</p>
         <div class="posts-post-body-images">
-          <img class="posts-post-body-images-image" [defaultImage]="defaultImage"
+          <img *ngIf="post && post.images[0]" class="posts-post-body-images-image" [defaultImage]="defaultImage"
             [lazyLoad]="imagePath + 'posts/'+ post.images[0]" alt="">
           <strong routerLink="/post/{{post._id}}" class="p-2 bg-white" *ngIf="post.images.length > 1">+
             {{post.images.length - 1}}</strong>
@@ -173,7 +175,8 @@
                   <div *ngFor="let liker of post.likers" class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
                     <!-- <div>{{liker.userLikeID}}</div> -->
                     <div class="posts-post-footer-likers__image">
-                      <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + liker.avatar" />
+                      <img [routerLink]="['/profile', liker._id] " [defaultImage]="defaultImage"
+                        [lazyLoad]="imagePath + 'avatars/' + liker.avatar" />
                     </div>
                     <div class="posts-post-footer-likers__content">
                       <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
@@ -262,11 +265,11 @@
             <li role="menuitem" class="p-2" (click)="updatePostViews(post._id)" routerLink="/post/{{post._id}}">
               <i class="flex-center me-1 bi bi-chevron-double-right"></i> Details
             </li>
-            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID"
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.author._id"
               (click)="openModalEditPost(post._id)">
               <i class="flex-center me-1 bi bi-pencil-square"></i> Edit
             </li>
-            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID" (click)="deletePost(post._id)">
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.author._id" (click)="deletePost(post._id)">
               <i class="flex-center me-1 bi bi-trash"></i>
               Delete
             </li>

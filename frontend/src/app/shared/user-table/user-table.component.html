@@ -1,0 +1,77 @@
+<div class="container py-4 px-3 border-radius-12">
+  <h3 class="fw-6">
+    <ng-content></ng-content>
+  </h3>
+  <hr>
+  <table class="table">
+    <thead class="bg-primary text-white fw-6">
+      <tr>
+        <th class="ps-5" scope="col">ID</th>
+        <th *ngFor="let item of headTableContent">{{item}}</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="['admin','user'].includes(type); else postsBody">
+        <tr *ngFor="let user of listData; index as i">
+          <td style="padding-left: 50px;" scope="row"><span>{{user._id}}</span></td>
+          <td>
+            <img class="border-radius-rounded" width="40" height="40" [src]="imagePath + 'avatars/' + user.avatar"
+              alt="">
+          </td>
+          <td><span>{{user.username}}</span></td>
+          <td><span>{{user.birthday}}</span></td>
+          <td><span>{{user.gender}}</span></td>
+          <td><span>{{type === 'admin' ? 'Full' : 'User'}}</span></td>
+          <td><span>{{user.createdAt | date}}</span></td>
+          <td>
+            <button class="btn btn-success text-white me-2" [routerLink]="['/profile', user._id]">
+              <i class="bi bi-eye-fill"></i>
+              View
+            </button>
+            <button *ngIf="type === 'user'" class="btn btn-primary me-2">
+              <i class="bi bi-pencil-square"></i>
+              Edit
+            </button>
+            <button *ngIf="type === 'user'" class="btn btn-danger text-white" (click)="deleteUserByID(user._id)">
+              <i class="bi bi-trash"></i>
+              Delete
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #postsBody>
+        <tr *ngFor="let post of listData; index as i">
+          <td style="padding-left: 50px;" scope="row"><span>{{post._id}}</span></td>
+          <td><span
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 200px; display: block; ">{{post.title}}</span>
+          </td>
+          <td><span>{{post.tag}}</span></td>
+          <td><span>{{post.views}}</span></td>
+          <td><span>{{post.likers.length}}</span></td>
+          <td><span>{{post.comments.length}}</span></td>
+          <td>
+            <img class="border-radius-rounded" width="40" height="40"
+              [src]="imagePath + 'avatars/' + post.author.avatar" [routerLink]="['/profile', post.author._id]"
+              type="button">
+          </td>
+          <td><span>{{post.createdAt | date}}</span></td>
+          <td>
+            <button class="btn btn-success text-white me-2" [routerLink]="['/post', post._id]">
+              <i class="bi bi-eye-fill"></i>
+              View
+            </button>
+            <button class="btn btn-primary me-2">
+              <i class="bi bi-pencil-square"></i>
+              Edit
+            </button>
+            <button class="btn btn-danger text-white" (click)="deletePostByID(post._id)">
+              <i class="bi bi-trash"></i>
+              Delete
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table>
+</div>

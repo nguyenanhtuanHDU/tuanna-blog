@@ -4,7 +4,7 @@ const fs = require('fs');
 const Post = require("../models/post");
 const client = require("../config/redis");
 const { createNotice } = require("../services/notice.services");
-const { getUserRedis, setUserRedis } = require("../services/user.redis");
+const { getUserRedis, setUserRedis, getListUser } = require("../services/user.services");
 
 module.exports = {
 
@@ -68,7 +68,37 @@ module.exports = {
         data: users,
       });
     } catch (error) {
-      console.log(error, 'a');
+      console.log(error);
+      res.status(404).json({
+        EC: -1,
+        data: null,
+      });
+    }
+  },
+  getListAdmins: async (req, res) => {
+    try {
+      const admins = await getListUser(true)
+      res.status(200).json({
+        EC: 0,
+        data: admins,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({
+        EC: -1,
+        data: null,
+      });
+    }
+  },
+  getNonAdminUsers: async (req, res) => {
+    try {
+      const users = await getListUser(false)
+      res.status(200).json({
+        EC: 0,
+        data: users,
+      });
+    } catch (error) {
+      console.log(error);
       res.status(404).json({
         EC: -1,
         data: null,
@@ -131,24 +161,17 @@ module.exports = {
       const data = req.body
       const userRedis = await getUserRedis()
       const post = await Post.findById(data.idPost)
-      let postData = {}
-
-      postData.userLikeID = userRedis._id
-      postData.username = userRedis.username
-      postData.avatar = userRedis.avatar
 
       if (!userRedis.likes.includes(data.idPost) && data.like == true) {
         userRedis.likes.push(data.idPost)
-        post.likers.push(postData)
-        const notice = await createNotice({
-          id: userRedis._id,
-          username: userRedis.username,
-          avatar: userRedis.avatar
-        }, {
-          id: post.userID
-        }, 'like', post._id)
-        const user = await User.findById(post.userID)
-        if (userRedis._id !== post.userID && notice) {
+        post.likers.push(userRedis._id)
+        const notice = await createNotice(
+          userRedis._id,
+          {
+            id: post.author._id
+          }, 'like', post._id)
+        const user = await User.findById(post.author._id)
+        if (userRedis._id !== post.author._id && notice) {
           user.notices.push(notice._id)
           await user.save()
         }
@@ -159,9 +182,10 @@ module.exports = {
           })
         });
       } else if (userRedis.likes.includes(data.idPost) && data.like == false) {
+        console.log('>>> huy like');
         userRedis.likes.splice(userRedis.likes.indexOf(data.idPost), 1)
         post.likers.map((item, index) => {
-          if (item.userLikeID === userRedis._id) {
+          if (item._id.toString() === userRedis._id) {
             post.likers.splice(index, 1)
             return
           }
@@ -175,7 +199,7 @@ module.exports = {
         msg: 'Success'
       })
     } catch (error) {
-      console.log(error);
+      console.log(`🚀 ~ error:`, error)
       res.status(404).json({
         msg: 'Server error',
       });
@@ -345,4 +369,17 @@ module.exports = {
       });
     }
   },
+  deleteUserByID: async (req, res) => {
+    try {
+      await User.findByIdAndDelete(req.params.id)
+      return res.status(200).json({
+        msg: 'Delete user successfully ! ',
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({
+        msg: 'Server error',
+      });
+    }
+  }
 };

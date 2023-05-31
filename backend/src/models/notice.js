@@ -2,13 +2,9 @@ const mongoose = require('mongoose');
 
 const noticeSchema = new mongoose.Schema(
     {
-        userSend: {
-            id: { type: String, required: true },
-            username: { type: String, required: true },
-            avatar: { type: String, required: true }
-        },
+        userSend: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
         userGet: {
-            id: { type: String, required: true },
+            id: { type: String },
         },
         type: { type: String, required: true, enum: ['comment', 'like'] },
         content: { type: String, required: true },

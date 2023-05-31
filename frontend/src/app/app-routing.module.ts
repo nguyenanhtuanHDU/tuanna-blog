@@ -5,19 +5,25 @@ import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { AuthGuard } from "./auth.guard";
-import { PostComponent } from "./post/post.component";
+import { PermisionGuard } from "./permision.guard";
+import { ConfirmGuard } from "./confirm.guard";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  // { path: '', component: HomeComponent },
   { path: 'login', component: LogInComponent },
   { path: 'sign-up', component: SignUpComponent },
   {
-    path: 'profile', canActivate: [AuthGuard],
+    path: 'profile', canLoad: [AuthGuard],
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
   },
   {
-    path: 'post', canActivate: [AuthGuard],
+    path: 'post', canLoad: [AuthGuard], canDeactivate: [ConfirmGuard],
     loadChildren: () => import('./post/post.module').then(m => m.PostModule)
+  },
+  {
+    path: 'admin', canLoad: [PermisionGuard],
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
   },
   { path: '**', component: PageNotFoundComponent },
 ];

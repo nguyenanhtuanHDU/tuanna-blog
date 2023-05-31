@@ -72,10 +72,6 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    postsCount: {
-      type: Number,
-      default: 0,
-    },
     totalUploadFileSize: {
       type: Number,
       default: 0,

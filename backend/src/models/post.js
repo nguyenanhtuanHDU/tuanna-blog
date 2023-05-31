@@ -2,27 +2,11 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
     {
-        userID: { type: String, require: true },
-        userAvatar: { type: String, require: true },
-        userUsername: { type: String, require: true },
+        author: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
         title: { type: String, require: true },
         content: { type: String, require: true },
         views: { type: Number, default: 0 },
-        likers: [{
-            type: new mongoose.Schema({
-                userLikeID: {
-                    type: String
-                },
-                avatar: {
-                    type: String
-                },
-                username: {
-                    type: String
-                }
-            }, {
-                timestamps: true,
-            })
-        }],
+        likers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
         tag: { type: String, require: true },
         images: { type: [String], default: [] },
         comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment' }],

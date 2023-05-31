@@ -1,8 +1,10 @@
 export interface Post {
   _id: string
-  userID: string
-  userAvatar: string
-  userUsername: string
+  author: {
+    _id: string
+    avatar: string,
+    username: string
+  }
   title: string
   content: string
   createdAt: string
@@ -10,7 +12,7 @@ export interface Post {
   views: number
   // likers: string[]
   likers: [{
-    userLikeID: string
+    _id: string
     avatar: string
     username: string,
     createdAt: string

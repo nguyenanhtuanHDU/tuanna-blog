@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { setUserRedis } = require("../services/user.redis");
+const { setUserRedis } = require("../services/user.services");
 
 module.exports = {
   signUpController: async (req, res) => {

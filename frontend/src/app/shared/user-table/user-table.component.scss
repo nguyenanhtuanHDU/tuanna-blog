@@ -1,0 +1,37 @@
+.container {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.table {
+  border-radius: 12px 12px 0 0;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  overflow: hidden;
+  // text-align: center;
+}
+
+thead {
+  font-size: 18px;
+}
+
+th {
+  padding: 16px 0;
+}
+
+td {
+  padding: 8px;
+  vertical-align: middle;
+  border-bottom-width: 0;
+}
+
+tr {
+  // border: 0;
+}
+
+span {
+  font-size: 15px;
+  color: gray;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f5f5f5;
+}

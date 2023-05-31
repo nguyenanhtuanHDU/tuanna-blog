@@ -6,7 +6,7 @@
     <div class="post-popular-posts-post border-radius-8 p-2 flex-center-y gap-3"
       *ngFor="let post of postsTop; trackBy: trackByFn" (click)="updatePostViewers(post._id)">
       <div class="post-popular-posts-post-image border-radius-rounded"><img
-          [src]="imagePath + 'avatars/' + post.userAvatar" alt=""></div>
+          [src]="imagePath + 'avatars/' + post.author.avatar" alt=""></div>
       <div class="post-popular-posts-post-content">
         <div class="post-popular-posts-post-content-title fw-6">{{post.title}}</div>
         <div class="post-popular-posts-post-content-footer d-flex flex-column fw-6">
@@ -20,7 +20,7 @@
             </div>
           </span>
           <div class="d-flex">
-            <span class="" style="width: 80px;">by {{post.userUsername}}</span>
+            <span class="" style="width: 80px;">by {{post.author.username}}</span>
           </div>
         </div>
       </div>

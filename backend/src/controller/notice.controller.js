@@ -4,7 +4,10 @@ const Notice = require("../models/notice");
 module.exports = {
     getNotices: async (req, res) => {
         try {
-            const data = await Notice.find({ 'userGet.id': req.params.id }).sort({ createdAt: -1 })
+            const data = await Notice.find({ 'userGet.id': req.params.id }).sort({ createdAt: -1 }).populate({
+                path: 'userSend',
+                select: '_id username avatar'
+            })
             res.status(200).json({
                 data
             })

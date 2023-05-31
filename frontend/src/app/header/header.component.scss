@@ -54,9 +54,11 @@
         &-item {
           border-radius: 12px;
           cursor: pointer;
-          &*{
+
+          &* {
             pointer-events: none;
           }
+
           &:hover {
             background-color: rgba(0, 0, 0, 0.1);
           }
@@ -103,6 +105,41 @@
           width: 40px;
           height: 40px;
           object-fit: cover;
+        }
+      }
+
+      &-dropdown {
+        &-item {
+          font-size: 15px;
+
+          i {
+            background-color: #E4E6EB;
+            width: 30px;
+            height: 30px;
+            border-radius: 50px;
+            font-size: 14px;
+          }
+
+          &:hover {
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+          }
+
+          &__avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50px;
+            overflow: hidden;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          &__username {}
         }
       }
     }

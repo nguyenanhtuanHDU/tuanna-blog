@@ -24,11 +24,14 @@
             </ul>
           </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active text-white" aria-current="page" routerLink="search-advance">Advance Search</a>
+        <li class="nav-item" *ngIf="user && user.admin">
+          <a class="nav-link active text-white" aria-current="page" routerLink="/admin">Admin</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active text-white" aria-current="page" href="#">Home</a>
+        <li class="nav-item" *ngIf="user && user.admin">
+          <a class="nav-link active text-white" aria-current="page" routerLink="/admin/users">Manage Users</a>
+        </li>
+        <li class="nav-item" *ngIf="user && user.admin">
+          <a class="nav-link active text-white" aria-current="page" routerLink="/admin/posts">Manage Posts</a>
         </li>
       </ul>
       <div class="header-inner-right d-flex gap-3">
@@ -51,14 +54,14 @@
                 <li *ngFor="let post of postsByTitle" role="menuitem"
                   class="header-inner-search-items-item flex-center-y gap-3 p-2" [routerLink]="'post/' + post._id">
                   <div class="header-inner-search-items-item__image">
-                    <img width="30" [src]="imagePath + 'avatars/' + post.userAvatar" alt="">
+                    <img width="30" [src]="imagePath + 'avatars/' + post.author.avatar" alt="">
                   </div>
                   <div class="header-inner-search-items-item__content">
                     <a class="m-0 p-0 dropdown-item" [innerHTML]="post.title"></a>
                     <div class="d-flex gap-2">
                       <span>{{post.updatedAt | TimeAgo}}</span>
                       <strong>·</strong>
-                      <span>by {{post.userUsername}}</span>
+                      <span>by {{post.author.username}}</span>
                     </div>
                   </div>
                 </li>
@@ -69,7 +72,6 @@
             <i class="bi bi-search"></i>
           </button>
         </form>
-
         <div class="btn-group" dropdown placement="bottom right">
           <button (click)="noticeCount = 0; resetReadNotice(user._id, 'isRead', '')" id="button-alignment"
             dropdownToggle type="button" class="header-inner-right__btn  bg-white text-primary btn dropdown-toggle"
@@ -114,21 +116,31 @@
             <ngx-skeleton-loader appearance="circle" [theme]="{ margin: 0}" *ngIf="!user"></ngx-skeleton-loader>
             <img *ngIf="user && user.avatar" [src]="avatarSrc + user.avatar" alt="" />
           </button>
-          <ul id="dropdown-animated" *dropdownMenu class="dropdown-menu dropdown-menu-end" role="menu"
+          <ul id="dropdown-animated" *dropdownMenu class="p-2 dropdown-menu dropdown-menu-end" role="menu"
             aria-labelledby="button-animated">
-            <li role="menuitem">
-              <a class="dropdown-item" href="#">{{ user.username }}</a>
+            <li class="header-inner-user-dropdown-item" role="menuitem">
+              <a class="dropdown-item flex-center-y gap-2 p-2 m-0">
+                <div class="header-inner-user-dropdown-item__avatar"><img [src]="avatarSrc + user.avatar" /></div>
+                <strong class="header-inner-user-dropdown-item__username">{{ user.username }}</strong>
+              </a>
             </li>
-            <li role="menuitem">
-              <a class="dropdown-item" href="#">{{ user.email }}</a>
+
+            <li class="header-inner-user-dropdown-item" role="menuitem">
+              <a class="dropdown-item p-2 m-0 flex-center-y gap-2" [routerLink]="['/profile', user._id]">
+                <i class="bi bi-person-circle flex-center text-dark"></i>
+                <span class="fw-6">Your profile</span>
+              </a>
             </li>
-            <li role="menuitem">
-              <a class="dropdown-item" [routerLink]="['/profile', user._id]">Your profile</a>
+            <li class="header-inner-user-dropdown-item" role="menuitem">
+              <a class="dropdown-item p-2 m-0 flex-center-y gap-2">
+                <i class="bi bi-key flex-center text-dark"></i>
+                <span class="fw-6">Change password</span>
+              </a>
             </li>
-            <li>
-              <button class="dropdown-item d-flex justify-content-between" (click)="logOut()">
-                <span>Log out</span>
-                <fa-icon [icon]="faRightFromBracket"></fa-icon>
+            <li class="header-inner-user-dropdown-item">
+              <button class="dropdown-item flex-center-y gap-2 p-2" (click)="logOut()">
+                <i class="bi bi-box-arrow-in-right flex-center text-dark"></i>
+                <span class="fw-6">Log out</span>
               </button>
             </li>
           </ul>

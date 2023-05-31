@@ -7,11 +7,11 @@
         <div class="posts-post-head d-flex justify-content-between">
           <div class="d-flex">
             <div class="posts-post-head-avatar me-3 border-radius-rounded">
-              <img *ngIf="post && post.userAvatar" [defaultImage]="defaultImage"
-                [lazyLoad]="imagePath + 'avatars/' + post.userAvatar" alt="">
+              <img *ngIf="post && post.author.avatar" [defaultImage]="defaultImage"
+                [lazyLoad]="imagePath + 'avatars/' + post.author.avatar" alt="">
             </div>
             <div class="posts-post-head-info d-flex flex-column my-auto">
-              <strong *ngIf="post && post.userUsername">{{post.userUsername}}</strong>
+              <strong *ngIf="post && post.author.username">{{post.author.username}}</strong>
               <span *ngIf="post && post.createdAt">{{post.createdAt | TimeAgo}}</span>
               <!-- <div>{{post.createdAt | date}}</div> -->
             </div>
@@ -34,10 +34,10 @@
                 </div>
               </ng-template>
             </swiper>
-            <button
+            <button *ngIf="post.images && post.images.length > 1"
               class="posts-post-body-images__btn posts-post-body-images__btn-left bg-primary text-white flex-center"
               (click)="swipePrev()"><i class="bi bi-chevron-left"></i></button>
-            <button
+            <button *ngIf="post.images && post.images.length > 1"
               class="posts-post-body-images__btn posts-post-body-images__btn-right bg-primary text-white flex-center"
               (click)="swipeNext()"><i class="bi bi-chevron-right"></i></button>
           </div>
@@ -74,11 +74,13 @@
                       <div *ngFor="let liker of post.likers"
                         class="posts-post-footer-likers flex-center-y gap-3 my-3 p-2">
                         <!-- <div>{{liker.userLikeID}}</div> -->
-                        <div class="posts-post-footer-likers__image">
+                        <div class="posts-post-footer-likers__image" [routerLink]="['/profile', liker._id]"
+                          type="button">
                           <img [defaultImage]="defaultImage" [lazyLoad]="imagePath + 'avatars/' + liker.avatar" />
                         </div>
                         <div class="posts-post-footer-likers__content">
-                          <strong class="posts-post-footer-likers__username">{{liker.username}}</strong>
+                          <strong class="posts-post-footer-likers__username" [routerLink]="['/profile', liker._id]"
+                            type="button">{{liker.username}}</strong>
                           <div class="posts-post-footer-likers__time">{{liker.createdAt | TimeAgo}}</div>
                           <!-- <pre>{{liker | json}}</pre> -->
                         </div>
@@ -162,18 +164,19 @@
           </button>
         </form>
         <div class="btn-group posts-inner-btns" dropdown [dropup]="true" placement="end">
-          <ng-container *ngIf="post && userSession && post.userID === userSession._id">
+          <ng-container *ngIf="post && userSession && post.author._id === userSession._id">
             <button id="button-dropup" dropdownToggle type="button"
               class="flex-center border-radius-rounded btn btn-primary dropdown-toggle" aria-controls="dropdown-dropup">
               <i class="bi bi-three-dots"></i>
             </button>
           </ng-container>
           <ul id="dropdown-dropup" *dropdownMenu class="p-2 dropdown-menu" role="menu" aria-labelledby="button-dropup">
-            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID"
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.author._id"
               (click)="openModalEditPost(post._id)">
-              <i class="flex-center me-1 bi bi-pencil-square"></i> Edit
+              <i class="flex-center me-1 bi bi-pencil-square"></i>
+              <span>Edit</span>
             </li>
-            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.userID" (click)="deletePost(post._id)">
+            <li role="menuitem" class="p-2" *ngIf="userSession._id === post.author._id" (click)="deletePost(post._id)">
               <i class="flex-center me-1 bi bi-trash"></i>
               Delete
             </li>
@@ -207,7 +210,7 @@
       <div class="modal-body post">
         <tabset type="pills" class="post-tabs">
           <tab heading="Content" class="post-tabs-tab p-3 my-3">
-            <form class="post-tabs-tab-content" [formGroup]="formEditPost">
+            <form class="post-tabs-tab-content d-flex flex-column gap-2" [formGroup]="formEditPost">
               <div class="form-group">
                 <label for="title">Title</label>
                 <input class="form-control" id="title" formControlName="title">

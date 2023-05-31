@@ -32,6 +32,10 @@ import { TimeAgo } from "./custom-pipe/TimeAgo.pipe";
 import { SwiperModule } from 'swiper/angular';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { AdminComponent } from './admin/admin.component';
+import { ManageUserComponent } from './admin/manage-user/manage-user.component';
+import { ManagePostComponent } from './admin/manage-post/manage-post.component';
+import { UserTableComponent } from './shared/user-table/user-table.component';
 const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
 
 @NgModule({
@@ -46,7 +50,11 @@ const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
     TagViewComponent,
     PostTopComponent,
     TimeAgo,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    AdminComponent,
+    ManageUserComponent,
+    ManagePostComponent,
+    UserTableComponent
   ],
   imports: [
     BrowserModule,

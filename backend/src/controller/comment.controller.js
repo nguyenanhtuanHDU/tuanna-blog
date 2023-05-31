@@ -1,7 +1,7 @@
 const Comment = require("../models/comment");
 const Post = require("../models/post");
 const { createNotice } = require("../services/notice.services");
-const { getUserRedis } = require("../services/user.redis");
+const { getUserRedis } = require("../services/user.services");
 
 module.exports = {
     postCreateComment: async (req, res) => {
@@ -12,8 +12,12 @@ module.exports = {
                 content: req.body.content,
                 postID: req.body.postID
             }
-            const post = await Post.findById(data.postID)
-            await createNotice(data.author, { id: post.userID }, 'comment', data.postID)
+            console.log(`🚀 ~ data:`, data)
+            const post = await Post.findById(data.postID).populate({
+                path: 'author',
+                select: '_id'
+            })
+            await createNotice(data.author, { id: post.author._id }, 'comment', data.postID)
             const comment = await Comment.create(data)
             post.comments = [...post.comments, comment._id]
             await post.save()

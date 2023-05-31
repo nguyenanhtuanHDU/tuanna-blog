@@ -3,6 +3,7 @@ const User = require("../models/user");
 var jwt = require('jsonwebtoken');
 const path = require('path');
 var fs = require('fs');
+const { getUserRedis } = require("../services/user.services");
 
 module.exports = {
     getAllPosts: async (req, res) => {
@@ -42,14 +43,22 @@ module.exports = {
             } else {
                 const skip = (page - 1) * limit
                 const postsCount = await Post.count({}).exec()
-                const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate({
-                    path: 'comments',
-                    populate: {
+                const posts = await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).populate(
+                    {
+                        path: 'comments',
+                        populate: {
+                            path: 'author',
+                            model: 'user',
+                            select: '_id username avatar '
+                        }
+                    }).populate({
                         path: 'author',
+                        select: '_id username avatar'
+                    }).populate({
+                        path: 'likers',
                         model: 'user',
-                        select: 'avatar username _id'
-                    }
-                }).exec()
+                        select: '_id username avatar'
+                    }).exec()
                 res.status(200).json({
                     EC: 0,
                     data: posts,
@@ -57,6 +66,25 @@ module.exports = {
                 })
             }
         } catch (error) {
+            console.log(`🚀 ~ error:`, error)
+            res.status(404).json({
+                EC: -1,
+                msg: 'Server error'
+            })
+        }
+    },
+    getAllPostsNonPaging: async (req, res) => {
+        try {
+            const posts = await Post.find().sort({ createdAt: -1 }).populate({
+                path: 'author',
+                select: '_id username avatar'
+            }).exec()
+            res.status(200).json({
+                EC: 0,
+                data: posts,
+            })
+        } catch (error) {
+            console.log(`🚀 ~ error:`, error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -72,12 +100,25 @@ module.exports = {
                     model: 'user',
                     select: 'avatar username _id'
                 }
+            }).populate({
+                path: 'author',
+                select: '_id username avatar'
+            }).populate({
+                path: 'likers',
+                model: 'user',
+                select: '_id username avatar'
             }).exec()
+            if (!data) {
+                return res.status(404).json({
+                    msg: "Post not found"
+                })
+            }
             res.status(200).json({
                 EC: 0,
                 data
             })
         } catch (error) {
+            console.log(`🚀 ~ error:`, error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'
@@ -98,7 +139,15 @@ module.exports = {
                         model: 'user',
                         select: 'avatar username _id'
                     }
+                }).populate({
+                    path: 'author',
+                    select: '_id username avatar'
+                }).populate({
+                    path: 'likers',
+                    model: 'user',
+                    select: '_id username avatar'
                 }).skip(skip).limit(limit).sort({ createdAt: -1 })
+                console.log(`🚀 ~ posts:`, posts)
                 res.status(200).json({
                     data: posts,
                     postsCount: postsCount.length
@@ -106,7 +155,21 @@ module.exports = {
             }
             // TÌM KIẾM THEO TITLE POST
             else if (title) {
-                const posts = await Post.find({ title: { $regex: title, $options: 'i' } }).select(['title', 'userAvatar', 'userUsername', 'updatedAt'])
+                // const posts = await Post.find({ title: { $regex: title, $options: 'i' } }).select(['title', 'userAvatar', 'userUsername', 'updatedAt']).sort({ updatedAt: -1 })
+                const posts = await Post.find({ title: { $regex: title, $options: 'i' } }).populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'author',
+                        model: 'user',
+                        select: 'avatar username _id'
+                    }
+                }).populate({
+                    path: 'author',
+                    select: '_id username avatar'
+                }).select(['title', 'updatedAt']).sort({ updatedAt: -1 })
+
+
+
                 res.status(200).json({
                     data: posts,
                     postsCount: posts.length
@@ -123,7 +186,10 @@ module.exports = {
     },
     getTopPostViewers: async (req, res) => {
         try {
-            const data = await Post.find().sort({ views: -1, title: -1 }).limit(req.params.count)
+            const data = await Post.find().sort({ views: -1, title: -1 }).limit(req.params.count).populate({
+                path: 'author',
+                select: '_id username avatar'
+            })
             res.status(200).json({
                 data
             })
@@ -136,7 +202,14 @@ module.exports = {
     },
     getTopPostLikes: async (req, res) => {
         try {
-            const posts = await Post.find()
+            const posts = await Post.find().populate({
+                path: 'author',
+                select: '_id username avatar'
+            }).populate({
+                path: 'likers',
+                model: 'user',
+                select: '_id username avatar'
+            })
             const data = posts.sort((a, b) => b.likers.length === a.likers.length ? a.title.localeCompare(b.title) : b.likers.length - a.likers.length).slice(0, Number(req.params.count))
             res.status(200).json({
                 data
@@ -169,27 +242,25 @@ module.exports = {
                 postImages = [postImages]
             }
             const data = JSON.parse(req.body.data)
-            const token = req.headers.token;
-            const accessToken = token.split(' ')[1];
-            const userDecoded = jwt.verify(accessToken, process.env.TOKEN_KEY);
+            console.log(`🚀 ~ data:`, data)
+            const userDecoded = await getUserRedis()
             const images = []
             if (!postImages || Object.keys(postImages).length === 0) {
                 return res.status(400).send('No files were uploaded.');
             } else {
                 postImages.map(async (img, index) => {
-                    const postImageName = `${userDecoded.id}-${new Date().getTime() + index
+                    const postImageName = `${userDecoded._id}-${new Date().getTime() + index
                         }${path.extname(img.name)}`;
                     const uploadPath = './src/public/images/posts/' + postImageName;
                     images.push(postImageName)
                     await img.mv(uploadPath);
                 })
             }
-            const user = await User.findById(userDecoded.id)
+            const user = await User.findById(userDecoded._id)
             data.images = images
-            data.userID = userDecoded.id
-            data.userAvatar = user.avatar
-            data.userUsername = user.username
+            data.author = userDecoded._id
             const post = await Post.create(data)
+            console.log(`🚀 ~ post:`, post)
             user.posts.push(post.id)
             await user.save()
             res.status(200).json({
@@ -197,9 +268,10 @@ module.exports = {
                 msg: 'Create post successfully'
             })
         } catch (error) {
+            console.log(`🚀 ~ error:`, error)
             res.status(404).json({
                 EC: -1,
-                msg: 'Server error'
+                msg: 'Server error 2'
             })
         }
     },
@@ -259,7 +331,7 @@ module.exports = {
             })
         }
     },
-    deletePost: async (req, res) => {
+    deletePostByID: async (req, res) => {
         try {
             await Post.findByIdAndDelete(req.params.id)
             res.status(200).json({

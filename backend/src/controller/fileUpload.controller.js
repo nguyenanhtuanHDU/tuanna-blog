@@ -3,7 +3,7 @@ const path = require('path');
 const User = require('../models/user');
 const isImage = require('is-image');
 const Post = require("../models/post");
-const { getUserRedis, setUserRedis } = require("../services/user.redis");
+const { getUserRedis, setUserRedis } = require("../services/user.services");
 
 module.exports = {
   postUploadAvatar: async (req, res) => {
