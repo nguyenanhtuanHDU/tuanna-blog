@@ -12,7 +12,7 @@ export class CommentService {
   constructor(private httpClient: HttpClient,
     private authService: AuthService) { }
 
-    createComment(data: any) {
+  createComment(data: any) {
     return this.httpClient.post(this.commentUrl, data, { headers: this.authService.getHeaders() });
   }
 

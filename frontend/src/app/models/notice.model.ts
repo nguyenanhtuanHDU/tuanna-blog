@@ -14,5 +14,6 @@ export interface Notice {
   createdAt: string
   isRead: boolean,
   isClick: boolean,
+  isHeart: boolean,
   postID: string
 }

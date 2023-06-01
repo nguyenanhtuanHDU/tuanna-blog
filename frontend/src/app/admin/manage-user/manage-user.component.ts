@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { HeaderComponent } from "src/app/header/header.component";
 import { User } from "src/app/models/user.model";
 import { UserService } from "src/app/services/user.service";
 
@@ -8,6 +9,8 @@ import { UserService } from "src/app/services/user.service";
   styleUrls: ['./manage-user.component.scss']
 })
 export class ManageUserComponent {
+  @ViewChild(HeaderComponent) headerComp: HeaderComponent;
+
   listUser: User[] = []
 
   constructor(private userService: UserService) {
@@ -17,6 +20,8 @@ export class ManageUserComponent {
 
   ngOnInit(): void {
     this.getNonAdminUsers()
+    console.log(this.headerComp);
+
   }
 
   getNonAdminUsers() {

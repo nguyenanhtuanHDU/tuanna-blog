@@ -22,6 +22,22 @@
   }
 
   &-inner {
+    &-link {
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0px;
+        height: 3px;
+        width: 95%;
+        background-color: white;
+        left: 50%;
+        border-radius: 50px;
+        transform: translateX(-50%);
+      }
+    }
+
     &_nav {
       &__item {}
     }
@@ -213,4 +229,13 @@
 
 .btn.dropdown-toggle::after {
   display: none;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000000;
 }

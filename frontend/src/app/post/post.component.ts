@@ -163,7 +163,7 @@ export class PostComponent {
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
-    }).subscribe((data: any) => {
+    }, this.userSession._id).subscribe((data: any) => {
       this.getTopPostsLikes(3)
       this.getUserSessionInfo()
       this.getPostByID()
@@ -343,7 +343,7 @@ export class PostComponent {
         this.imagesSelected = data.data.images
       }, (err: any) => {
         console.log(`🚀 ~ err:`, err)
-        this.router.navigate(['**'])
+        this.router.navigate(['page-not-found'])
       })
     });
     this.getUserSessionInfo()

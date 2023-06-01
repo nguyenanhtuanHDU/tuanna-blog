@@ -1,17 +1,19 @@
 const Post = require("../models/post");
 const User = require("../models/user");
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const path = require('path');
-var fs = require('fs');
+const fs = require('fs');
 const { getUserRedis } = require("../services/user.services");
+const { deleteFiles } = require("../services/file.services");
 
 module.exports = {
     getAllPosts: async (req, res) => {
         try {
             const { page, limit, userID, tag } = req.query
             if (userID) {
+                console.log(`🚀 ~ userID:`, userID)
                 let Asia = Europe = Africa = America = Oceania = Antarctica = 0;
-                const posts = await Post.find({ userID })
+                const posts = await Post.find({ author: userID })
                 posts.map((post) => {
                     if (post.tag === "Asia") {
                         Asia += 1;
@@ -77,7 +79,7 @@ module.exports = {
         try {
             const posts = await Post.find().sort({ createdAt: -1 }).populate({
                 path: 'author',
-                select: '_id username avatar'
+                select: '_id username avatar admin'
             }).exec()
             res.status(200).json({
                 EC: 0,
@@ -260,7 +262,6 @@ module.exports = {
             data.images = images
             data.author = userDecoded._id
             const post = await Post.create(data)
-            console.log(`🚀 ~ post:`, post)
             user.posts.push(post.id)
             await user.save()
             res.status(200).json({
@@ -286,7 +287,7 @@ module.exports = {
 
             for (let img of oldPost.images) {
                 if (!data.images.includes(img)) {
-                    fs.unlinkSync('./src/public/images/posts/' + img);
+                    await deleteFiles(img)
                 }
             }
             if (req.files && req.files.postImages) {
@@ -333,12 +334,26 @@ module.exports = {
     },
     deletePostByID: async (req, res) => {
         try {
-            await Post.findByIdAndDelete(req.params.id)
+            const postID = req.params.id
+            const post = await Post.findByIdAndDelete(postID)
+
+            const userPost = await User.findOne({ posts: { $in: [postID] } })
+            userPost.posts.splice(userPost.posts.indexOf(postID), 1)
+            await userPost.save()
+
+            const userLikes = await User.find({ likes: { $in: [postID] } })
+            userLikes.map(async (user) => {
+                user.likes.splice(user.likes.indexOf(postID), 1)
+                await user.save()
+            })
+
+            await deleteFiles(post.images)
             res.status(200).json({
                 EC: 0,
                 msg: "Delete post successfully"
             })
         } catch (error) {
+            console.log(`🚀 ~ error:`, error)
             res.status(404).json({
                 EC: -1,
                 msg: 'Server error'

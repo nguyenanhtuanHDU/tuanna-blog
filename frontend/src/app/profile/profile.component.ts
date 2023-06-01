@@ -183,7 +183,7 @@ export class ProfileComponent implements OnInit {
       this.spinner.hide();
     }, (err: any) => {
       console.log(`🚀 ~ err:`, err)
-      this.router.navigate(['**'])
+      this.router.navigate(['page-not-found'])
     });
   }
 
@@ -280,8 +280,9 @@ export class ProfileComponent implements OnInit {
 
   createChartPosts(data: any) {
     if (this.chart) {
+      console.warn('reset chart');
+
       this.chart.destroy()
-      console.log('co chart');
     }
     this.chart = new Chart("myChart", {
       type: 'bar',
@@ -330,6 +331,7 @@ export class ProfileComponent implements OnInit {
 
   getPostCountEachTagByUserID(id: string) {
     this.postService.getAllPosts(undefined, undefined, id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
+      console.warn(`🚀 ~ data:`, data)
       this.createChartPosts(data)
     })
   }

@@ -25,13 +25,16 @@
           </div>
         </li>
         <li class="nav-item" *ngIf="user && user.admin">
-          <a class="nav-link active text-white" aria-current="page" routerLink="/admin">Admin</a>
+          <a class="nav-link active text-white" routerLinkActive="header-inner-link"
+            [routerLinkActiveOptions]="{ exact: true }" aria-current="page" routerLink="/admin">Admin</a>
         </li>
         <li class="nav-item" *ngIf="user && user.admin">
-          <a class="nav-link active text-white" aria-current="page" routerLink="/admin/users">Manage Users</a>
+          <a class="nav-link active text-white" routerLinkActive="header-inner-link" aria-current="page"
+            routerLink="/admin/users">Manage Users</a>
         </li>
         <li class="nav-item" *ngIf="user && user.admin">
-          <a class="nav-link active text-white" aria-current="page" routerLink="/admin/posts">Manage Posts</a>
+          <a class="nav-link active text-white" routerLinkActive="header-inner-link" aria-current="page"
+            routerLink="/admin/posts">Manage Posts</a>
         </li>
       </ul>
       <div class="header-inner-right d-flex gap-3">
@@ -120,8 +123,11 @@
             aria-labelledby="button-animated">
             <li class="header-inner-user-dropdown-item" role="menuitem">
               <a class="dropdown-item flex-center-y gap-2 p-2 m-0">
-                <div class="header-inner-user-dropdown-item__avatar"><img [src]="avatarSrc + user.avatar" /></div>
-                <strong class="header-inner-user-dropdown-item__username">{{ user.username }}</strong>
+                <div class="header-inner-user-dropdown-item__avatar" *ngIf="user && user.avatar">
+                  <img [src]="avatarSrc + user.avatar" />
+                </div>
+                <strong class="header-inner-user-dropdown-item__username" *ngIf="user && user.username">{{ user.username
+                  }}</strong>
               </a>
             </li>
 
@@ -132,11 +138,36 @@
               </a>
             </li>
             <li class="header-inner-user-dropdown-item" role="menuitem">
-              <a class="dropdown-item p-2 m-0 flex-center-y gap-2">
+              <a class="dropdown-item p-2 m-0 flex-center-y gap-2" data-toggle="modal" data-target="#exampleModal"
+                [routerLink]="'/profile/' + user._id + '/change-password'">
                 <i class="bi bi-key flex-center text-dark"></i>
                 <span class="fw-6">Change password</span>
               </a>
+
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      ...
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </li>
+
+
             <li class="header-inner-user-dropdown-item">
               <button class="dropdown-item flex-center-y gap-2 p-2" (click)="logOut()">
                 <i class="bi bi-box-arrow-in-right flex-center text-dark"></i>

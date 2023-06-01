@@ -18,7 +18,7 @@ const routes: Routes = [
     loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
   },
   {
-    path: 'post', canLoad: [AuthGuard], canDeactivate: [ConfirmGuard],
+    path: 'post', canLoad: [AuthGuard],
     loadChildren: () => import('./post/post.module').then(m => m.PostModule)
   },
   {

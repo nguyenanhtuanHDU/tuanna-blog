@@ -228,7 +228,7 @@ export class HomeComponent implements OnInit {
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
-    }).subscribe((data: any) => {
+    }, this.userSession._id).subscribe((data: any) => {
       // this.getAllPosts()
       this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       this.getUserSessionInfo()
@@ -236,7 +236,7 @@ export class HomeComponent implements OnInit {
   }
 
   deletePost(idPost: string) {
-    this.sweetAlert.yesNo('Do you want to upload this image ?', () => {
+    this.sweetAlert.yesNo('Do you want to delete this post ?', () => {
       this.spinner.show();
       this.postService.deletePostByID(idPost).subscribe(
         (data: any) => {

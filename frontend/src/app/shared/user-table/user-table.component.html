@@ -20,6 +20,7 @@
               alt="">
           </td>
           <td><span>{{user.username}}</span></td>
+          <td><span>{{user.views}}</span></td>
           <td><span>{{user.birthday}}</span></td>
           <td><span>{{user.gender}}</span></td>
           <td><span>{{type === 'admin' ? 'Full' : 'User'}}</span></td>
@@ -29,10 +30,50 @@
               <i class="bi bi-eye-fill"></i>
               View
             </button>
-            <button *ngIf="type === 'user'" class="btn btn-primary me-2">
+            <button *ngIf="type === 'user'" class="btn btn-primary me-2"
+              (click)="openModalEditUser(modalEditUser, user)">
               <i class="bi bi-pencil-square"></i>
               Edit
             </button>
+            <div bsModal #modalEditUser="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+              aria-labelledby="dialog-sizes-name1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 id="dialog-sizes-name1" class="modal-title pull-left">Edit User</h4>
+                    <button type="button" class="btn-close close pull-right" aria-label="Close"
+                      (click)="modalEditUser.hide()">
+                      <span aria-hidden="true" class="visually-hidden">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="" [formGroup]="formEditUser" (submit)="updateUser(user._id)">
+                      <div class="d-flex flex-column gap-3">
+                        <div>
+                          <label class="mb-1" for="username">Username</label>
+                          <input id="username" type="text" class="form-control" formControlName="username">
+                        </div>
+                        <div>
+                          <label class="mb-1" for="birthday">Birthday</label>
+                          <input id="birthday" type="text" formControlName="birthday" placeholder="Choose your date"
+                            class="form-control" bsDatepicker [bsConfig]="{ isAnimated: true }"
+                            [bsConfig]="{containerClass:'theme-blue', dateInputFormat: 'DD/MM/YYYY'}">
+                        </div>
+                        <div>
+                          <label class="mb-1" for="gender">Gender</label>
+                          <select id="gender" class="form-select" aria-label="Default select example"
+                            formControlName="gender">
+                            <option value="male">male</option>
+                            <option value="female">female</option>
+                          </select>
+                        </div>
+                      </div>
+                      <button class="btn btn-primary mt-3 py-2 w-100">Update</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button *ngIf="type === 'user'" class="btn btn-danger text-white" (click)="deleteUserByID(user._id)">
               <i class="bi bi-trash"></i>
               Delete
@@ -40,14 +81,15 @@
           </td>
         </tr>
       </ng-container>
+
       <ng-template #postsBody>
         <tr *ngFor="let post of listData; index as i">
+          <!-- <pre>{{listData | json}}</pre> -->
           <td style="padding-left: 50px;" scope="row"><span>{{post._id}}</span></td>
           <td><span
               style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 200px; display: block; ">{{post.title}}</span>
           </td>
           <td><span>{{post.tag}}</span></td>
-          <td><span>{{post.views}}</span></td>
           <td><span>{{post.likers.length}}</span></td>
           <td><span>{{post.comments.length}}</span></td>
           <td>
@@ -61,11 +103,14 @@
               <i class="bi bi-eye-fill"></i>
               View
             </button>
-            <button class="btn btn-primary me-2">
+            <button class="btn btn-primary me-2"
+              *ngIf="post.author._id === userSession._id || (!post.author.admin && post.author._id !== userSession._id)">
+
               <i class="bi bi-pencil-square"></i>
               Edit
             </button>
-            <button class="btn btn-danger text-white" (click)="deletePostByID(post._id)">
+            <button class="btn btn-danger text-white" (click)="deletePostByID(post._id)"
+              *ngIf="post.author._id === userSession._id || (!post.author.admin && post.author._id !== userSession._id)">
               <i class="bi bi-trash"></i>
               Delete
             </button>

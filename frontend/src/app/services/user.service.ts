@@ -24,21 +24,52 @@ export class UserService {
     return this.httpClient.get<User>(this.userInfoUrl, { headers: this.authService.getHeaders() });
   }
 
-  getListAdmin(): Observable<User> {
-    return this.httpClient.get<User>(this.userUrl + '/list-admins', { headers: this.authService.getHeaders() });
+  getListAdmin(): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.userUrl + '/list-admins', { headers: this.authService.getHeaders() });
   }
 
-  getNonAdminUsers(): Observable<User> {
-    return this.httpClient.get<User>(this.userUrl + '/list-users', { headers: this.authService.getHeaders() });
+  getNonAdminUsers(): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.userUrl + '/list-users', { headers: this.authService.getHeaders() });
   }
 
   getUserByID(id: string): Observable<User> {
     return this.httpClient.get<User>(this.userUrl + '/' + id, { headers: this.authService.getHeaders() });
   }
 
-  getListAvatars() {
-    return this.httpClient.get(
-      `${environment.apiBackend}/v1/api/user/:id/listAvatars`,
+  createAUser(data: any): Observable<User> {
+    return this.httpClient.post<User>(this.signupUrl, data);
+  }
+
+  uploadAvatar(avatarList: FileList) {
+    const formData: FormData = new FormData();
+    for (let i = 0; i < avatarList.length; i++) {
+      formData.append("avatars", avatarList[i]);
+    }
+    return this.httpClient.post(this.uploadAvatarUrl, formData, { headers: this.authService.getHeaders() });
+  }
+
+  uploadBg(bgList: FileList) {
+    const formData: FormData = new FormData();
+    for (let i = 0; i < bgList.length; i++) {
+      formData.append('bgs', bgList[i]);
+    }
+    return this.httpClient.post(this.uploadBgUrl, formData, { headers: this.authService.getHeaders() });
+  }
+
+  updateAUser(data: any) {
+    return this.httpClient.put(this.userUrl, data, { headers: this.authService.getHeaders() });
+  }
+
+  updateAUserByAdmin(userID: string, data: any) {
+    console.warn('service', data);
+
+    return this.httpClient.put(this.userUrl + '/' + userID, data, { headers: this.authService.getHeaders() });
+  }
+
+  updatePassword(idUser: string, oldPassword: string, newPassword: string) {
+    return this.httpClient.put(
+      `${environment.apiBackend}/v1/api/user/${idUser.trim()}/password`,
+      { oldPassword, newPassword },
       { headers: this.authService.getHeaders() }
     );
   }
@@ -59,9 +90,9 @@ export class UserService {
     );
   }
 
-  updateLikes(data: any) {
+  updateLikes(data: any, userID: string) {
     return this.httpClient.put(
-      `${environment.apiBackend}/v1/api/user/likes`,
+      `${environment.apiBackend}/v1/api/user/${userID}/likes`,
       data,
       { headers: this.authService.getHeaders() }
     );
@@ -73,7 +104,6 @@ export class UserService {
       { headers: this.authService.getHeaders() }
     );
   }
-
 
   deleteAvatar(idUser: string, avatar: string) {
     return this.httpClient.delete(
@@ -87,31 +117,5 @@ export class UserService {
       `${environment.apiBackend}/v1/api/user/${idUser}/listBgAvatars/${bgAvatar}`,
       { headers: this.authService.getHeaders() }
     );
-  }
-
-  createAUser(data: any) {
-    return this.httpClient.post(this.signupUrl, data);
-  }
-
-  updateAUser(data: any) {
-    return this.httpClient.put(this.userUrl, data, { headers: this.authService.getHeaders() });
-  }
-
-  uploadAvatar(avatarList: FileList) {
-    const formData: FormData = new FormData();
-    for (let i = 0; i < avatarList.length; i++) {
-      formData.append("avatars", avatarList[i]);
-    }
-
-    return this.httpClient.post(this.uploadAvatarUrl, formData, { headers: this.authService.getHeaders() });
-  }
-
-  uploadBg(bgList: FileList) {
-    const formData: FormData = new FormData();
-    for (let i = 0; i < bgList.length; i++) {
-      formData.append('bgs', bgList[i]);
-    }
-
-    return this.httpClient.post(this.uploadBgUrl, formData, { headers: this.authService.getHeaders() });
   }
 }

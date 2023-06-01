@@ -11,6 +11,10 @@ module.exports = {
             res.status(200).json({
                 data
             })
+            data.map(async (item) => {
+                item.isHeart = true
+                await item.save()
+            })
         } catch (error) {
             console.log(`🚀 ~ error:`, error)
             res.status(404).json({

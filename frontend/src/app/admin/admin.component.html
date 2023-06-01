@@ -1,8 +1,8 @@
-<app-header></app-header>
+<app-header #headerComp></app-header>
 
 
 <br><br><br><br><br>
-<app-user-table [listData]="listAdmin">List Admins</app-user-table>
+<app-user-table [headerComp]="headerComp" [listData]="listAdmin">List Admins</app-user-table>
 
 
 <router-outlet></router-outlet>

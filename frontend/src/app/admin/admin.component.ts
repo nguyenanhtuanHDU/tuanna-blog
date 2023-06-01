@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { UserService } from "../services/user.service";
 import { User } from "../models/user.model";
 import { global } from "../shared/global";
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
   selector: 'app-admin',
@@ -9,6 +10,8 @@ import { global } from "../shared/global";
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
+  @ViewChild(HeaderComponent, { static: true }) headerComp: HeaderComponent
+
   listAdmin: User[] = []
   imagePath: string = global.imagePath
 

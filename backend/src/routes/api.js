@@ -3,7 +3,6 @@ const {
   getAllUsers,
   getUserInfo,
   putUpdateUserInfo,
-  getListAvatars,
   putUpdateUserAvatar,
   deleteAvatar,
   postUpdateUserBg,
@@ -15,6 +14,8 @@ const {
   getListAdmins,
   getNonAdminUsers,
   deleteUserByID,
+  putUpdateUserPassword,
+  putUpdateUserInfoByAdmin,
 } = require('../controller/user.controller');
 const middleware = require('../middleware/middleware.controller');
 const { postCreatePost, getAllPosts, getPostByID, getTopPostViewers, putUpdatePostViews, getTopPostLikes, putUpdatePost, getTopPostComments, getPostsByInfo, getAllPostsNonPaging, deletePostByID } = require("../controller/post.controller");
@@ -30,9 +31,10 @@ router.get('/user/list-users', middleware.verifyAdmin, getNonAdminUsers);
 router.get('/user/:id', getUserByID);
 router.get('/user/redis', getRedis);
 router.get('/user-info', middleware.verifyToken, getUserInfo);
-router.get('/user/:id/listAvatars', middleware.verifyToken, getListAvatars);
 router.put('/user', middleware.verifyUpdateUser, putUpdateUserInfo);
-router.put('/user/likes', middleware.verifyUpdateUser, putUpdateUserLikes);
+router.put('/user/:id', middleware.verifyAdmin, putUpdateUserInfoByAdmin);
+router.put('/user/:id/password', middleware.verifyUpdateUser, putUpdateUserPassword);
+router.put('/user/:id/likes', middleware.verifyToken, putUpdateUserLikes);
 router.put('/user/:id/avatar', middleware.verifyToken, putUpdateUserAvatar);
 router.put('/user/:id/bgAvatar', middleware.verifyToken, postUpdateUserBg);
 router.delete('/user/:id/', middleware.verifyAdmin, deleteUserByID);

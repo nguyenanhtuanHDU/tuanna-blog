@@ -4,6 +4,7 @@ export interface Post {
     _id: string
     avatar: string,
     username: string
+    admin: boolean
   }
   title: string
   content: string

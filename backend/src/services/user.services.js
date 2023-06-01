@@ -11,7 +11,7 @@ module.exports = {
         await client.set(process.env.REDIS_USER, JSON.stringify(data))
     },
     getListUser: async (admin) => {
-        const users = await User.find({ admin }).select('avatar username createdAt birthday gender posts').sort({ createdAt: 1 });
+        const users = await User.find({ admin }).select('avatar username createdAt birthday gender posts views').sort({ createdAt: 1 });
         return users
     }
 }

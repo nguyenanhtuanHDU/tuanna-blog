@@ -8,8 +8,6 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthService {
   userUrl = `${environment.apiBackend}/v1/api/user`;
-
-  // userUrl = `${environment.apiBackend}v1/api/users`;
   loginUrl = `${environment.apiBackend}/auth/login`;
   signupUrl = `${environment.apiBackend}/auth/signup`;
 

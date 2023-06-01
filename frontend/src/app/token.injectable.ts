@@ -19,8 +19,8 @@ export class tokenInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status == 401) {
+      catchError((error: any) => {
+        if (error.error.msg == 'Token is not valid !') {
           this.router.navigate(['/login']);
           Swal.fire(
             'The login session has expired',

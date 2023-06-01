@@ -2,9 +2,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const fs = require('fs');
 const Post = require("../models/post");
+const bcrypt = require('bcrypt');
 const client = require("../config/redis");
 const { createNotice } = require("../services/notice.services");
 const { getUserRedis, setUserRedis, getListUser } = require("../services/user.services");
+const { deleteFiles } = require("../services/file.services");
+const Comment = require("../models/comment");
+const Notice = require("../models/notice");
+const { log } = require("console");
 
 module.exports = {
 
@@ -105,22 +110,6 @@ module.exports = {
       });
     }
   },
-  getListAvatars: async (req, res) => {
-    try {
-      const user = await User.findById(req.params.id);
-      console.log("👉👉👉 ~ user:", user.listAvatars)
-      res.status(200).json({
-        EC: 0,
-        data: user.listAvatars,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(404).json({
-        EC: -1,
-        msg: 'Sever error !',
-      });
-    }
-  },
   postCreateAUser: async (req, res) => {
     try {
       const data = req.body;
@@ -147,8 +136,49 @@ module.exports = {
 
       await User.updateOne({ _id: userDecoded.id }, data);
       return res.status(200).json({
-        msg: 'You have successfully updated your information !',
+        msg: 'Update user successfully',
       })
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({
+        msg: 'Server error',
+      });
+    }
+  },
+  putUpdateUserInfoByAdmin: async (req, res) => {
+    try {
+      const userID = req.params.id
+      await User.findByIdAndUpdate(userID, req.body)
+      return res.status(200).json({
+        msg: 'Update user successfully',
+      })
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({
+        msg: 'Server error',
+      });
+    }
+  },
+  putUpdateUserPassword: async (req, res) => {
+    try {
+      const userID = req.params.id
+      const { oldPassword, newPassword } = req.body
+      const user = await User.findById(userID)
+      const checkPW = await bcrypt.compareSync(oldPassword, user.password);
+      if (!checkPW) {
+        res.status(401).json({
+          EC: -1,
+          msg: 'Incorrect password'
+        })
+        return
+      }
+      const salt = await bcrypt.genSaltSync(10);
+      const updatePassword = await bcrypt.hashSync(newPassword, salt);
+      user.password = updatePassword
+      await user.save()
+      res.status(200).json({
+        msg: 'Update new password successfully',
+      });
     } catch (error) {
       console.log(error);
       res.status(404).json({
@@ -158,6 +188,7 @@ module.exports = {
   },
   putUpdateUserLikes: async (req, res) => {
     try {
+      console.log('run');
       const data = req.body
       const userRedis = await getUserRedis()
       const post = await Post.findById(data.idPost)
@@ -177,7 +208,6 @@ module.exports = {
         }
         io.on('connection', socket => {
           socket.on('notice', (data) => {
-            console.log(`🚀 ~ data:`, data)
             io.emit('notice', notice)
           })
         });
@@ -281,7 +311,6 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.log("🚀 ~ error:", error)
       res.status(404).json({
         msg: 'Server error',
       });
@@ -371,7 +400,13 @@ module.exports = {
   },
   deleteUserByID: async (req, res) => {
     try {
-      await User.findByIdAndDelete(req.params.id)
+      const userID = req.params.id
+      const user = await User.findByIdAndDelete(userID)
+      await Comment.deleteMany({ author: userID })
+      await Post.deleteMany({ author: userID })
+      await Notice.deleteMany({ userSend: userID })
+      await deleteFiles(user.listAvatars)
+      await deleteFiles(user.listBgAvatars)
       return res.status(200).json({
         msg: 'Delete user successfully ! ',
       });

@@ -36,6 +36,7 @@ import { AdminComponent } from './admin/admin.component';
 import { ManageUserComponent } from './admin/manage-user/manage-user.component';
 import { ManagePostComponent } from './admin/manage-post/manage-post.component';
 import { UserTableComponent } from './shared/user-table/user-table.component';
+import { FormValidatorModule } from '@popeyelab/ngx-validator';
 const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
 
 @NgModule({
@@ -68,6 +69,7 @@ const config: SocketIoConfig = { url: 'ws://localhost:8000', options: {} };
     NgOptimizedImage,
     SwiperModule,
     LazyLoadImageModule,
+    FormValidatorModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
     FontAwesomeModule,
     BsDropdownModule.forRoot(),

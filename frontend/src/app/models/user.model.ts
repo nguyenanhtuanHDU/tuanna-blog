@@ -23,5 +23,3 @@ export interface User {
   posts: string[]
   createdAt: string
 }
-
-

@@ -10,6 +10,7 @@ const noticeSchema = new mongoose.Schema(
         content: { type: String, required: true },
         isRead: { type: Boolean, default: false },
         isClick: { type: Boolean, default: false },
+        isHeart: { type: Boolean, default: false },
         postID: { type: String, required: true },
     },
     {
