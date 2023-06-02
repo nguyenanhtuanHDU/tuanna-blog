@@ -30,7 +30,7 @@ export class UserTableComponent {
   imagePath: string = global.imagePath
   headTableContent: string[] = []
   listUsersContent: string[] = ['Avatar', 'Username', 'Views', 'Birthday', 'Gender', 'Role', 'Join At']
-  listPostsContent: string[] = ['Title', 'Tag', 'Likers', 'Comments', 'Author', 'Created At']
+  listPostsContent: string[] = ['Title', 'Tag', 'Views', 'Likers', 'Comments', 'Author', 'Created At']
 
   constructor(private userService: UserService, private postService: PostService, private SweetAlertService: SweetAlertService) {
 
