@@ -103,15 +103,24 @@ export class HomeComponent implements OnInit {
       this.posts = data.data
       console.log(`🚀 ~ data.data:`, data.data)
       this.postsCount = Number(data.postsCount)
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
   getPostsByTag(tag: string) {
+    this.spinner.show();
     this.postService.getPostsByTag(tag, this.page, this.limitPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
+      this.spinner.hide();
       console.log(`🚀 ~ data:`, data)
       this.posts = data.data
       this.isPostsTag = tag
       this.postsCount = data.postsCount
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -124,8 +133,10 @@ export class HomeComponent implements OnInit {
   }
 
   getPostToEditByID(id: string) {
+    this.spinner.show();
     this.postEditID = id
     this.postService.getPostByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
+      this.spinner.hide();
       this.postEdit = data.data
       this.formCreatePost.get('title')?.setValue(this.postEdit.title);
       this.formCreatePost.get('content')?.setValue(this.postEdit.content);
@@ -134,6 +145,10 @@ export class HomeComponent implements OnInit {
       this.isEdit = true
       this.isCreate = false
       this.imagesSelected = data.data.images
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -154,7 +169,9 @@ export class HomeComponent implements OnInit {
       );
       return
     }
+    this.spinner.show();
     this.postService.createPost(this.formCreatePost.value, this.selectedFiles).subscribe((data: any) => {
+      this.spinner.hide();
       this.getAllPosts()
       Swal.fire(
         data.msg,
@@ -164,6 +181,10 @@ export class HomeComponent implements OnInit {
       modal.hide()
       this.formCreatePost.reset()
       this.imagesSelected = []
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -171,13 +192,18 @@ export class HomeComponent implements OnInit {
     this.postService.updatePostViews(id).subscribe((data) => {
       console.log(`🚀 ~ data:`, data)
       // this.getAllPosts()
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
   editPost() {
     const data = this.formCreatePost.value
     data.images = this.imagesSelected
+    this.spinner.show();
     this.postService.updatePost(data, this.postEditID, this.selectedFiles).subscribe((data: any) => {
+      this.spinner.hide();
       Swal.fire(
         data.msg,
         '',
@@ -188,12 +214,19 @@ export class HomeComponent implements OnInit {
       this.formCreatePost.reset()
       this.imagesSelected = []
       this.newImagesSelected = []
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
   setPostHeader(id: string) {
     this.postService.getPostByID(id).subscribe((data: any) => {
       this.currentPostHeader = data.data
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -228,10 +261,13 @@ export class HomeComponent implements OnInit {
     this.userService.updateLikes({
       like: event.target.checked,
       idPost
-    }, this.userSession._id).subscribe((data: any) => {
+    }, this.userSession._id).subscribe(() => {
       // this.getAllPosts()
       this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       this.getUserSessionInfo()
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -240,6 +276,7 @@ export class HomeComponent implements OnInit {
       this.spinner.show();
       this.postService.deletePostByID(idPost).subscribe(
         (data: any) => {
+          this.spinner.hide();
           this.getTopPostsComment()
           this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
           this.spinner.hide();
@@ -257,6 +294,9 @@ export class HomeComponent implements OnInit {
   getUserSessionInfo() {
     this.userService.getUserInfo().pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.userSession = data.data
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -281,7 +321,7 @@ export class HomeComponent implements OnInit {
     this.indexPost = index % this.limitPost
     if (content) {
       this.notificationService.comment()
-      this.commentService.createComment({ postID: postID, content }).subscribe((data) => {
+      this.commentService.createComment({ postID: postID, content }).subscribe(() => {
         this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
         this.formCreateComment.reset()
 
@@ -290,6 +330,9 @@ export class HomeComponent implements OnInit {
             this.commentScrollbar.toArray()[this.indexPost].scrollTo({ bottom: 0, end: 0, duration: 500 })
           })
         }
+      }, (err) => {
+        console.log(`🚀 ~ err:`, err)
+        Swal.fire(err.error.msg, '', 'error')
       })
     } else {
       Swal.fire(
@@ -300,9 +343,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  editComment(id: string) {
+  editCommentByID(id: string) {
     const data = this.formEditComment.value
+    this.spinner.show()
     this.commentService.updateComment(data, id).subscribe((data: any) => {
+      this.spinner.hide()
       Swal.fire(
         data.msg,
         '',
@@ -312,6 +357,8 @@ export class HomeComponent implements OnInit {
       this.formEditComment.reset()
       this.modalCreateCommentRef?.hide()
     }, (err: any) => {
+      console.log(`🚀 ~ err:`, err)
+      this.spinner.hide()
       Swal.fire(
         err.msg,
         '',
@@ -322,7 +369,9 @@ export class HomeComponent implements OnInit {
 
   deleteCommentByID(id: string) {
     this.sweetAlert.yesNo('Are you sure to delete this comment ?', (() => {
+      this.spinner.show()
       this.commentService.deleteComment(id).subscribe((data: any) => {
+        this.spinner.hide()
         this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
         Swal.fire(
           data.msg,
@@ -330,6 +379,8 @@ export class HomeComponent implements OnInit {
           'success'
         );
       }, (err) => {
+        console.log(`🚀 ~ err:`, err)
+        this.spinner.hide()
         Swal.fire(
           err.msg,
           '',
@@ -374,6 +425,9 @@ export class HomeComponent implements OnInit {
     this.postService.getTopComments(this.postTopCommentsCount).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postTopComments = data.data
       this.currentPostHeader = this.postTopComments[0]
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -388,6 +442,9 @@ export class HomeComponent implements OnInit {
         this.limitPost = params['limit'];
         this.isPostsTag ? this.getPostsByTag(this.isPostsTag) : this.getAllPosts()
       }
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     });
     this.getAllPosts()
   }

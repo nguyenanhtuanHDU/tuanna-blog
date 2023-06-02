@@ -1,8 +1,7 @@
 <app-header #headerComp></app-header>
 
-
 <br><br><br><br><br>
 <app-user-table [headerComp]="headerComp" [listData]="listAdmin">List Admins</app-user-table>
-
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="var(--bs-primary)" [fullScreen]="true"></ngx-spinner>
 
 <router-outlet></router-outlet>

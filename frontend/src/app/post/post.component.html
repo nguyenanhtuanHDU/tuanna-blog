@@ -25,8 +25,9 @@
           <div *ngIf="post && post.images" class="position-relative" style="height: 400px;"
             tooltip="Double click to zoom" type="button">
             <swiper [zoom]="{maxRatio: 3,
-              minRatio: 1}" [scrollbar]="{ draggable: true }" class="posts-post-body-images my-4" [loop]="true"
-              [autoHeight]="true" [allowTouchMove]="true" [autoplay]="{ delay: 3000, disableOnInteraction: false}">
+              minRatio: 1}" [scrollbar]="{ draggable: post.images.length > 1}" class="posts-post-body-images my-4"
+              [loop]="true" [autoHeight]="true" [allowTouchMove]="true"
+              [autoplay]="{ delay: 3000, disableOnInteraction: false}">
               <ng-template swiperSlide *ngFor="let image of post.images">
                 <div class="swiper-zoom-container">
                   <img class="posts-post-body-images-image" swiperSlide [defaultImage]="defaultImage"
@@ -277,3 +278,4 @@
     </div>
   </div>
 </div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="var(--bs-primary)" [fullScreen]="true"></ngx-spinner>

@@ -6,7 +6,7 @@ import { UserService } from "../services/user.service";
 import { PostService } from "../services/post.service";
 import { ActivatedRoute, NavigationEnd, NavigationStart, Route, Router } from "@angular/router";
 import { Post } from "../models/post.model";
-import { Observable, Subscription, map, of, switchMap, timer } from "rxjs";
+import { Observable, Subject, Subscription, map, of, switchMap, takeUntil, timer } from "rxjs";
 import { FormControl, FormGroup } from "@angular/forms";
 import { BsModalRef, BsModalService, ModalDirective } from "ngx-bootstrap/modal";
 import { SweetAlertService } from "../services/sweet-alert.service";
@@ -70,6 +70,7 @@ export class PostComponent {
     images: new FormControl(),
   });
 
+  private unsub = new Subject<void>();
   imagePath = global.imagePath
   userSession: User
   post: Post
@@ -126,11 +127,17 @@ export class PostComponent {
     const id = this.route.snapshot.paramMap.get('id')
     if (id) {
       this.postEditID = id
-      this.postService.getPostByID(id).subscribe((data: any) => {
+      this.spinner.show();
+      this.postService.getPostByID(id).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
+        this.spinner.hide();
         console.log(`🚀 ~ data:`, data)
         this.post = data.data
         console.log(`🚀 ~ data:`, data)
         this.imagesSelected = data.data.images
+      }, (err) => {
+        this.spinner.hide()
+        console.log(`🚀 ~ err:`, err)
+        Swal.fire(err.error.msg, '', 'error')
       })
     }
   }
@@ -141,20 +148,29 @@ export class PostComponent {
   }
 
   getTopPostsViewers(top: number) {
-    this.postService.getTopViewer(top).subscribe((data: any) => {
+    this.postService.getTopViewer(top).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postsViewers = data.data
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
   getTopPostsLikes(top: number) {
-    this.postService.getTopLikes(top).subscribe((data: any) => {
+    this.postService.getTopLikes(top).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.postsLikers = data.data
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
   getUserSessionInfo() {
-    this.userService.getUserInfo().subscribe((data: any) => {
+    this.userService.getUserInfo().pipe(takeUntil(this.unsub)).subscribe((data: any) => {
       this.userSession = data.data
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -167,6 +183,9 @@ export class PostComponent {
       this.getTopPostsLikes(3)
       this.getUserSessionInfo()
       this.getPostByID()
+    }, (err) => {
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -183,6 +202,9 @@ export class PostComponent {
             this.commentScrollbar.scrollTo({ bottom: 0, end: 0, duration: 500 })
           })
         }
+      }, (err) => {
+        console.log(`🚀 ~ err:`, err)
+        Swal.fire(err.error.msg, '', 'error')
       })
     } else {
       Swal.fire(
@@ -195,7 +217,9 @@ export class PostComponent {
 
   editComment(id: string) {
     const data = this.formEditComment.value
+    this.spinner.show()
     this.commentService.updateComment(data, id).subscribe((data: any) => {
+      this.spinner.hide()
       Swal.fire(
         data.msg,
         '',
@@ -205,6 +229,8 @@ export class PostComponent {
       this.formEditComment.reset()
       this.modalCreateCommentRef?.hide()
     }, (err: any) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
       Swal.fire(
         err.msg,
         '',
@@ -215,7 +241,9 @@ export class PostComponent {
 
   deleteCommentByID(id: string) {
     this.sweetAlert.yesNo('Are you sure to delete this comment ?', (() => {
+      this.spinner.show()
       this.commentService.deleteComment(id).subscribe((data: any) => {
+        this.spinner.hide()
         this.getPostByID()
         Swal.fire(
           data.msg,
@@ -223,6 +251,8 @@ export class PostComponent {
           'success'
         );
       }, (err) => {
+        this.spinner.hide()
+        console.log(`🚀 ~ err:`, err)
         Swal.fire(
           err.msg,
           '',
@@ -273,7 +303,9 @@ export class PostComponent {
   editPost() {
     const data = this.formEditPost.value
     data.images = this.imagesSelected
+    this.spinner.show()
     this.postService.updatePost(data, this.postEditID, this.selectedFiles).subscribe((data: any) => {
+      this.spinner.show()
       Swal.fire(
         data.msg,
         '',
@@ -284,6 +316,10 @@ export class PostComponent {
       this.formEditPost.reset()
       this.imagesSelected = []
       this.newImagesSelected = []
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 
@@ -308,7 +344,7 @@ export class PostComponent {
   onAngleChanged(changeViews: boolean) {
     if (!changeViews) {
       timer(500).subscribe(() => {
-        this.postService.getTopViewer(this.topPost).subscribe((data: any) => {
+        this.postService.getTopViewer(this.topPost).pipe(takeUntil(this.unsub)).subscribe((data: any) => {
           this.postsViewers = data.data
           this.getPostByID()
         })
@@ -363,6 +399,7 @@ export class PostComponent {
 
   ngOnDestroy(): void {
     console.log('destroy profile');
-
+    this.unsub.next()
+    this.unsub.complete()
   }
 }

@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { NgxSpinnerService } from "ngx-spinner";
 import { Post } from "src/app/models/post.model";
 import { PostService } from "src/app/services/post.service";
 import { UserService } from "src/app/services/user.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-manage-post',
@@ -11,7 +13,7 @@ import { UserService } from "src/app/services/user.service";
 export class ManagePostComponent {
   listPosts: Post[] = []
 
-  constructor(private postService: PostService) {
+  constructor(private postService: PostService, private spinner: NgxSpinnerService) {
 
   }
 
@@ -20,9 +22,15 @@ export class ManagePostComponent {
   }
 
   getAllPostsNonPaging() {
+    this.spinner.show();
     this.postService.getAllPostsNonPaging().subscribe((data: any) => {
+      this.spinner.hide();
       this.listPosts = data.data
       console.log(`🚀 ~ data.data:`, data.data)
+    }, (err) => {
+      this.spinner.hide()
+      console.log(`🚀 ~ err:`, err)
+      Swal.fire(err.error.msg, '', 'error')
     })
   }
 

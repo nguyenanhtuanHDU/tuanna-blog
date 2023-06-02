@@ -237,7 +237,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form class="d-flex gap-2" (ngSubmit)="editComment(comment._id)" [formGroup]="formEditComment">
+                <form class="d-flex gap-2" (ngSubmit)="editCommentByID(comment._id)" [formGroup]="formEditComment">
                   <input class="form-control" type="text" formControlName="content" />
                   <button class="btn btn-primary d-flex gap-1" type="submit">
                     <span>Update</span>
@@ -287,3 +287,4 @@
     lastText="&raquo;" [ngModel]="2">
   </pagination>
 </div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="var(--bs-primary)" [fullScreen]="true"></ngx-spinner>
